@@ -217,10 +217,14 @@ const MyChores = () => {
       return []
     }
 
-    // If a custom filter (temp or saved) is active, use customFilteredChores
+    // Determine which chores to group based on active filter type
     let choresToGroup = chores
     if (tempFilter || activeFilterId) {
+      // Advanced/custom filter active
       choresToGroup = customFilteredChores
+    } else if (searchFilter !== 'All') {
+      // Quick filter active (Overdue, Due today, Label, Priority, etc.)
+      choresToGroup = filteredChores
     } else if (!selectedProject || selectedProject.id === 'default') {
       // No project selected or default project: only show tasks without a projectId
       choresToGroup = chores.filter(chore => !chore.projectId)
@@ -240,9 +244,11 @@ const MyChores = () => {
     return sections
   }, [
     chores,
+    filteredChores,
     customFilteredChores,
     tempFilter,
     activeFilterId,
+    searchFilter,
     selectedChoreSection,
     selectedChoreFilter,
     selectedProject,
@@ -1287,7 +1293,7 @@ const MyChores = () => {
               )}
             </Box>
           )}
-        {(searchTerm?.length > 0 || searchFilter !== 'All' || activeFilterId) &&
+        {searchTerm?.length > 0 &&
           viewMode !== 'calendar' && (
             <ChoreListView
               chores={getFilteredChores}
@@ -1484,8 +1490,6 @@ const MyChores = () => {
           </>
         )}
         {searchTerm.length === 0 &&
-          searchFilter === 'All' &&
-          !activeFilterId &&
           viewMode !== 'calendar' && (
             <AccordionGroup transition='0.2s ease' disableDivider>
               {choreSections.map((section, index) => {
