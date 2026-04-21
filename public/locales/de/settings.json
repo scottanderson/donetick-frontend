@@ -43,7 +43,7 @@
     "deleteAccount": "Account löschen"
   },
   "localization": {
-    "title": "Lokalisierung",
+    "title": "Sprach- und Formateinstellungen",
     "description": "Passe Sprache, Datumsformat und regionale Einstellungen für dein Konto an.",
     "language": "Sprache",
     "languageDescription": "Wähle deine bevorzugte Sprache",
@@ -158,7 +158,7 @@
         "description": "Wähle dein bevorzugtes Theme und konfiguriere Dunkel-/Hell-Modus-Einstellungen."
       },
       "localization": {
-        "title": "Lokalisierung",
+        "title": "Sprach- und Formateinstellungen",
         "description": "Passe Sprache, Datumsformat, Zeitformat und regionale Einstellungen an."
       },
       "advanced": {
