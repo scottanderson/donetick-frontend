@@ -599,7 +599,10 @@ const MyChores = () => {
     }
 
     // Always navigate with params (preserves project param)
-    Navigate({ pathname: '/chores', search: params.toString() })
+    Navigate(
+      { pathname: '/chores', search: params.toString() },
+      { replace: true },
+    )
   }
 
   const searchOptions = useMemo(
