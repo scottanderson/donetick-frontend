@@ -344,14 +344,14 @@ const SortAndGrouping = ({
             sx={{
               borderRadius: 'var(--joy-radius-sm)',
               backgroundColor:
-                selectedItem === item.name
+                selectedItem === item.value
                   ? 'var(--joy-palette-primary-softBg)'
                   : selectedIndex === index && anchorEl && isKeyboardNavigating
                     ? 'var(--joy-palette-neutral-softHoverBg)'
                     : 'transparent',
               '&:hover': {
                 backgroundColor:
-                  selectedItem === item.name
+                  selectedItem === item.value
                     ? 'var(--joy-palette-primary-softBg)'
                     : 'var(--joy-palette-neutral-softHoverBg)',
               },
@@ -368,16 +368,16 @@ const SortAndGrouping = ({
                 <Typography
                   level='body-sm'
                   sx={{
-                    fontWeight: selectedItem === item.name ? 600 : 400,
+                    fontWeight: selectedItem === item.value ? 600 : 400,
                     color:
-                      selectedItem === item.name
+                      selectedItem === item.value
                         ? 'var(--joy-palette-primary-600)'
                         : 'var(--joy-palette-text-primary)',
                   }}
                 >
                   {item.name}
                 </Typography>
-                {selectedItem === item.name && (
+                {selectedItem === item.value && (
                   <Check
                     sx={{
                       fontSize: '16px',
