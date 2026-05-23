@@ -164,7 +164,9 @@ const ChoreView = () => {
         icon: <CalendarMonth />,
         title: t('choreView.schedule'),
         text: `${t('choreView.due')}: ${
-          chore.nextDueDate ? moment(chore.nextDueDate).fromNow() : t('choreView.na')
+          chore.nextDueDate
+            ? moment(chore.nextDueDate).fromNow()
+            : t('choreView.na')
         }`,
         subtext: `${t('choreView.last')}: ${
           chore.lastCompletedDate

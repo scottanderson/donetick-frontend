@@ -344,8 +344,7 @@ const Settings = () => {
                   </Typography>
                 ) : (
                   <Typography level='body-sm' color='danger'>
-                    Request to join{' '}
-                    {fmt.date(member.updatedAt)}
+                    Request to join {fmt.date(member.updatedAt)}
                   </Typography>
                 )}
               </Box>
@@ -715,9 +714,8 @@ const Settings = () => {
             onClick={async () => {
               if (Capacitor.isNativePlatform()) {
                 try {
-                  const { RevenueCatUI } = await import(
-                    '@revenuecat/purchases-capacitor-ui'
-                  )
+                  const { RevenueCatUI } =
+                    await import('@revenuecat/purchases-capacitor-ui')
 
                   const offering = await Purchases.getOfferings()
                   await RevenueCatUI.presentPaywall({

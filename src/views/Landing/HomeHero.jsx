@@ -1,5 +1,3 @@
-/* eslint-disable tailwindcss/no-custom-classname */
-// import { StyledButton } from '@/components/styled-button'
 import { Button, IconButton, useColorScheme } from '@mui/joy'
 import Typography from '@mui/joy/Typography'
 import Box from '@mui/material/Box'

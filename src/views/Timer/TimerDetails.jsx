@@ -1,8 +1,8 @@
 import {
   Type as ListType,
+  SwipeAction,
   SwipeableList,
   SwipeableListItem,
-  SwipeAction,
   TrailingActions,
 } from '@meauxt/react-swipeable-list'
 import '@meauxt/react-swipeable-list/dist/styles.css'
@@ -194,7 +194,6 @@ const TimerDetails = () => {
 
   const cancelEditingSession = sessionId => {
     setEditingSessions(prev => {
-      // eslint-disable-next-line no-unused-vars
       const { [sessionId]: removed, ...rest } = prev
       return rest
     })
@@ -928,9 +927,7 @@ const TimerDetails = () => {
                             'MMM DD',
                           )
                           const startTime = fmt.time(pause.start)
-                          const endTime = pause.end
-                            ? fmt.time(pause.end)
-                            : null
+                          const endTime = pause.end ? fmt.time(pause.end) : null
 
                           const realTimeDuration = isOngoing
                             ? Math.max(

@@ -1,5 +1,10 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { GetProjects, CreateProject, UpdateProject, DeleteProject } from '../../utils/Fetcher'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  CreateProject,
+  DeleteProject,
+  GetProjects,
+  UpdateProject,
+} from '../../utils/Fetcher'
 
 // Query hook for fetching all projects
 export const useProjects = () => {
@@ -24,7 +29,7 @@ export const useProjects = () => {
             color: '#1976d2',
             created_by: 'system',
             created_at: new Date().toISOString(),
-          }
+          },
         ]
       }
     },
@@ -39,7 +44,7 @@ export const useCreateProject = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (projectData) => {
+    mutationFn: async projectData => {
       try {
         const response = await CreateProject(projectData)
         if (response.ok) {
@@ -59,7 +64,7 @@ export const useCreateProject = () => {
         return localProject
       }
     },
-    onSuccess: (newProject) => {
+    onSuccess: newProject => {
       // Update the projects cache
       queryClient.setQueryData(['projects'], (oldProjects = []) => {
         const updatedProjects = [...oldProjects, newProject]
@@ -69,7 +74,7 @@ export const useCreateProject = () => {
       // Invalidate and refetch
       queryClient.invalidateQueries(['projects'])
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Create project mutation failed:', error)
     },
   })
@@ -98,18 +103,18 @@ export const useUpdateProject = () => {
         }
       }
     },
-    onSuccess: (updatedProject) => {
+    onSuccess: updatedProject => {
       // Update the projects cache
       queryClient.setQueryData(['projects'], (oldProjects = []) => {
         return oldProjects.map(project =>
-          project.id === updatedProject.id ? updatedProject : project
+          project.id === updatedProject.id ? updatedProject : project,
         )
       })
 
       // Invalidate and refetch
       queryClient.invalidateQueries(['projects'])
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Update project mutation failed:', error)
     },
   })
@@ -120,7 +125,7 @@ export const useDeleteProject = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (projectId) => {
+    mutationFn: async projectId => {
       try {
         // Prevent deletion of default project
         if (projectId === 'default') {
@@ -147,14 +152,14 @@ export const useDeleteProject = () => {
       // Invalidate and refetch
       queryClient.invalidateQueries(['projects'])
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Delete project mutation failed:', error)
     },
   })
 }
 
 // Hook to get a specific project by ID
-export const useProject = (projectId) => {
+export const useProject = projectId => {
   return useQuery({
     queryKey: ['projects', projectId],
     queryFn: async () => {

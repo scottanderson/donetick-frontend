@@ -92,9 +92,8 @@ const AccountSettings = () => {
             onClick={async () => {
               if (Capacitor.isNativePlatform()) {
                 try {
-                  const { RevenueCatUI } = await import(
-                    '@revenuecat/purchases-capacitor-ui'
-                  )
+                  const { RevenueCatUI } =
+                    await import('@revenuecat/purchases-capacitor-ui')
 
                   const offering = await Purchases.getOfferings()
                   await RevenueCatUI.presentPaywall({

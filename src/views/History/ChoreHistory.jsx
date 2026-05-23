@@ -1,8 +1,8 @@
 import {
   Type as ListType,
+  SwipeAction,
   SwipeableList,
   SwipeableListItem,
-  SwipeAction,
   TrailingActions,
 } from '@meauxt/react-swipeable-list'
 import '@meauxt/react-swipeable-list/dist/styles.css'

@@ -45,7 +45,7 @@ const NavBar = () => {
 
   const navigate = useNavigate()
   const [drawerOpen, setDrawerOpen] = useState(false)
-  
+
   const links = [
     {
       to: '/chores',
@@ -141,7 +141,9 @@ const NavBar = () => {
           }
         }}
         title={
-          searchParams.get('from') === 'calendar' ? t('backToCalendar') : t('back')
+          searchParams.get('from') === 'calendar'
+            ? t('backToCalendar')
+            : t('back')
         }
       >
         <ArrowBack />

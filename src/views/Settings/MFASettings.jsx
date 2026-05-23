@@ -263,7 +263,7 @@ const MFASettings = () => {
             </Box>
           </Box>
         </Card>
-        {/* 
+        {/*
       {mfaEnabled && (
         <Card variant='outlined'>
           <Box className='flex items-center justify-between'>

@@ -234,9 +234,8 @@ const StorageSettings = () => {
                   'Clear App Preferences',
                   async () => {
                     try {
-                      const { Preferences } = await import(
-                        '@capacitor/preferences'
-                      )
+                      const { Preferences } =
+                        await import('@capacitor/preferences')
                       await Preferences.clear()
                       Navigate('/login')
                     } catch (e) {

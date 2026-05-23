@@ -58,7 +58,15 @@ const groupByDate = history => {
   return aggregated
 }
 
-const ChoreHistoryItem = ({ time, name, points, status, performer, notes, onViewNote }) => {
+const ChoreHistoryItem = ({
+  time,
+  name,
+  points,
+  status,
+  performer,
+  notes,
+  onViewNote,
+}) => {
   const getStatusIcon = status => {
     switch (status) {
       case 0:
@@ -143,7 +151,6 @@ const ChoreHistoryItem = ({ time, name, points, status, performer, notes, onView
   )
 }
 
-
 const ChoreHistoryTimeline = ({ history, onViewNote }) => {
   const { fmt } = useLocalization()
 
@@ -173,10 +180,7 @@ const ChoreHistoryTimeline = ({ history, onViewNote }) => {
               <>
                 <ChoreHistoryItem
                   key={record.id}
-
-                  time={fmt.time(
-                    record.performedAt || record.updatedAt,
-                  )}
+                  time={fmt.time(record.performedAt || record.updatedAt)}
                   name={record.choreName}
                   points={record.points}
                   status={record.status}

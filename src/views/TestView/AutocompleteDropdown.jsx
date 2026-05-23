@@ -67,7 +67,7 @@ const AutocompleteDropdown = ({
           </MenuItem>
         ))}
       <Divider orientation='horizontal' />
-      {/* 
+      {/*
       <MenuItem
         selected={selectedIndex === suggestions?.options?.length}
         onClick={() => {

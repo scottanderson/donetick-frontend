@@ -2,8 +2,8 @@ import { Add, Remove } from '@mui/icons-material'
 import { Box, IconButton, Input, Option, Select } from '@mui/joy'
 import { useEffect, useState } from 'react'
 import {
-  secondsToValueAndUnit,
   TIME_UNITS,
+  secondsToValueAndUnit,
   valueAndUnitToSeconds,
 } from '../../utils/DurationUtils'
 

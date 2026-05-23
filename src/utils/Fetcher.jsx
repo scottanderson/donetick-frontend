@@ -1033,6 +1033,5 @@ export {
   UpdateThingState,
   UpdateTimeSession,
   UpdateUserDetails,
-  VerifyMFA
+  VerifyMFA,
 }
-

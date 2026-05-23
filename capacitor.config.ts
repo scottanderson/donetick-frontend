@@ -1,28 +1,28 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
-  appId: 'com.donetick.app',
-  appName: 'Donetick',
-  webDir: 'dist',
   android: {
     allowMixedContent: true,
   },
+  appId: 'com.donetick.app',
+  appName: 'Donetick',
   plugins: {
+    GoogleAuth: {
+      androidClientId: process.env['VITE_APP_ANDRIOD_CLIENT_ID'],
+      clientId: process.env['VITE_APP_GOOGLE_CLIENT_ID'],
+      iosClientId: process.env['VITE_APP_IOS_CLIENT_ID'],
+      scopes: ['profile', 'email', 'openid'],
+    },
+    LocalNotifications: {
+      iconColor: '#488AFF',
+      smallIcon: 'ic_stat_icon_config_sample',
+      sound: 'beep.wav',
+    },
     PushNotifications: {
       presentationOptions: ['badge', 'sound', 'alert'],
     },
-    LocalNotifications: {
-      smallIcon: "ic_stat_icon_config_sample",
-      iconColor: "#488AFF",
-      sound: "beep.wav",
-    },
-    GoogleAuth: {
-      scopes: ['profile', 'email', 'openid'],
-      clientId: process.env.VITE_APP_GOOGLE_CLIENT_ID,
-      androidClientId: process.env.VITE_APP_ANDRIOD_CLIENT_ID,
-      iosClientId: process.env.VITE_APP_IOS_CLIENT_ID,
   },
+  webDir: 'dist',
 }
-};
 
-export default config;
+export default config
