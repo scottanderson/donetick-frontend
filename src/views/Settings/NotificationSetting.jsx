@@ -2,6 +2,7 @@ import { Capacitor } from '@capacitor/core'
 import { Device } from '@capacitor/device'
 import { LocalNotifications } from '@capacitor/local-notifications'
 import { Preferences } from '@capacitor/preferences'
+import { PushNotifications } from '@capacitor/push-notifications'
 import { Android, Apple } from '@mui/icons-material'
 import {
   Box,
@@ -19,7 +20,6 @@ import {
 } from '@mui/joy'
 import { useEffect, useState } from 'react'
 
-import { PushNotifications } from '@capacitor/push-notifications'
 import { registerPushNotifications } from '../../CapacitorListener'
 import { useDeviceTokens, useUserProfile } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'

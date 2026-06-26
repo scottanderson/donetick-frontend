@@ -13,6 +13,7 @@ import {
   Typography,
 } from '@mui/joy'
 import { useEffect, useMemo, useRef, useState } from 'react'
+
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 import { FILTER_COLORS } from '../../../utils/Colors'
 import { applyFilter } from '../../../utils/FilterEngine'

@@ -1,11 +1,13 @@
-import React from 'react'
+import './PageTransition.css'
+
 import { Box } from '@mui/joy'
+import React from 'react'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
+
 import {
   useReducedMotion,
   useStaggeredAnimation,
 } from '../../hooks/useAnimations'
-import './PageTransition.css'
 
 const AnimatedList = ({
   children,

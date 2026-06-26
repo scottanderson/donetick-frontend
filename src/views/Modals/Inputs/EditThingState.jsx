@@ -7,6 +7,7 @@ import {
   Typography,
 } from '@mui/joy'
 import { useState } from 'react'
+
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 
 function EditThingStateModal({ isOpen, onClose, onSave, currentThing }) {

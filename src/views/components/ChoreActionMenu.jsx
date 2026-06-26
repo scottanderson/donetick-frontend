@@ -23,6 +23,7 @@ import {
 import { Divider, IconButton, Menu, MenuItem, Tooltip } from '@mui/joy'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+
 import { isOfficialDonetickInstanceSync } from '../../utils/FeatureToggle'
 
 const ChoreActionMenu = ({

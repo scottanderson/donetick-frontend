@@ -1,15 +1,16 @@
+import js from '@eslint/js'
+import stylistic from '@stylistic/eslint-plugin'
+import queryPlugin from '@tanstack/eslint-plugin-query'
+import typescriptEslint from '@typescript-eslint/eslint-plugin'
+import tsParser from '@typescript-eslint/parser'
 import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
-import globals from 'globals'
-import js from '@eslint/js'
-import queryPlugin from '@tanstack/eslint-plugin-query'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
-import stylistic from '@stylistic/eslint-plugin'
+import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import tailwind from 'eslint-plugin-tailwindcss'
-import tsParser from '@typescript-eslint/parser'
-import typescriptEslint from '@typescript-eslint/eslint-plugin'
+import globals from 'globals'
 
 export default [
   {
@@ -27,6 +28,15 @@ export default [
   },
   reactHooks.configs.flat.recommended,
   reactRefresh.configs.recommended,
+  {
+    plugins: {
+      'simple-import-sort': simpleImportSort,
+    },
+    rules: {
+      'simple-import-sort/exports': 'error',
+      'simple-import-sort/imports': 'error',
+    },
+  },
   ...tailwind.configs['flat/recommended'],
   ...queryPlugin.configs['flat/recommended'],
   eslintConfigPrettier, // Disable any rules that conflict with prettier
@@ -46,7 +56,6 @@ export default [
     rules: {
       eqeqeq: 'error',
       indent: ['error', 2],
-      'sort-imports': 'error',
       'sort-keys': [
         'error',
         'asc',
@@ -99,7 +108,6 @@ export default [
       'no-loss-of-precision': 'error',
       'no-undef': 'warn',
       'no-unused-vars': 'off', // @typescript-eslint/no-unused-vars
-      'sort-imports': 'warn',
       'sort-keys': [
         'warn',
         'asc',

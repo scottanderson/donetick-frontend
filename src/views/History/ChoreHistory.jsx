@@ -1,11 +1,12 @@
+import '@meauxt/react-swipeable-list/dist/styles.css'
+
 import {
-  Type as ListType,
-  SwipeAction,
   SwipeableList,
   SwipeableListItem,
+  SwipeAction,
   TrailingActions,
+  Type as ListType,
 } from '@meauxt/react-swipeable-list'
-import '@meauxt/react-swipeable-list/dist/styles.css'
 import {
   Analytics,
   Checklist,
@@ -22,6 +23,7 @@ import { Box, Button, Card, Container, Grid, Sheet, Typography } from '@mui/joy'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+
 import { useLocalization } from '../../contexts/LocalizationContext'
 import useConfirmationModal from '../../hooks/useConfirmationModal'
 import {

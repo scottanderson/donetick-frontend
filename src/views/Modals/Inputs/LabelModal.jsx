@@ -7,9 +7,9 @@ import {
   Select,
   Typography,
 } from '@mui/joy'
+import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 
-import { useQueryClient } from '@tanstack/react-query'
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal.js'
 import { useNotification } from '../../../service/NotificationProvider.jsx'
 import LABEL_COLORS from '../../../utils/Colors.jsx'

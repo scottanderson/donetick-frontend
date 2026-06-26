@@ -1,6 +1,7 @@
 import { Close, HelpOutline, Keyboard } from '@mui/icons-material'
 import { Box, Button, Card, Divider, IconButton, Typography } from '@mui/joy'
 import { useState } from 'react'
+
 import { useResponsiveModal } from '../../hooks/useResponsiveModal'
 
 const MultiSelectHelp = ({ isVisible = true }) => {

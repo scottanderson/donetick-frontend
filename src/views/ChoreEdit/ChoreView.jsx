@@ -68,11 +68,11 @@ import {
 } from '../../utils/Fetcher'
 import Priorities from '../../utils/Priorities'
 import { getSafeBottomPadding } from '../../utils/SafeAreaUtils.js'
-import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
-import NoteViewerModal from '../Modals/Inputs/NoteViewerModal'
 import LoadingComponent from '../components/Loading.jsx'
 import RichTextEditor from '../components/RichTextEditor.jsx'
 import SubTasks from '../components/SubTask.jsx'
+import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
+import NoteViewerModal from '../Modals/Inputs/NoteViewerModal'
 import TimePassedCard from './TimePassedCard.jsx'
 import TimerSplitButton from './TimerSplitButton.jsx'
 

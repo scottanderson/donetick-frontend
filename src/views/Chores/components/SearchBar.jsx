@@ -1,5 +1,6 @@
 import { CancelRounded } from '@mui/icons-material'
 import { Box, Input } from '@mui/joy'
+
 import KeyboardShortcutHint from '../../../components/common/KeyboardShortcutHint'
 
 const SearchBar = ({

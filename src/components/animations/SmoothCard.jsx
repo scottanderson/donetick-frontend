@@ -1,6 +1,6 @@
-import React from 'react'
 import { Card } from '@mui/joy'
 import { styled } from '@mui/joy/styles'
+import React from 'react'
 
 const AnimatedCard = styled(Card)(({ theme }) => ({
   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',

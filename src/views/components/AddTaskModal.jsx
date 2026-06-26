@@ -13,6 +13,9 @@ import { FormControl } from '@mui/material'
 import * as chrono from 'chrono-node'
 import moment from 'moment'
 import { useCallback, useEffect, useRef, useState } from 'react'
+
+import KeyboardShortcutHint from '../../components/common/KeyboardShortcutHint'
+import NotificationTemplate from '../../components/NotificationTemplate'
 import { useResponsiveModal } from '../../hooks/useResponsiveModal'
 import { useCreateChore } from '../../queries/ChoreQueries'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
@@ -27,12 +30,9 @@ import {
   parsePriority,
   parseRepeatV2,
 } from './CustomParsers'
-import SmartTaskTitleInput from './SmartTaskTitleInput'
-
-import KeyboardShortcutHint from '../../components/common/KeyboardShortcutHint'
-import NotificationTemplate from '../../components/NotificationTemplate'
 import LearnMoreButton from './LearnMore'
 import RichTextEditor from './RichTextEditor'
+import SmartTaskTitleInput from './SmartTaskTitleInput'
 import SubTasks from './SubTask'
 const getDefaultNotification = () => {
   const storedDefault = localStorage.getItem('defaultNotificationTemplate')

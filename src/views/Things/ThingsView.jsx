@@ -1,11 +1,12 @@
+import '@meauxt/react-swipeable-list/dist/styles.css'
+
 import {
-  Type as ListType,
-  SwipeAction,
   SwipeableList,
   SwipeableListItem,
+  SwipeAction,
   TrailingActions,
+  Type as ListType,
 } from '@meauxt/react-swipeable-list'
-import '@meauxt/react-swipeable-list/dist/styles.css'
 import {
   Add,
   Delete,
@@ -28,6 +29,7 @@ import {
 } from '@mui/joy'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+
 import { useNotification } from '../../service/NotificationProvider'
 import {
   CreateThing,

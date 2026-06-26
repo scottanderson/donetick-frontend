@@ -3,10 +3,10 @@ import { Avatar, Box, Chip, Grid, Typography } from '@mui/joy'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+
 import { useLocalization } from '../../contexts/LocalizationContext'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
-import { TASK_COLOR, getPriorityColor } from '../../utils/Colors'
-
+import { getPriorityColor, TASK_COLOR } from '../../utils/Colors'
 import CalendarMonthly from './CalendarMonthly'
 
 const getAssigneeColor = (assignee, userProfile) => {

@@ -12,6 +12,7 @@ import {
 } from '@mui/joy'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+
 import KeyboardShortcutHint from '../../components/common/KeyboardShortcutHint'
 import LABEL_COLORS, {
   getTextColorFromBackgroundColor,

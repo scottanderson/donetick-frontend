@@ -1,6 +1,7 @@
 import { Box, Sheet } from '@mui/joy'
 import { useMediaQuery } from '@mui/material'
 import { useEffect, useState } from 'react'
+
 import { useChoresHistory } from '../../queries/ChoreQueries'
 import { ChoresGrouper } from '../../utils/Chores'
 import { getSidepanelConfig } from '../../utils/SidepanelConfig'

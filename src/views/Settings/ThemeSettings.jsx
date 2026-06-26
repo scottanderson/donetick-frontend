@@ -1,4 +1,5 @@
 import { Typography } from '@mui/joy'
+
 import SettingsLayout from './SettingsLayout'
 import ThemeToggle from './ThemeToggle'
 

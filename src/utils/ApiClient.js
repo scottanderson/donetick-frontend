@@ -1,6 +1,7 @@
 import { Preferences } from '@capacitor/preferences'
+
 import { API_URL } from '../Config'
-import { RefreshToken, logout } from './Fetcher'
+import { logout, RefreshToken } from './Fetcher'
 import {
   clearAllTokens,
   isRefreshTokenExpired,

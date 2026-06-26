@@ -12,14 +12,15 @@ import {
 } from '@mui/joy'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
+
 import { useLocalization } from '../../../contexts/LocalizationContext'
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
-import { useNotification } from '../../../service/NotificationProvider'
 import {
   useChoreTimer,
   useDeleteTimeSession,
   useUpdateTimeSession,
 } from '../../../queries/TimeQueries'
+import { useNotification } from '../../../service/NotificationProvider'
 import ConfirmationModal from './ConfirmationModal'
 
 const TimerEditModal = ({ isOpen, onClose, choreId, onTimerUpdate }) => {

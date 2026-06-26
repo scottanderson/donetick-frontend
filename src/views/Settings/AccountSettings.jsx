@@ -4,6 +4,7 @@ import { Purchases } from '@revenuecat/purchases-capacitor'
 import { useQueryClient } from '@tanstack/react-query'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
+
 import SubscriptionModal from '../../components/SubscriptionModal'
 import { useLocalization } from '../../contexts/LocalizationContext'
 import { useUserProfile } from '../../queries/UserQueries'

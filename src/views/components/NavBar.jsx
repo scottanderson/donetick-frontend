@@ -23,19 +23,18 @@ import {
   ListItemDecorator,
   Typography,
 } from '@mui/joy'
-
+import { SafeArea } from 'capacitor-plugin-safe-area'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+
 import { version } from '../../../package.json'
 import UserProfileAvatar from '../../components/UserProfileAvatar'
-import { useLocalization } from '../../contexts/LocalizationContext'
-import NavBarLink from './NavBarLink'
-
-import { SafeArea } from 'capacitor-plugin-safe-area'
 import Z_INDEX from '../../constants/zIndex'
+import { useLocalization } from '../../contexts/LocalizationContext'
 import { useResource } from '../../queries/ResourceQueries'
 import { apiClient } from '../../utils/ApiClient'
+import NavBarLink from './NavBarLink'
 
 const publicPages = ['/landing', '/privacy', '/terms']
 const NavBar = () => {

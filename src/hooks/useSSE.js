@@ -1,6 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import { useCallback, useEffect, useRef, useState } from 'react'
+
 import { useUserProfile } from '../queries/UserQueries'
 import { useAlerts } from '../service/AlertsProvider'
 import { useNotification } from '../service/NotificationProvider'

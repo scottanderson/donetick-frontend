@@ -1,7 +1,8 @@
+import { LocalNotifications } from '@capacitor/local-notifications'
 import { Refresh, Token } from '@mui/icons-material'
 import { Box, Button, Card, Chip, Divider, Typography } from '@mui/joy'
 import { useEffect, useState } from 'react'
-import { LocalNotifications } from '@capacitor/local-notifications'
+
 import { useSSEContext } from '../../hooks/useSSEContext'
 import { useNotification } from '../../service/NotificationProvider'
 import { apiClient } from '../../utils/ApiClient'

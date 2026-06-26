@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@mui/joy'
 import { useCallback, useEffect, useState } from 'react'
+
 import KeyboardShortcutHint from '../../../components/common/KeyboardShortcutHint'
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 import { isOfficialDonetickInstanceSync } from '../../../utils/FeatureToggle'

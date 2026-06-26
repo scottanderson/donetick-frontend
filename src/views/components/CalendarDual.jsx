@@ -2,9 +2,10 @@ import { Box, Typography } from '@mui/joy'
 import { useEffect, useState } from 'react'
 import Calendar from 'react-calendar'
 import { useNavigate } from 'react-router-dom'
-import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
-import { TASK_COLOR, getPriorityColor } from '../../utils/Colors'
+
 import { useLocalization } from '../../contexts/LocalizationContext'
+import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
+import { getPriorityColor, TASK_COLOR } from '../../utils/Colors'
 import styles from './CalendarDual.module.css'
 
 const getAssigneeColor = (assignee, userProfile) => {

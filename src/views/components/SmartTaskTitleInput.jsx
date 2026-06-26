@@ -1,7 +1,9 @@
+import './SmartTaskTitleInput.css'
+
 import { useColorScheme } from '@mui/joy'
 import { useEffect, useRef, useState } from 'react'
+
 import AutocompleteDropdown from '../TestView/AutocompleteDropdown'
-import './SmartTaskTitleInput.css'
 const renderHighlightedText = (text, cursorPosition) => {
   const parts = []
   let lastIndex = 0

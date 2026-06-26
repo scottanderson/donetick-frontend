@@ -1,6 +1,7 @@
 import { Close } from '@mui/icons-material'
 import { Divider, IconButton, Modal, Sheet, Typography } from '@mui/joy'
 import { forwardRef, useEffect, useState } from 'react'
+
 import { Z_INDEX } from '../../constants/zIndex'
 
 const BottomSheetModal = forwardRef(

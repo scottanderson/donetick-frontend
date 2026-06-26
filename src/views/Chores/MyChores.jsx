@@ -29,34 +29,33 @@ import {
   MenuItem,
   Typography,
 } from '@mui/joy'
+import { useMediaQuery } from '@mui/material'
+import { useQueryClient } from '@tanstack/react-query'
 import Fuse from 'fuse.js'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useChores } from '../../queries/ChoreQueries'
-import { useNotification } from '../../service/NotificationProvider'
-import Priorities from '../../utils/Priorities'
-import LoadingComponent from '../components/Loading'
-import { useLabels } from '../Labels/LabelQueries'
-import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
-import IconButtonWithMenu from './IconButtonWithMenu'
 
-import { useMediaQuery } from '@mui/material'
-import { useQueryClient } from '@tanstack/react-query'
 import KeyboardShortcutHint from '../../components/common/KeyboardShortcutHint'
 import { useImpersonateUser } from '../../contexts/ImpersonateUserContext.jsx'
+import { useChores } from '../../queries/ChoreQueries'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
+import { useNotification } from '../../service/NotificationProvider'
 import {
   ChoreFilters,
-  ChoreSorter,
   ChoresGrouper,
+  ChoreSorter,
   filterByProject,
 } from '../../utils/Chores'
+import Priorities from '../../utils/Priorities'
 import { getSafeBottom } from '../../utils/SafeAreaUtils.js'
 import TaskInput from '../components/AddTaskModal'
 import CalendarDual from '../components/CalendarDual'
 import CalendarMonthly from '../components/CalendarMonthly.jsx'
+import LoadingComponent from '../components/Loading'
 import ProjectSelector from '../components/ProjectSelector'
+import { useLabels } from '../Labels/LabelQueries'
 import AdvancedFilterBuilder from '../Modals/Inputs/AdvancedFilterBuilder'
+import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
 import { useProjects } from '../Projects/ProjectQueries.js'
 import ChoreListView from './ChoreListView.jsx'
 import ChoreModals from './components/ChoreModals'
@@ -71,6 +70,7 @@ import { useCustomFilters } from './hooks/useCustomFilters'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useMultiSelect } from './hooks/useMultiSelect'
 import { useProjectFilter } from './hooks/useProjectFilter'
+import IconButtonWithMenu from './IconButtonWithMenu'
 import {
   canScheduleNotification,
   scheduleChoreNotification,

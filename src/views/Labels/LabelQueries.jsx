@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+
 import { CreateLabel, GetLabels } from '../../utils/Fetcher'
 
 export const useLabels = () => {

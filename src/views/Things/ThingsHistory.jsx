@@ -26,7 +26,6 @@ import {
 import { useTheme } from '@mui/joy/styles'
 import moment from 'moment'
 import { Link, useParams } from 'react-router-dom'
-import { useLocalization } from '../../contexts/LocalizationContext'
 import {
   Line,
   LineChart,
@@ -35,6 +34,8 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+
+import { useLocalization } from '../../contexts/LocalizationContext'
 import { useThingHistory } from '../../queries/ThingQueries'
 import LoadingComponent from '../components/Loading'
 

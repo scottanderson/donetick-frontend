@@ -1,6 +1,7 @@
 import { CopyAll } from '@mui/icons-material'
 import { Box, Button, Checkbox, Input, ListItem, Typography } from '@mui/joy'
 import { useState } from 'react'
+
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 
 function WriteNFCModal({ config }) {

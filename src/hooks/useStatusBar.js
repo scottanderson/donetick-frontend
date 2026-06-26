@@ -1,5 +1,6 @@
 import { useColorScheme } from '@mui/joy'
 import { useEffect } from 'react'
+
 import statusBarManager from '../utils/StatusBarManager'
 
 /**

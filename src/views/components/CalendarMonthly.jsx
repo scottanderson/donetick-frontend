@@ -1,4 +1,5 @@
 import Calendar from 'react-calendar'
+
 import { useLocalization } from '../../contexts/LocalizationContext'
 import { getPriorityColor } from '../../utils/Colors'
 import styles from './Calendar.module.css'

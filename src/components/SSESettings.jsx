@@ -9,6 +9,7 @@ import {
   Switch,
   Typography,
 } from '@mui/joy'
+
 import { useSSEContext } from '../hooks/useSSEContext'
 import { useUserProfile } from '../queries/UserQueries'
 import { isPlusAccount } from '../utils/Helpers'

@@ -7,6 +7,7 @@ import {
   Typography,
 } from '@mui/joy'
 import { useEffect, useState } from 'react'
+
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 
 function CreateChildUserModal({ isOpen, onClose, onSuccess }) {

@@ -1,5 +1,3 @@
-import { Cell, Pie, PieChart, Tooltip } from 'recharts'
-
 import {
   AccessTime,
   Check,
@@ -33,15 +31,16 @@ import {
   Typography,
 } from '@mui/joy'
 import React, { useEffect, useState } from 'react'
+import { Cell, Pie, PieChart, Tooltip } from 'recharts'
 
 import { useLocalization } from '../../contexts/LocalizationContext'
 import { useChores, useChoresHistory } from '../../queries/ChoreQueries'
-import NoteViewerModal from '../Modals/Inputs/NoteViewerModal'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries.jsx'
 import { ChoresGrouper } from '../../utils/Chores'
 import { COLORS, TASK_COLOR } from '../../utils/Colors.jsx'
 import { resolvePhotoURL } from '../../utils/Helpers.jsx'
 import LoadingComponent from '../components/Loading'
+import NoteViewerModal from '../Modals/Inputs/NoteViewerModal'
 
 const groupByDate = history => {
   const aggregated = {}

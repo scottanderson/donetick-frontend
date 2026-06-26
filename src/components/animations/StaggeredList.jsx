@@ -1,7 +1,8 @@
+import './PageTransition.css'
+
 import { Box } from '@mui/joy'
 import React, { useEffect, useState } from 'react'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
-import './PageTransition.css'
 
 const StaggeredList = ({
   children,

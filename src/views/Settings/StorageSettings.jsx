@@ -9,6 +9,7 @@ import {
 } from '@mui/joy'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+
 import { useUserProfile } from '../../queries/UserQueries'
 import {
   FEATURES,

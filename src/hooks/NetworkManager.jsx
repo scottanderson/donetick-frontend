@@ -1,4 +1,5 @@
 import { Network } from '@capacitor/network'
+
 import { localStore } from '../utils/LocalStore'
 import { syncManager } from '../utils/SyncManager.jsx' // Ensure you import syncManager if needed for syncing
 class NetworkManager {

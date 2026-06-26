@@ -14,6 +14,7 @@ import imageCompression from 'browser-image-compression'
 import { useRef, useState } from 'react'
 import Cropper from 'react-easy-crop'
 import { useTranslation } from 'react-i18next'
+
 import { useUserProfile } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'
 import { apiClient } from '../../utils/ApiClient'

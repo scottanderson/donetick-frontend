@@ -1,20 +1,20 @@
-import NavBar from '@/views/components/NavBar'
+import './styles/safe-area.css'
+
 import { Button, Typography, useColorScheme } from '@mui/joy'
 import { useCallback, useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useRegisterSW } from 'virtual:pwa-register/react'
+
+import NavBar from '@/views/components/NavBar'
+
 import { registerCapacitorListeners } from './CapacitorListener'
 import PageTransition from './components/animations/PageTransition'
 import { ImpersonateUserProvider } from './contexts/ImpersonateUserContext'
+import SSEProvider from './contexts/SSEContext'
 import { AuthProvider } from './hooks/useAuth.jsx'
-
 import useStatusBar from './hooks/useStatusBar'
 import { useResource } from './queries/ResourceQueries'
-import './styles/safe-area.css'
-
-import SSEProvider from './contexts/SSEContext'
 import { useNotification } from './service/NotificationProvider'
-
 import NetworkBanner from './views/components/NetworkBanner'
 
 const add = className => {

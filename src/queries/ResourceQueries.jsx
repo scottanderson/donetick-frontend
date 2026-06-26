@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+
 import { GetResource } from '../utils/Fetcher'
 
 // Helper to check if we have a valid token

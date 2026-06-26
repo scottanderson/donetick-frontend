@@ -7,6 +7,7 @@ import {
   Typography,
 } from '@mui/joy'
 import React, { useEffect } from 'react'
+
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 
 function PassowrdChangeModal({ isOpen, onClose }) {

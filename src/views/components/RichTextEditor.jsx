@@ -1,6 +1,8 @@
+import 'quill/dist/quill.snow.css'
+import './RichTextEditor.css'
+
 import imageCompression from 'browser-image-compression'
 import Quill from 'quill'
-import 'quill/dist/quill.snow.css'
 import QuillMarkdown from 'quilljs-markdown'
 import {
   forwardRef,
@@ -9,11 +11,11 @@ import {
   useImperativeHandle,
   useRef,
 } from 'react'
+
 import { useUserProfile } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'
 import { apiClient } from '../../utils/ApiClient'
 import { isPlusAccount, resolvePhotoURL } from '../../utils/Helpers'
-import './RichTextEditor.css'
 
 const RichTextEditor = forwardRef(
   (

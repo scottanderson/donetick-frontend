@@ -7,6 +7,7 @@ import {
   Grid,
   Typography,
 } from '@mui/joy'
+
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 import { getTextColorFromBackgroundColor } from '../../../utils/Colors'
 import PROJECT_ICONS from '../../../utils/ProjectIcons'

@@ -21,6 +21,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+
 import RealTimeSettings from '../../components/RealTimeSettings'
 import SubscriptionModal from '../../components/SubscriptionModal'
 import { useLocalization } from '../../contexts/LocalizationContext'
