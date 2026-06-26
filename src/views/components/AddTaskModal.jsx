@@ -416,15 +416,6 @@ const TaskInput = ({ autoFocus, isModalOpen, onChoreUpdate, onClose }) => {
         dueDateHighlight = dueDateParsed.highlight[0]
       }
 
-      if (repeat.result) {
-        // if repeat has result the cleaned sentence will remove the date related info which mean
-        // we need to reparse the date again to get the correct due date:
-        const dueDateParsedAgain = parseDueDate(sentence, chrono)
-        if (dueDateParsedAgain.result) {
-          syncDueDateStates(dueDateParsedAgain.result)
-        }
-      }
-
       // Create the cleaned sentence by sequentially applying all cleanups
       let cleanedSentence = sentence
       if (priority.result) cleanedSentence = priority.cleanedSentence
@@ -633,32 +624,28 @@ const TaskInput = ({ autoFocus, isModalOpen, onChoreUpdate, onClose }) => {
 
     createChoreMutation
       .mutateAsync(chore)
-      .then(resp => {
-        resp.json().then(data => {
-          if (resp.status !== 200) {
-            console.error('Error creating chore:', data)
-            return
-          } else {
-            onChoreUpdate({
-              ...chore,
-              id: data.res,
-              nextDueDate: chore.dueDate,
-            })
-
-            handleCloseModal(false)
-          }
-          handleCloseModal()
-          setTaskText('')
-        })
+      .then(result => {
+        const choreData = result
+        if (choreData?._pendingCreate) {
+          // Offline: task queued, add temp chore to UI immediately
+          onChoreUpdate(choreData)
+        } else {
+          // Online: choreData is the created chore object returned by the mutation
+          onChoreUpdate({
+            ...chore,
+            ...choreData,
+            id: choreData?.id,
+            nextDueDate: chore.dueDate,
+          })
+        }
+        setTaskText('')
       })
       .catch(error => {
-        if (error?.queued) {
-          handleCloseModal(true)
-        }
+        console.error('Error creating chore:', error)
       })
     handleCloseModal(false)
   }
-  if (userLabelsLoading || isCircleMembersLoading || isProjectsLoading) {
+  if (isCircleMembersLoading || isProjectsLoading) {
     return <></>
   }
 

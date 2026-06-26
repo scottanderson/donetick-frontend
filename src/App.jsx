@@ -13,6 +13,7 @@ import { ImpersonateUserProvider } from './contexts/ImpersonateUserContext'
 import SSEProvider from './contexts/SSEContext'
 import { AuthProvider } from './hooks/useAuth.jsx'
 import useStatusBar from './hooks/useStatusBar'
+import { useSyncOnReconnect } from './hooks/useSyncOnReconnect'
 import { useResource } from './queries/ResourceQueries'
 import { useNotification } from './service/NotificationProvider'
 import NetworkBanner from './views/components/NetworkBanner'
@@ -30,6 +31,7 @@ const intervalMS = 5 * 60 * 1000 // 5 minutes
 
 const AppContent = () => {
   const { showNotification } = useNotification()
+  useSyncOnReconnect()
 
   // Initialize status bar with theme-aware configuration
   useStatusBar()

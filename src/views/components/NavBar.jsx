@@ -35,6 +35,7 @@ import { useLocalization } from '../../contexts/LocalizationContext'
 import { useResource } from '../../queries/ResourceQueries'
 import { apiClient } from '../../utils/ApiClient'
 import NavBarLink from './NavBarLink'
+import SyncStatusIndicator from './SyncStatusIndicator'
 
 const publicPages = ['/landing', '/privacy', '/terms']
 const NavBar = () => {
@@ -200,6 +201,7 @@ const NavBar = () => {
       {getMenuIcon()}
       <Box className='flex-1' />
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <SyncStatusIndicator />
         <UserProfileAvatar />
         {/* <ThemeToggleButton /> */}
       </Box>

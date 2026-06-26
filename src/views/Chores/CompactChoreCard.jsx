@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { useImpersonateUser } from '../../contexts/ImpersonateUserContext.jsx'
 import { useLocalization } from '../../contexts/LocalizationContext'
+import { usePendingCommands } from '../../hooks/usePendingCommands'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries.jsx'
 import {
   getDueDateChipColor,
@@ -25,6 +26,7 @@ import {
   getTextColorFromBackgroundColor,
 } from '../../utils/Colors.jsx'
 import ChoreActionMenu from '../components/ChoreActionMenu'
+import PendingBadge from '../components/PendingBadge'
 
 const CompactChoreCard = ({
   chore,
@@ -45,6 +47,7 @@ const CompactChoreCard = ({
   const { data: userProfile } = useUserProfile()
   const { timeFormat } = useLocalization()
   const { data: circleMembersData } = useCircleMembers()
+  const { data: pendingCmds } = usePendingCommands(chore.id)
 
   const { impersonatedUser } = useImpersonateUser()
 
@@ -384,7 +387,9 @@ const CompactChoreCard = ({
           >
             {chore.name}
           </Typography>
-
+          {(chore._pending || (pendingCmds && pendingCmds.length > 0)) && (
+            <PendingBadge commands={pendingCmds} size='xs' sx={{ mr: -0.5 }} />
+          )}
           {/* Due Date - Inline with name */}
           <Chip
             variant='soft'

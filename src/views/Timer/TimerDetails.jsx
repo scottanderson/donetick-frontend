@@ -49,9 +49,13 @@ import {
 } from '../../queries/TimeQueries'
 import { useCircleMembers } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'
+import { commandQueue, CommandType } from '../../utils/CommandQueue'
 import { resolvePhotoURL } from '../../utils/Helpers'
 import { getSafeBottom } from '../../utils/SafeAreaUtils'
 import LoadingComponent from '../components/Loading'
+
+const isNetworkError = err =>
+  err instanceof TypeError && err.message === 'Failed to fetch'
 
 const TimerDetails = () => {
   const { choreId } = useParams()
@@ -257,7 +261,23 @@ const TimerDetails = () => {
         })
         refetchTimer()
       },
-      onError: () => {
+      onError: async error => {
+        if (isNetworkError(error)) {
+          const cmdId = await commandQueue.enqueue(
+            CommandType.START_CHORE,
+            choreId,
+            { id: choreId },
+          )
+          showSuccess({
+            title: 'Start queued',
+            message: "You're offline — start will sync when back online",
+            undoAction: async () => {
+              await commandQueue.cancel(cmdId)
+            },
+          })
+          return
+        }
+
         showError({
           title: 'Failed to start timer',
           message: 'Please try again.',
@@ -279,7 +299,23 @@ const TimerDetails = () => {
         })
         refetchTimer()
       },
-      onError: () => {
+      onError: async error => {
+        if (isNetworkError(error)) {
+          const cmdId = await commandQueue.enqueue(
+            CommandType.PAUSE_CHORE,
+            choreId,
+            { id: choreId },
+          )
+          showSuccess({
+            title: 'Pause queued',
+            message: "You're offline — pause will sync when back online",
+            undoAction: async () => {
+              await commandQueue.cancel(cmdId)
+            },
+          })
+          return
+        }
+
         showError({
           title: 'Failed to pause timer',
           message: 'Please try again.',

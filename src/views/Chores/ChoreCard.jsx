@@ -5,6 +5,7 @@ import {
   Pause,
   PlayArrow,
   Repeat,
+  Schedule,
   ThumbUp,
   TimesOneMobiledata,
   Toll,
@@ -23,6 +24,7 @@ import {
 
 import { useImpersonateUser } from '../../contexts/ImpersonateUserContext.jsx'
 import { useLocalization } from '../../contexts/LocalizationContext'
+import { usePendingCommands } from '../../hooks/usePendingCommands'
 import { useUserProfile } from '../../queries/UserQueries.jsx'
 import {
   getDueDateChipColor,
@@ -33,6 +35,7 @@ import { notInCompletionWindow } from '../../utils/Chores.jsx'
 import { getTextColorFromBackgroundColor } from '../../utils/Colors.jsx'
 import Priorities from '../../utils/Priorities'
 import ChoreActionMenu from '../components/ChoreActionMenu'
+import PendingBadge from '../components/PendingBadge'
 const ChoreCard = ({
   chore,
   isMultiSelectMode = false,
@@ -48,6 +51,7 @@ const ChoreCard = ({
 }) => {
   const { data: userProfile } = useUserProfile()
   const { timeFormat } = useLocalization()
+  const { data: pendingCmds } = usePendingCommands(chore.id)
 
   const { impersonatedUser } = useImpersonateUser()
 
@@ -87,7 +91,11 @@ const ChoreCard = ({
     return name
   }
   return (
-    <Box key={chore.id + '-box'} minWidth={'100%'}>
+    <Box
+      key={chore.id + '-box'}
+      minWidth={'100%'}
+      sx={{ position: 'relative' }}
+    >
       <Chip
         variant='soft'
         sx={{
@@ -123,6 +131,9 @@ const ChoreCard = ({
         </div>
       </Chip>
 
+      <Box sx={{ position: 'absolute', top: 10, right: 10, zIndex: 3 }}>
+        <PendingBadge commands={pendingCmds} />
+      </Box>
       <Box
         sx={{
           position: 'relative',
@@ -343,9 +354,31 @@ const ChoreCard = ({
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
+                alignItems: 'flex-end',
                 justifyContent: 'center',
               }}
             >
+              {chore.status === 3 && (
+                <Chip
+                  variant='soft'
+                  color='neutral'
+                  size='sm'
+                  sx={{
+                    mb: 1,
+                    px: 0.75,
+                    py: 0.5,
+                    minHeight: 56,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: 0.25,
+                  }}
+                >
+                  <Schedule sx={{ fontSize: 16 }} />
+                  <Typography level='body-xs'>Pending</Typography>
+                </Chip>
+              )}
               {showActions && (
                 <Box
                   display='flex'

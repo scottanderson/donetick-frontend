@@ -1,8 +1,12 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useCallback } from 'react'
 
-import { useArchiveChore } from '../../../queries/ChoreQueries'
+import {
+  useArchiveChore,
+  useUnArchiveChore,
+} from '../../../queries/ChoreQueries'
 import { usePauseChore, useStartChore } from '../../../queries/TimeQueries'
+import { commandQueue, CommandType } from '../../../utils/CommandQueue'
 import {
   ApproveChore,
   DeleteChore,
@@ -14,6 +18,10 @@ import {
   UpdateChoreAssignee,
   UpdateDueDate,
 } from '../../../utils/Fetcher'
+import { offlineDB } from '../../../utils/OfflineDB'
+
+const isNetworkError = err =>
+  err instanceof TypeError && err.message === 'Failed to fetch'
 
 export const useChoreActions = ({
   chores,
@@ -36,11 +44,12 @@ export const useChoreActions = ({
 }) => {
   const queryClient = useQueryClient()
   const archiveChore = useArchiveChore()
+  const unarchiveChore = useUnArchiveChore()
   const startChore = useStartChore()
   const pauseChore = usePauseChore()
 
   const updateChoreInState = useCallback(
-    (updatedChore, event) => {
+    (updatedChore, event, { skipInvalidation = false } = {}) => {
       let newChores = chores.map(c =>
         c.id === updatedChore.id ? updatedChore : c,
       )
@@ -62,7 +71,9 @@ export const useChoreActions = ({
       setChores(newChores)
       setFilteredChores(newFilteredChores)
 
-      queryClient.invalidateQueries({ queryKey: ['chores'] })
+      if (!skipInvalidation) {
+        queryClient.invalidateQueries(['chores'])
+      }
 
       const undoableActions = {
         completed: 'Task completed',
@@ -78,7 +89,7 @@ export const useChoreActions = ({
             try {
               const undoResponse = await UndoChoreAction(updatedChore.id)
               if (undoResponse.ok) {
-                refetchChores()
+                queryClient.invalidateQueries(['chores'])
                 const undoMessages = {
                   completed: 'Task completion has been undone.',
                   approved: 'Task approval has been undone.',
@@ -159,7 +170,6 @@ export const useChoreActions = ({
       showError,
       showWarning,
       showUndo,
-      refetchChores,
     ],
   )
 
@@ -167,18 +177,6 @@ export const useChoreActions = ({
     async (action, chore, extraData = {}) => {
       switch (action) {
         case 'complete':
-          // 1. Instantly hide the chore from the UI and Cache
-          setChores(prev => prev.filter(c => c.id !== chore.id))
-          setFilteredChores(prev => prev.filter(c => c.id !== chore.id))
-
-          queryClient.setQueriesData({ queryKey: ['chores'] }, oldData => {
-            if (!oldData || !oldData.res) return oldData
-            return {
-              ...oldData,
-              res: oldData.res.filter(c => c.id !== chore.id),
-            }
-          })
-
           try {
             const response = await MarkChoreComplete(
               chore.id,
@@ -189,20 +187,29 @@ export const useChoreActions = ({
               null,
             )
             if (response.ok) {
-              // 2. Show the success notification with Undo
+              // Online: hide the chore and show undo
+              setChores(prev => prev.filter(c => c.id !== chore.id))
+              setFilteredChores(prev => prev.filter(c => c.id !== chore.id))
+              queryClient.setQueriesData({ queryKey: ['chores'] }, oldData => {
+                if (!oldData || !oldData.res) return oldData
+                return {
+                  ...oldData,
+                  res: oldData.res.filter(c => c.id !== chore.id),
+                }
+              })
               showSuccess({
                 message: 'Task completed',
                 undoAction: async () => {
                   try {
                     const undoResponse = await UndoChoreAction(chore.id)
                     if (undoResponse.ok) {
-                      refetchChores()
+                      queryClient.invalidateQueries(['chores'])
                       showUndo({
                         title: 'Undo Successful',
                         message: 'Task completion has been undone.',
                       })
                     } else throw new Error('Failed to undo')
-                  } catch (error) {
+                  } catch {
                     showError({
                       title: 'Undo Failed',
                       message: 'Unable to undo the action. Please try again.',
@@ -210,60 +217,162 @@ export const useChoreActions = ({
                   }
                 },
               })
-
-              // 3. Fetch the fresh active list from the server silently
-              // (This brings in the next occurrence if recurring, without showing the completed one)
-              queryClient.invalidateQueries({ queryKey: ['chores'] })
+              queryClient.invalidateQueries(['chores'])
             } else {
-              refetchChores() // Network failed, revert to truth
+              refetchChores()
             }
           } catch (error) {
-            refetchChores() // Network failed, revert to truth
-            if (error?.queued) {
-              showError({
-                title: 'Update Failed',
-                message: 'Request will be reattempt when you are online',
+            if (isNetworkError(error)) {
+              // Offline — queue and show pending badge on the chore (don't hide it)
+              const cmdId = await commandQueue.enqueue(
+                CommandType.COMPLETE_CHORE,
+                chore.id,
+                {
+                  id: chore.id,
+                  body: impersonatedUser
+                    ? { completedBy: impersonatedUser.userId }
+                    : null,
+                  completedDate: null,
+                  performer: null,
+                },
+              )
+              await offlineDB.savePendingHistory({
+                id: -Date.now(),
+                choreId: chore.id,
+                completedBy: impersonatedUser?.userId || userProfile?.id || 0,
+                performedAt: new Date().toISOString(),
+                dueDate: chore.nextDueDate || null,
+                notes: null,
+                status: 1,
+                points: chore.points || 0,
+                pending: true,
+              })
+              queryClient.invalidateQueries({ queryKey: ['pendingCommands'] })
+              showSuccess({
+                title: 'Task completion pending',
+                message:
+                  "You're offline — completion will sync when back online",
+                undoAction: async () => {
+                  await commandQueue.cancel(cmdId)
+                  queryClient.invalidateQueries({
+                    queryKey: ['pendingCommands'],
+                  })
+                },
               })
             } else {
               showError({
-                title: 'Failed to update',
-                message: error,
+                title: 'Failed to complete',
+                message: error?.message || 'Unable to complete chore',
               })
             }
           }
           break
 
-        case 'start':
-          startChore.mutate(chore.id, {
-            onSuccess: async res => {
-              const data = await res.json()
-              const newChore = { ...chore, status: data.res.status }
-              updateChoreInState(newChore, 'started')
-            },
-            onError: error => {
+        case 'start': {
+          const startedChore = { ...chore, status: 1 }
+          try {
+            await startChore.mutateAsync(chore.id)
+            queryClient.cancelQueries(['chores'])
+            queryClient.setQueryData(['chores', false], oldData => {
+              if (!oldData?.res) return oldData
+              return {
+                ...oldData,
+                res: oldData.res.map(c =>
+                  c.id === chore.id ? startedChore : c,
+                ),
+              }
+            })
+            updateChoreInState(startedChore, 'started', {
+              skipInvalidation: true,
+            })
+          } catch (error) {
+            if (isNetworkError(error)) {
+              const previousStatus = chore.status
+              const cmdId = await commandQueue.enqueue(
+                CommandType.START_CHORE,
+                chore.id,
+                { id: chore.id },
+              )
+              updateChoreInState(startedChore, 'started', {
+                skipInvalidation: true,
+              })
+              queryClient.invalidateQueries({ queryKey: ['pendingCommands'] })
+              showSuccess({
+                message: "You're offline — start will sync when back online",
+                undoAction: async () => {
+                  await commandQueue.cancel(cmdId)
+                  queryClient.invalidateQueries({
+                    queryKey: ['pendingCommands'],
+                  })
+                  updateChoreInState(
+                    { ...chore, status: previousStatus },
+                    previousStatus === 2 ? 'paused' : 'started',
+                    { skipInvalidation: true },
+                  )
+                },
+              })
+            } else {
               showError({
                 title: 'Failed to start',
-                message: error.message || 'Unable to start chore',
+                message: error?.message || 'Unable to start chore',
               })
-            },
-          })
+            }
+          }
           break
+        }
 
-        case 'pause':
-          pauseChore.mutate(chore.id, {
-            onSuccess: async res => {
-              const data = await res.json()
-              const newChore = { ...chore, status: data.res.status }
-              updateChoreInState(newChore, 'paused')
-            },
-            onError: error => {
+        case 'pause': {
+          const pausedChore = { ...chore, status: 2 }
+          try {
+            await pauseChore.mutateAsync(chore.id)
+            queryClient.cancelQueries(['chores'])
+            queryClient.setQueryData(['chores', false], oldData => {
+              if (!oldData?.res) return oldData
+              return {
+                ...oldData,
+                res: oldData.res.map(c =>
+                  c.id === chore.id ? pausedChore : c,
+                ),
+              }
+            })
+            updateChoreInState(pausedChore, 'paused', {
+              skipInvalidation: true,
+            })
+          } catch (error) {
+            if (isNetworkError(error)) {
+              const previousStatus = chore.status
+              const cmdId = await commandQueue.enqueue(
+                CommandType.PAUSE_CHORE,
+                chore.id,
+                { id: chore.id },
+              )
+              updateChoreInState(pausedChore, 'paused', {
+                skipInvalidation: true,
+              })
+              queryClient.invalidateQueries({ queryKey: ['pendingCommands'] })
+              showSuccess({
+                message: "You're offline — pause will sync when back online",
+                undoAction: async () => {
+                  await commandQueue.cancel(cmdId)
+                  queryClient.invalidateQueries({
+                    queryKey: ['pendingCommands'],
+                  })
+                  updateChoreInState(
+                    { ...chore, status: previousStatus },
+                    previousStatus === 2 ? 'paused' : 'started',
+                    { skipInvalidation: true },
+                  )
+                },
+              })
+            } else {
               showError({
                 title: 'Failed to pause',
-                message: error.message || 'Unable to pause chore',
+                message: error?.message || 'Unable to pause chore',
               })
-            },
-          })
+            }
+          }
           break
+        }
 
         case 'approve':
           try {
@@ -320,10 +429,37 @@ export const useChoreActions = ({
                     })
                   }
                 } catch (error) {
-                  showError({
-                    title: 'Failed to delete',
-                    message: error,
-                  })
+                  if (isNetworkError(error)) {
+                    const cmdId = await commandQueue.enqueue(
+                      CommandType.DELETE_CHORE,
+                      chore.id,
+                      { id: chore.id },
+                    )
+                    setChores(prev => prev.filter(c => c.id !== chore.id))
+                    setFilteredChores(prev =>
+                      prev.filter(c => c.id !== chore.id),
+                    )
+                    queryClient.invalidateQueries({
+                      queryKey: ['pendingCommands'],
+                    })
+                    showSuccess({
+                      message:
+                        "You're offline — deletion will sync when back online",
+                      undoAction: async () => {
+                        await commandQueue.cancel(cmdId)
+                        queryClient.invalidateQueries({
+                          queryKey: ['pendingCommands'],
+                        })
+                        setChores(prev => [...prev, chore])
+                        setFilteredChores(prev => [...prev, chore])
+                      },
+                    })
+                  } else {
+                    showError({
+                      title: 'Failed to delete',
+                      message: error?.message || 'Unable to delete chore',
+                    })
+                  }
                 }
               }
               setConfirmModelConfig({})
@@ -339,12 +475,94 @@ export const useChoreActions = ({
                   updateChoreInState(data, 'archive')
                   resolve(data)
                 },
-                onError: error => {
-                  showError({
-                    title: 'Failed to archive',
-                    message: error.message || 'Unable to archive chore',
-                  })
-                  reject(error)
+                onError: async error => {
+                  if (isNetworkError(error)) {
+                    const cmdId = await commandQueue.enqueue(
+                      CommandType.ARCHIVE_CHORE,
+                      chore.id,
+                      { id: chore.id },
+                    )
+                    await offlineDB.saveChores([
+                      { ...chore, isActive: false, _pending: 'archive' },
+                    ])
+                    setChores(prev => prev.filter(c => c.id !== chore.id))
+                    setFilteredChores(prev =>
+                      prev.filter(c => c.id !== chore.id),
+                    )
+                    queryClient.invalidateQueries({
+                      queryKey: ['pendingCommands'],
+                    })
+                    showSuccess({
+                      message:
+                        "You're offline — archive will sync when back online",
+                      undoAction: async () => {
+                        await commandQueue.cancel(cmdId)
+                        await offlineDB.saveChores([
+                          { ...chore, isActive: true },
+                        ])
+                        queryClient.invalidateQueries({
+                          queryKey: ['pendingCommands'],
+                        })
+                        setChores(prev => [...prev, chore])
+                        setFilteredChores(prev => [...prev, chore])
+                      },
+                    })
+                    resolve()
+                  } else {
+                    showError({
+                      title: 'Failed to archive',
+                      message: error.message || 'Unable to archive chore',
+                    })
+                    reject(error)
+                  }
+                },
+              })
+            })
+          } catch (error) {}
+          break
+
+        case 'unarchive':
+          try {
+            await new Promise((resolve, reject) => {
+              unarchiveChore.mutate(chore.id, {
+                onSuccess: data => {
+                  updateChoreInState({ ...chore, isActive: true }, 'unarchive')
+                  resolve(data)
+                },
+                onError: async error => {
+                  if (isNetworkError(error)) {
+                    const cmdId = await commandQueue.enqueue(
+                      CommandType.UNARCHIVE_CHORE,
+                      chore.id,
+                      { id: chore.id },
+                    )
+                    await offlineDB.saveChores([
+                      { ...chore, isActive: true, _pending: 'unarchive' },
+                    ])
+                    queryClient.invalidateQueries({
+                      queryKey: ['pendingCommands'],
+                    })
+                    showSuccess({
+                      message:
+                        "You're offline — restore will sync when back online",
+                      undoAction: async () => {
+                        await commandQueue.cancel(cmdId)
+                        await offlineDB.saveChores([
+                          { ...chore, isActive: false },
+                        ])
+                        queryClient.invalidateQueries({
+                          queryKey: ['pendingCommands'],
+                        })
+                      },
+                    })
+                    resolve()
+                  } else {
+                    showError({
+                      title: 'Failed to restore',
+                      message: error.message || 'Unable to restore chore',
+                    })
+                    reject(error)
+                  }
                 },
               })
             })
@@ -355,14 +573,36 @@ export const useChoreActions = ({
           try {
             const response = await SkipChore(chore.id)
             if (response.ok) {
+              // Online: update in place (chore gets new due date)
               const data = await response.json()
               updateChoreInState(data.res, 'skipped')
+            } else {
+              refetchChores()
             }
           } catch (error) {
-            showError({
-              title: 'Failed to skip',
-              message: error,
-            })
+            if (isNetworkError(error)) {
+              // Offline — queue and show pending badge on the chore
+              const cmdId = await commandQueue.enqueue(
+                CommandType.SKIP_CHORE,
+                chore.id,
+                { id: chore.id },
+              )
+              queryClient.invalidateQueries({ queryKey: ['pendingCommands'] })
+              showSuccess({
+                message: "You're offline — skip will sync when back online",
+                undoAction: async () => {
+                  await commandQueue.cancel(cmdId)
+                  queryClient.invalidateQueries({
+                    queryKey: ['pendingCommands'],
+                  })
+                },
+              })
+            } else {
+              showError({
+                title: 'Failed to skip',
+                message: error?.message || 'Unable to skip chore',
+              })
+            }
           }
           break
 
@@ -377,13 +617,48 @@ export const useChoreActions = ({
                 updateChoreInState(chore, eventType)
               }
             } catch (error) {
-              showError({
-                title:
-                  extraData.date === null
-                    ? 'Failed to remove due date'
-                    : 'Failed to reschedule',
-                message: error.message || 'Unable to update due date',
-              })
+              if (isNetworkError(error)) {
+                const oldDueDate = chore.nextDueDate
+                const cmdId = await commandQueue.enqueue(
+                  CommandType.RESCHEDULE_CHORE,
+                  chore.id,
+                  {
+                    id: chore.id,
+                    dueDate: extraData.date,
+                  },
+                )
+                const eventType =
+                  extraData.date === null ? 'due-date-removed' : 'rescheduled'
+                updateChoreInState(
+                  { ...chore, nextDueDate: extraData.date },
+                  eventType,
+                )
+                queryClient.invalidateQueries({ queryKey: ['pendingCommands'] })
+                showSuccess({
+                  message:
+                    "You're offline — reschedule will sync when back online",
+                  undoAction: async () => {
+                    await commandQueue.cancel(cmdId)
+                    queryClient.invalidateQueries({
+                      queryKey: ['pendingCommands'],
+                    })
+                    const undoEventType =
+                      oldDueDate === null ? 'due-date-removed' : 'rescheduled'
+                    updateChoreInState(
+                      { ...chore, nextDueDate: oldDueDate },
+                      undoEventType,
+                    )
+                  },
+                })
+              } else {
+                showError({
+                  title:
+                    extraData.date === null
+                      ? 'Failed to remove due date'
+                      : 'Failed to reschedule',
+                  message: error.message || 'Unable to update due date',
+                })
+              }
             }
           } else {
             openModal(action, chore, extraData)
@@ -414,26 +689,67 @@ export const useChoreActions = ({
       setConfirmModelConfig,
       openModal,
       archiveChore,
+      unarchiveChore,
       startChore,
       pauseChore,
     ],
   )
 
   const handleChangeDueDate = useCallback(
-    newDate => {
+    async newDate => {
       if (!modalChore) return
-      UpdateDueDate(modalChore.id, newDate).then(response => {
+      closeModal()
+      try {
+        const response = await UpdateDueDate(modalChore.id, newDate)
         if (response.ok) {
-          response.json().then(data => {
-            const newChore = modalChore
-            newChore.nextDueDate = newDate
-            updateChoreInState(newChore, 'rescheduled')
+          updateChoreInState(
+            { ...modalChore, nextDueDate: newDate },
+            'rescheduled',
+          )
+        }
+      } catch (error) {
+        if (isNetworkError(error)) {
+          const oldDueDate = modalChore.nextDueDate
+          const cmdId = await commandQueue.enqueue(
+            CommandType.RESCHEDULE_CHORE,
+            modalChore.id,
+            {
+              id: modalChore.id,
+              dueDate: newDate,
+            },
+          )
+          updateChoreInState(
+            { ...modalChore, nextDueDate: newDate },
+            'rescheduled',
+          )
+          queryClient.invalidateQueries({ queryKey: ['pendingCommands'] })
+          showSuccess({
+            message: "You're offline — reschedule will sync when back online",
+            undoAction: async () => {
+              await commandQueue.cancel(cmdId)
+              queryClient.invalidateQueries({ queryKey: ['pendingCommands'] })
+              updateChoreInState(
+                { ...modalChore, nextDueDate: oldDueDate },
+                'rescheduled',
+              )
+            },
+          })
+        } else {
+          showError({
+            title: 'Failed to reschedule',
+            message: error.message || 'Unable to update due date',
           })
         }
-      })
-      closeModal()
+      }
     },
-    [modalChore, updateChoreInState, closeModal],
+    [
+      modalChore,
+      updateChoreInState,
+      closeModal,
+      showSuccess,
+      showError,
+      queryClient,
+    ],
   )
 
   const handleCompleteWithPastDate = useCallback(
@@ -768,7 +1084,7 @@ export const useChoreActions = ({
                     for (const chore of skippedTasks) {
                       await UndoChoreAction(chore.id)
                     }
-                    refetchChores()
+                    queryClient.invalidateQueries(['chores'])
                     showUndo({
                       title: 'Undo Successful',
                       message: `Undo skip for ${skippedTasks.length} task${skippedTasks.length > 1 ? 's' : ''}.`,

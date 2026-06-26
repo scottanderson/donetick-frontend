@@ -37,6 +37,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import KeyboardShortcutHint from '../../components/common/KeyboardShortcutHint'
 import { useImpersonateUser } from '../../contexts/ImpersonateUserContext.jsx'
+import Logo from '../../Logo'
 import { useChores } from '../../queries/ChoreQueries'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'
@@ -272,18 +273,6 @@ const MyChores = () => {
         // Don't set choreSections here - let the dedicated effect handle it
         // This prevents caching issues when switching between projects
 
-        if (localStorage.getItem('openChoreSections') === null) {
-          setSelectedChoreSectionWithCache(selectedChoreSection)
-          const openSections = processedSections.reduce(
-            (acc, _section, index) => {
-              acc[index] = true
-              return acc
-            },
-            {},
-          )
-          setOpenChoreSections(openSections)
-        }
-
         if (await canScheduleNotification()) {
           console.log('Scheduling chore notifications...')
           scheduleChoreNotification(
@@ -303,10 +292,8 @@ const MyChores = () => {
     choresData?.res,
     membersData?.res,
     processedChores, // Added to ensure local state syncs when query data updates
-    processedSections,
     userProfile,
     impersonatedUser?.userId,
-    selectedChoreSection,
   ])
 
   // Auto-update sections when processedSections changes
@@ -1618,6 +1605,7 @@ const MyChores = () => {
             />
           </IconButton>
           <IconButton
+            data-testid='open-add-task-modal'
             color='primary'
             variant='soft'
             sx={{

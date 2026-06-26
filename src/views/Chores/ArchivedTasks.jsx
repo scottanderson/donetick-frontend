@@ -20,6 +20,7 @@ import {
   Stack,
   Typography,
 } from '@mui/joy'
+import { useQueryClient } from '@tanstack/react-query'
 import Fuse from 'fuse.js'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -29,7 +30,9 @@ import { useImpersonateUser } from '../../contexts/ImpersonateUserContext.jsx'
 import { useUnArchiveChore } from '../../queries/ChoreQueries'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'
+import { commandQueue, CommandType } from '../../utils/CommandQueue'
 import { DeleteChore, GetArchivedChores } from '../../utils/Fetcher'
+import { offlineDB } from '../../utils/OfflineDB'
 import LoadingComponent from '../components/Loading'
 import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
 import ChoreCard from './ChoreCard'
@@ -37,11 +40,54 @@ import ChoreListView from './ChoreListView.jsx'
 import CompactChoreCard from './CompactChoreCard'
 import MultiSelectHelp from './MultiSelectHelp'
 
+const sortByUpdatedAtDesc = chores =>
+  (chores || []).sort((a, b) => {
+    const dateA = new Date(a.updatedAt || 0)
+    const dateB = new Date(b.updatedAt || 0)
+    return dateB - dateA
+  })
+
+const applyPendingArchivedState = async chores => {
+  const pending = await commandQueue.getPending()
+
+  const pendingArchiveIds = new Set(
+    pending
+      .filter(cmd => cmd.commandType === CommandType.ARCHIVE_CHORE)
+      .map(cmd => String(cmd.entityId)),
+  )
+  const pendingUnarchiveIds = new Set(
+    pending
+      .filter(cmd => cmd.commandType === CommandType.UNARCHIVE_CHORE)
+      .map(cmd => String(cmd.entityId)),
+  )
+  const pendingDeleteIds = new Set(
+    pending
+      .filter(cmd => cmd.commandType === CommandType.DELETE_CHORE)
+      .map(cmd => String(cmd.entityId)),
+  )
+
+  return (chores || [])
+    .filter(chore => !pendingDeleteIds.has(String(chore.id)))
+    .filter(chore => {
+      const id = String(chore.id)
+      if (pendingUnarchiveIds.has(id)) return false
+      return chore.isActive === false || pendingArchiveIds.has(id)
+    })
+    .map(chore => {
+      const id = String(chore.id)
+      if (pendingArchiveIds.has(id)) {
+        return { ...chore, isActive: false, _pending: 'archive' }
+      }
+      return chore
+    })
+}
+
 const ArchivedTasks = () => {
   const { data: userProfile, isLoading: isUserProfileLoading } =
     useUserProfile()
   const { showError, showSuccess } = useNotification()
   const { impersonatedUser } = useImpersonateUser()
+  const queryClient = useQueryClient()
   const unArchiveChore = useUnArchiveChore()
   const [archivedChores, setArchivedChores] = useState([])
   const [filteredChores, setFilteredChores] = useState([])
@@ -69,19 +115,28 @@ const ArchivedTasks = () => {
         try {
           const response = await GetArchivedChores()
           const data = await response.json()
-          // Sort by updatedAt (most recent first)
-          const sortedChores = data.res.sort((a, b) => {
-            const dateA = new Date(a.updatedAt || 0)
-            const dateB = new Date(b.updatedAt || 0)
-            return dateB - dateA
-          })
+          if (data?.res?.length) {
+            await offlineDB.saveChores(data.res)
+          }
+          const archivedWithPending = await applyPendingArchivedState(
+            data?.res || [],
+          )
+          const sortedChores = sortByUpdatedAtDesc(archivedWithPending)
           setArchivedChores(sortedChores)
           setFilteredChores(sortedChores)
         } catch (error) {
-          showError({
-            title: 'Failed to load archived tasks',
-            message: 'Please try again later.',
-          })
+          try {
+            const cached = await offlineDB.getChores(true)
+            const archivedWithPending = await applyPendingArchivedState(cached)
+            const sortedChores = sortByUpdatedAtDesc(archivedWithPending)
+            setArchivedChores(sortedChores)
+            setFilteredChores(sortedChores)
+          } catch {
+            showError({
+              title: 'Failed to load archived tasks',
+              message: 'Please try again later.',
+            })
+          }
         } finally {
           setIsLoading(false)
         }
@@ -320,6 +375,10 @@ const ArchivedTasks = () => {
             const restoredTasks = []
             const failedTasks = []
 
+            const isNetworkError = err =>
+              err instanceof TypeError && err.message === 'Failed to fetch'
+            const queuedTasks = []
+
             for (const chore of selectedData) {
               try {
                 await new Promise((resolve, reject) => {
@@ -328,9 +387,22 @@ const ArchivedTasks = () => {
                       restoredTasks.push(chore)
                       resolve(data)
                     },
-                    onError: error => {
-                      failedTasks.push(chore)
-                      reject(error)
+                    onError: async error => {
+                      if (isNetworkError(error)) {
+                        await commandQueue.enqueue(
+                          CommandType.UNARCHIVE_CHORE,
+                          chore.id,
+                          { id: chore.id },
+                        )
+                        await offlineDB.saveChores([
+                          { ...chore, isActive: true, _pending: 'unarchive' },
+                        ])
+                        queuedTasks.push(chore)
+                        resolve()
+                      } else {
+                        failedTasks.push(chore)
+                        reject(error)
+                      }
                     },
                   })
                 })
@@ -339,14 +411,14 @@ const ArchivedTasks = () => {
               }
             }
 
-            if (restoredTasks.length > 0) {
-              showSuccess({
-                title: '📤 Tasks Restored',
-                message: `Successfully restored ${restoredTasks.length} task${restoredTasks.length > 1 ? 's' : ''}.`,
-              })
-
-              // Remove restored tasks from archived list
-              const restoredIds = new Set(restoredTasks.map(c => c.id))
+            const allRestored = [...restoredTasks, ...queuedTasks]
+            if (allRestored.length > 0) {
+              const offlineNote =
+                queuedTasks.length > 0
+                  ? ' (queued — will sync when back online)'
+                  : ''
+              // Remove from archived view optimistically for both online and queued
+              const restoredIds = new Set(allRestored.map(c => c.id))
               const newArchivedChores = archivedChores.filter(
                 c => !restoredIds.has(c.id),
               )
@@ -355,6 +427,13 @@ const ArchivedTasks = () => {
               )
               setArchivedChores(newArchivedChores)
               setFilteredChores(newFilteredChores)
+              if (queuedTasks.length > 0) {
+                queryClient.invalidateQueries({ queryKey: ['pendingCommands'] })
+              }
+              showSuccess({
+                title: '📤 Tasks Restored',
+                message: `Restored ${allRestored.length} task${allRestored.length > 1 ? 's' : ''}${offlineNote}.`,
+              })
             }
 
             if (failedTasks.length > 0) {

@@ -18,6 +18,7 @@ import moment from 'moment'
 
 import { useLocalization } from '../../contexts/LocalizationContext'
 import { TASK_COLOR } from '../../utils/Colors.jsx'
+import PendingBadge from '../components/PendingBadge'
 
 const getCompletedChip = historyEntry => {
   if (
@@ -100,6 +101,7 @@ const HistoryCard = ({
   index,
   onToggleActions,
   onViewNote,
+  pendingCommands,
   performers,
 }) => {
   const { fmt } = useLocalization()
@@ -335,6 +337,18 @@ const HistoryCard = ({
           </IconButton>
         )}
       </Box>
+      {pendingCommands?.length > 0 && (
+        <PendingBadge
+          commands={pendingCommands}
+          size='s'
+          sx={{
+            mr: 0.5,
+            position: 'absolute',
+            right: -3,
+            top: -3,
+          }}
+        />
+      )}
     </Box>
   )
 }

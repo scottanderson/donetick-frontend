@@ -1,6 +1,6 @@
 import { Button, Chip, Menu, MenuItem, Typography } from '@mui/joy'
 import IconButton from '@mui/joy/IconButton'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { getTextColorFromBackgroundColor } from '../../utils/Colors.jsx'
 
@@ -18,6 +18,7 @@ const IconButtonWithMenu = ({
 }) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const menuRef = useRef(null)
+  const menuOptions = Array.isArray(options) ? options : []
 
   const handleMenuOpen = event => {
     setAnchorEl(event.currentTarget)
@@ -86,7 +87,7 @@ const IconButtonWithMenu = ({
             </Typography>
           </MenuItem>
         )}
-        {options?.map(item => (
+        {menuOptions.map(item => (
           <MenuItem
             key={`${k}-${item?.id}`}
             onClick={() => {

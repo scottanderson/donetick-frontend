@@ -4,9 +4,6 @@ on:
   push:
   pull_request:
 
-env:
-  NODE_VERSION: 24
-
 jobs:
   build:
     name: 🏗 Build

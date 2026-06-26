@@ -74,7 +74,7 @@ function ConfirmationModal({ config }) {
   return (
     <ResponsiveModal
       open={config?.isOpen}
-      onClose={config?.onClose}
+      onClose={() => handleAction(false)}
       size='sm'
       unmountDelay={250}
     >
