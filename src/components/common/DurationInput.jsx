@@ -17,7 +17,7 @@ import {
  *   size     – Joy UI size ('sm' | 'md')
  *   minValue – minimum numeric value (default 1)
  */
-const DurationInput = ({ value, onChange, size = 'md', minValue = 1 }) => {
+const DurationInput = ({ minValue = 1, onChange, size = 'md', value }) => {
   const derived =
     value != null && value >= 0
       ? secondsToValueAndUnit(value)
@@ -27,7 +27,7 @@ const DurationInput = ({ value, onChange, size = 'md', minValue = 1 }) => {
 
   useEffect(() => {
     if (value != null && value >= 0) {
-      const { value: v, unit: u } = secondsToValueAndUnit(value)
+      const { unit: u, value: v } = secondsToValueAndUnit(value)
       setDisplayValue(v)
       setUnit(u)
     }

@@ -27,7 +27,7 @@ const ProfileSettings = () => {
   const { t } = useTranslation('settings')
   const queryClient = useQueryClient()
   const { data: userProfile } = useUserProfile()
-  const { showSuccess, showError } = useNotification()
+  const { showError, showSuccess } = useNotification()
   const [displayName, setDisplayName] = useState(userProfile?.displayName || '')
   const [timezone, setTimezone] = useState(
     userProfile?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,

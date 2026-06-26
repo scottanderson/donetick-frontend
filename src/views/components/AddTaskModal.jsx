@@ -52,7 +52,7 @@ const getDefaultNotification = () => {
   return defaultNotification
 }
 
-const TaskInput = ({ autoFocus, onChoreUpdate, isModalOpen, onClose }) => {
+const TaskInput = ({ autoFocus, isModalOpen, onChoreUpdate, onClose }) => {
   const { ResponsiveModal } = useResponsiveModal()
   const { data: userLabels, isLoading: userLabelsLoading } = useLabels()
   const { data: circleMembers, isLoading: isCircleMembersLoading } =

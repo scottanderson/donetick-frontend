@@ -40,7 +40,7 @@ import MultiSelectHelp from './MultiSelectHelp'
 const ArchivedTasks = () => {
   const { data: userProfile, isLoading: isUserProfileLoading } =
     useUserProfile()
-  const { showSuccess, showError } = useNotification()
+  const { showError, showSuccess } = useNotification()
   const { impersonatedUser } = useImpersonateUser()
   const unArchiveChore = useUnArchiveChore()
   const [archivedChores, setArchivedChores] = useState([])

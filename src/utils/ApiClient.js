@@ -121,7 +121,7 @@ class ApiClient {
 
   // Process queued requests after refresh attempt
   processQueue(error, token = null) {
-    this.failedQueue.forEach(({ resolve, reject }) => {
+    this.failedQueue.forEach(({ reject, resolve }) => {
       if (error) {
         reject(error)
       } else {

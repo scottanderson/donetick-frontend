@@ -107,11 +107,11 @@ const generateSchedulePreview = (metadata, formatTimeFn) => {
 }
 
 const RepeatOnSections = ({
-  frequencyType,
   frequency,
-  onFrequencyUpdate,
   frequencyMetadata,
+  frequencyType,
   onFrequencyMetadataUpdate,
+  onFrequencyUpdate,
 }) => {
   const { fmt } = useLocalization()
   // if time on frequencyMetadata is not set, try to set it to the nextDueDate if available,
@@ -525,17 +525,17 @@ const RepeatOnSections = ({
 }
 
 const RepeatSection = ({
-  frequencyType,
-  frequency,
-  onFrequencyUpdate,
-  onFrequencyTypeUpdate,
-  frequencyMetadata,
-  onFrequencyMetadataUpdate,
-  frequencyError,
-  allUserThings,
-  onTriggerUpdate,
   OnTriggerValidate,
+  allUserThings,
+  frequency,
+  frequencyError,
+  frequencyMetadata,
+  frequencyType,
   isAttemptToSave,
+  onFrequencyMetadataUpdate,
+  onFrequencyTypeUpdate,
+  onFrequencyUpdate,
+  onTriggerUpdate,
   selectedThing,
 }) => {
   const { data: userProfile } = useUserProfile()

@@ -14,15 +14,15 @@ import KeyboardShortcutHint from '../../../components/common/KeyboardShortcutHin
 
 const MultiSelectToolbar = ({
   isVisible,
-  selectedCount,
-  onSelectAll,
+  onArchive,
   onClear,
   onComplete,
-  onSkip,
-  onArchive,
   onDelete,
-  showKeyboardShortcuts,
+  onSelectAll,
+  onSkip,
   selectAllDisabled,
+  selectedCount,
+  showKeyboardShortcuts,
 }) => {
   return (
     <Box

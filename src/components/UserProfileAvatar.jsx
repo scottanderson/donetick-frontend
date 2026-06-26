@@ -42,11 +42,11 @@ const UserProfileAvatar = () => {
   const { mode, setMode } = useColorScheme()
   const { data: userProfile } = useUserProfile()
   const {
+    canImpersonate,
+    getEffectiveUser,
     isImpersonating,
     startImpersonation,
     stopImpersonation,
-    canImpersonate,
-    getEffectiveUser,
   } = useImpersonateUser()
   const { data: circleMembersData } = useCircleMembers()
   const [isModalOpen, setIsModalOpen] = useState(false)

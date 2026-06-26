@@ -31,7 +31,7 @@ import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
 import LabelModal from '../Modals/Inputs/LabelModal'
 import { useLabels } from './LabelQueries'
 
-const LabelCardContent = ({ label, currentUserId, onToggleActions }) => {
+const LabelCardContent = ({ currentUserId, label, onToggleActions }) => {
   // Check if current user owns this label
   const isOwnedByCurrentUser = label.created_by === currentUserId
 
@@ -149,7 +149,7 @@ const LabelCardContent = ({ label, currentUserId, onToggleActions }) => {
 }
 
 const LabelView = () => {
-  const { data: labels, isLabelsLoading, isError } = useLabels()
+  const { data: labels, isError, isLabelsLoading } = useLabels()
   const { data: userProfile } = useUserProfile()
 
   const [userLabels, setUserLabels] = useState([])

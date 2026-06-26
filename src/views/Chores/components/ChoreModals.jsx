@@ -6,14 +6,14 @@ import WriteNFCModal from '../../Modals/Inputs/WriteNFCModal'
 
 const ChoreModals = ({
   activeModal,
-  modalChore,
   membersData,
-  onChangeDueDate,
-  onCompleteWithPastDate,
+  modalChore,
   onAssigneeChange,
-  onCompleteWithNote,
-  onNudge,
+  onChangeDueDate,
   onClose,
+  onCompleteWithNote,
+  onCompleteWithPastDate,
+  onNudge,
 }) => {
   return (
     <>

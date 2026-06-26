@@ -46,10 +46,10 @@ const ThingsHistory = () => {
   const {
     data,
     error,
-    isLoading,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
   } = useThingHistory(id)
 
   // Flatten all pages of history data

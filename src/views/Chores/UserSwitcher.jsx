@@ -7,11 +7,11 @@ import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
 import UserModal from '../Modals/Inputs/UserModal'
 const UserSwitcher = () => {
   const {
+    canImpersonate,
     impersonatedUser,
     isImpersonating,
     startImpersonation,
     stopImpersonation,
-    canImpersonate,
   } = useImpersonateUser()
   const { data: userProfile } = useUserProfile()
   const [isModalOpen, setIsModalOpen] = useState(false)

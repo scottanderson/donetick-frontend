@@ -58,8 +58,8 @@ export const INSIGHT_FILTER_DEFS = {
 }
 
 const SmartInsightsCard = ({
-  chores,
   applyTempFilter,
+  chores,
   clearTempFilter,
   tempFilter,
 }) => {

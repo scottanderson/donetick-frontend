@@ -14,7 +14,7 @@ const isTokenValid = () => {
 }
 
 export const useResource = () => {
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, error, isLoading, refetch } = useQuery({
     queryKey: ['resource'],
     queryFn: async () => {
       const response = await GetResource()

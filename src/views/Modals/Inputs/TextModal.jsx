@@ -4,13 +4,13 @@ import { useState } from 'react'
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 
 function TextModal({
+  cancelText,
+  current,
   isOpen,
+  okText,
   onClose,
   onSave,
-  current,
   title,
-  okText,
-  cancelText,
 }) {
   const { ResponsiveModal } = useResponsiveModal()
 

@@ -22,8 +22,8 @@ import ProjectModal from '../Modals/Inputs/ProjectModal'
 import { useProjects } from '../Projects/ProjectQueries'
 
 const ProjectSelector = ({
-  selectedProject = 'Default Project',
   onProjectSelect,
+  selectedProject = 'Default Project',
   showKeyboardShortcuts = false,
 }) => {
   const { data: projects = [], isLoading } = useProjects()

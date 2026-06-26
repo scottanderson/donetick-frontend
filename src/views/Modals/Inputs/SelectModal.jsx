@@ -4,13 +4,13 @@ import React from 'react'
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 
 function SelectModal({
+  displayKey,
   isOpen,
   onClose,
   onSave,
   options,
-  title,
-  displayKey,
   placeholder,
+  title,
 }) {
   const { ResponsiveModal } = useResponsiveModal()
 

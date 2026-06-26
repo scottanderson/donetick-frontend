@@ -9,6 +9,7 @@ import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
+import sortDestructureKeys from 'eslint-plugin-sort-destructure-keys'
 import tailwind from 'eslint-plugin-tailwindcss'
 import globals from 'globals'
 
@@ -37,6 +38,14 @@ export default [
       'simple-import-sort/imports': 'error',
     },
   },
+  {
+    plugins: {
+      'sort-destructure-keys': sortDestructureKeys,
+    },
+    rules: {
+      'sort-destructure-keys/sort-destructure-keys': 'error',
+    },
+  },
   ...tailwind.configs['flat/recommended'],
   ...queryPlugin.configs['flat/recommended'],
   eslintConfigPrettier, // Disable any rules that conflict with prettier
@@ -56,11 +65,6 @@ export default [
     rules: {
       eqeqeq: 'error',
       indent: ['error', 2],
-      'sort-keys': [
-        'error',
-        'asc',
-        { caseSensitive: false, minKeys: 2, natural: false },
-      ],
       'space-infix-ops': ['error', { int32Hint: false }],
     },
   },
@@ -108,11 +112,6 @@ export default [
       'no-loss-of-precision': 'error',
       'no-undef': 'warn',
       'no-unused-vars': 'off', // @typescript-eslint/no-unused-vars
-      'sort-keys': [
-        'warn',
-        'asc',
-        { caseSensitive: false, minKeys: 2, natural: false },
-      ],
       'space-infix-ops': 'off', // @stylistic/space-infix-ops
     },
   },

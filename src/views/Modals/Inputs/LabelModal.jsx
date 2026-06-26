@@ -16,7 +16,7 @@ import LABEL_COLORS from '../../../utils/Colors.jsx'
 import { CreateLabel, UpdateLabel } from '../../../utils/Fetcher'
 import { useLabels } from '../../Labels/LabelQueries'
 
-function LabelModal({ isOpen, onClose, label }) {
+function LabelModal({ isOpen, label, onClose }) {
   const { ResponsiveModal } = useResponsiveModal()
 
   const [labelName, setLabelName] = useState('')

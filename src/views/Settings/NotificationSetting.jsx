@@ -155,7 +155,7 @@ const NotificationSetting = () => {
     }
 
     const handleDeviceRegistrationFailed = event => {
-      const { status, error } = event.detail || {}
+      const { error, status } = event.detail || {}
 
       if (status === 409) {
         showWarning({

@@ -13,10 +13,10 @@ import { getTextColorFromBackgroundColor } from '../../../utils/Colors'
 import PROJECT_ICONS from '../../../utils/ProjectIcons'
 
 const IconPickerModal = ({
+  currentIcon,
   isOpen,
   onClose,
   onSelect,
-  currentIcon,
   projectColor,
 }) => {
   const { ResponsiveModal } = useResponsiveModal()

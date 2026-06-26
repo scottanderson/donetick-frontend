@@ -25,18 +25,18 @@ import CompactChoreCard from './CompactChoreCard'
 
 const ChoreListView = ({
   chores,
-  viewMode,
-  membersData,
-  userLabels,
-  handleLabelFiltering,
   handleChoreAction,
+  handleLabelFiltering,
   isMultiSelectMode,
-  selectedChores,
-  toggleChoreSelection,
-  userProfile,
   isOfficialInstance,
-  toggleMultiSelectMode,
+  membersData,
+  selectedChores,
   showActions = true,
+  toggleChoreSelection,
+  toggleMultiSelectMode,
+  userLabels,
+  userProfile,
+  viewMode,
 }) => {
   const navigate = useNavigate()
   const renderChoreCard = (chore, key) => {

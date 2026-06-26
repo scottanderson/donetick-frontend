@@ -57,7 +57,7 @@ export const useUpdateTimeSession = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ choreId, sessionId, sessionData }) =>
+    mutationFn: ({ choreId, sessionData, sessionId }) =>
       UpdateTimeSession(choreId, sessionId, sessionData),
     onSuccess: (data, { choreId }) => {
       queryClient.invalidateQueries(['choreTimer', choreId])

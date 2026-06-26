@@ -84,7 +84,7 @@ const MyChores = () => {
   const { data: userProfile, isLoading: isUserProfileLoading } =
     useUserProfile()
   const isLargeScreen = useMediaQuery(theme => theme.breakpoints.up('md'))
-  const { showSuccess, showError, showWarning, showUndo } = useNotification()
+  const { showError, showSuccess, showUndo, showWarning } = useNotification()
   const queryClient = useQueryClient()
   const { impersonatedUser } = useImpersonateUser()
   const Navigate = useNavigate()
@@ -93,15 +93,15 @@ const MyChores = () => {
   const { data: projects = [], isLoading: projectsLoading } = useProjects()
   const {
     data: choresData,
-    isLoading: choresLoading,
-    isError: choresError,
     error: choresErrorDetails,
+    isError: choresError,
+    isLoading: choresLoading,
     refetch: refetchChores,
   } = useChores(false)
   const {
     data: membersData,
-    isLoading: membersLoading,
     isError: membersError,
+    isLoading: membersLoading,
   } = useCircleMembers()
 
   const [chores, setChores] = useState([])
@@ -130,20 +130,20 @@ const MyChores = () => {
   const menuRef = useRef(null)
   const [confirmModelConfig, setConfirmModelConfig] = useState({})
 
-  const { selectedProject, projectsWithDefault, setSelectedProjectWithCache } =
+  const { projectsWithDefault, selectedProject, setSelectedProjectWithCache } =
     useProjectFilter(projects)
 
   const {
-    searchTerm,
-    searchFilter,
-    selectedChoreFilter,
-    projectFilteredChores,
-    searchFilteredChores,
-    nonProjectFilteredChores,
-    setSearchTerm,
-    setSearchFilter,
-    setSelectedChoreFilterWithCache,
     clearFilters,
+    nonProjectFilteredChores,
+    projectFilteredChores,
+    searchFilter,
+    searchFilteredChores,
+    searchTerm,
+    selectedChoreFilter,
+    setSearchFilter,
+    setSearchTerm,
+    setSelectedChoreFilterWithCache,
   } = useChoreFilters({
     chores,
     selectedProject,
@@ -152,36 +152,36 @@ const MyChores = () => {
   })
 
   const {
-    isMultiSelectMode,
-    selectedChores,
-    toggleMultiSelectMode,
-    toggleChoreSelection,
-    selectAllVisibleChores,
     clearSelection,
     getSelectedChoresData,
+    isMultiSelectMode,
+    selectAllVisibleChores,
+    selectedChores,
+    toggleChoreSelection,
+    toggleMultiSelectMode,
   } = useMultiSelect()
 
-  const { activeModal, modalChore, modalData, openModal, closeModal } =
+  const { activeModal, closeModal, modalChore, modalData, openModal } =
     useChoreModals()
 
   const {
-    savedFilters,
     activeFilter,
     activeFilterId,
+    applyCustomFilter,
+    applyTempFilter,
+    clearActiveFilter,
+    clearTempFilter,
+    createFilterFromCurrentState,
+    deleteFilter,
+    filteredChores: customFilteredChores,
+    hasFilterApplied,
+    hasProjectConditions,
+    pinFilter,
+    saveFilter,
+    savedFilters,
     tempFilter,
     tempFilterMeta,
-    filteredChores: customFilteredChores,
-    applyCustomFilter,
-    clearActiveFilter,
-    applyTempFilter,
-    clearTempFilter,
-    saveFilter,
     updateFilter,
-    deleteFilter,
-    pinFilter,
-    createFilterFromCurrentState,
-    hasProjectConditions,
-    hasFilterApplied,
   } = useCustomFilters(
     nonProjectFilteredChores,
     membersData?.res,
@@ -480,16 +480,16 @@ const MyChores = () => {
   }, [tempFilterMeta?.id, searchParams])
 
   const {
-    handleChoreAction,
-    handleChangeDueDate,
-    handleCompleteWithPastDate,
     handleAssigneeChange,
-    handleCompleteWithNote,
-    handleNudge,
-    handleBulkComplete,
     handleBulkArchive,
+    handleBulkComplete,
     handleBulkDelete,
     handleBulkSkip,
+    handleChangeDueDate,
+    handleChoreAction,
+    handleCompleteWithNote,
+    handleCompleteWithPastDate,
+    handleNudge,
   } = useChoreActions({
     chores,
     filteredChores,

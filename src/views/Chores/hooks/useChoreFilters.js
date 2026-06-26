@@ -5,8 +5,8 @@ import { ChoreFilters, filterByProject } from '../../../utils/Chores'
 
 export const useChoreFilters = ({
   chores,
-  selectedProject,
   impersonatedUser,
+  selectedProject,
   userProfile,
 }) => {
   const [searchTerm, setSearchTerm] = useState('')

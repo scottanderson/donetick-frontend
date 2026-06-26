@@ -4,8 +4,8 @@ import { Box, Stack, Typography } from '@mui/joy'
 import { getIconComponent } from '../../../utils/ProjectIcons.jsx'
 
 const MyChoreHeader = ({
-  activeFilterId,
   activeFilter,
+  activeFilterId,
   selectedProject,
   tempFilter,
   tempFilterMeta,

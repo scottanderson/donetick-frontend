@@ -99,7 +99,7 @@ class LocalStore {
       const cachedItem = localStorage.getItem(key)
       if (!cachedItem) return null
 
-      const { value, timestamp } = JSON.parse(cachedItem)
+      const { timestamp, value } = JSON.parse(cachedItem)
       if (ttl > 0 && now - timestamp > ttl) {
         localStorage.removeItem(key) // Remove expired item
         return null
@@ -117,7 +117,7 @@ class LocalStore {
 
     if (result.values.length === 0) return null
 
-    const { value, timestamp } = result.values[0]
+    const { timestamp, value } = result.values[0]
     if (ttl > 0 && now - timestamp > ttl) {
       // Remove expired item
       await db.run(`DELETE FROM ${CACHE_TABLE} WHERE key = ?;`, [key])

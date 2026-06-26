@@ -123,7 +123,7 @@ const MultiSelectHelp = ({ isVisible = true }) => {
   )
 }
 
-const ShortcutItem = ({ keys, description }) => (
+const ShortcutItem = ({ description, keys }) => (
   <Box
     sx={{
       display: 'flex',

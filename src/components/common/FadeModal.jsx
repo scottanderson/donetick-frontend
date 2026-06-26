@@ -7,14 +7,14 @@ import { Z_INDEX } from '../../constants/zIndex'
  * Can be used as a drop-in replacement for Joy UI's Modal component
  */
 const FadeModal = ({
-  open,
-  onClose,
-  children,
-  size = 'md',
-  fullWidth = true,
   backdropBlur = true,
-  title,
+  children,
   footer,
+  fullWidth = true,
+  onClose,
+  open,
+  size = 'md',
+  title,
   ...props
 }) => {
   // Filter out props that shouldn't be passed to Modal

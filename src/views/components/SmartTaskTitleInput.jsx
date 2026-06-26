@@ -47,13 +47,13 @@ const renderHighlightedText = (text, cursorPosition) => {
 }
 
 const SmartTaskTitleInput = ({
-  value,
-  placeholder,
   autoFocus,
-  onChange,
-  suggestions,
-  onEnterPressed,
   customRenderer,
+  onChange,
+  onEnterPressed,
+  placeholder,
+  suggestions,
+  value,
 }) => {
   const { mode, setMode } = useColorScheme()
   const titleInputRef = useRef(null)

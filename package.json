@@ -118,6 +118,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "eslint-plugin-simple-import-sort": "^13.0.0",
+    "eslint-plugin-sort-destructure-keys": "^3.0.0",
     "eslint-plugin-tailwindcss": "^3.18.3",
     "husky": "^8.0.3",
     "lint-staged": "^16.4.0",

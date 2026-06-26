@@ -18,12 +18,12 @@ import SSEConnectionStatus from './SSEConnectionStatus'
 const SSESettings = () => {
   const { data: userProfile } = useUserProfile()
   const {
-    isConnected,
-    isConnecting,
     error,
     getConnectionStatus,
-    toggleSSEEnabled,
+    isConnected,
+    isConnecting,
     isSSEEnabled,
+    toggleSSEEnabled,
   } = useSSEContext()
 
   const handleToggle = () => {

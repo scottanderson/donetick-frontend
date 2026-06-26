@@ -143,7 +143,7 @@ export const useUpdateFilter = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ filterId, filterData }) => {
+    mutationFn: async ({ filterData, filterId }) => {
       try {
         const response = await UpdateFilter(filterId, filterData)
         if (response.ok) {

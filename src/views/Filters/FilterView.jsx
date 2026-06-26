@@ -48,9 +48,9 @@ import {
 
 const FilterCardContent = ({
   filter,
-  taskCount = 0,
-  overdueCount = 0,
   onToggleActions,
+  overdueCount = 0,
+  taskCount = 0,
 }) => {
   // Get condition labels for display
   const getConditionSummary = () => {

@@ -11,12 +11,12 @@ import { getRefreshTokenExpiry, isNative } from '../../utils/TokenStorage'
 
 const DeveloperSettings = () => {
   const {
-    isConnected,
-    isConnecting,
-    lastEvent,
     error: sseError,
     getConnectionStatus,
     getDebugInfo,
+    isConnected,
+    isConnecting,
+    lastEvent,
   } = useSSEContext()
 
   const [accessTokenExpiry, setAccessTokenExpiry] = useState(null)

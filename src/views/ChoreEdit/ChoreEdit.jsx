@@ -128,7 +128,7 @@ const ChoreEdit = () => {
   const { data: userLabelsRaw, isLoading: isUserLabelsLoading } = useLabels()
   const { data: projects = [], isLoading: isProjectsLoading } = useProjects()
 
-  const { selectedProject, projectsWithDefault, setSelectedProjectWithCache } =
+  const { projectsWithDefault, selectedProject, setSelectedProjectWithCache } =
     useProjectFilter(projects)
 
   const [projectId, setProjectId] = useState(
@@ -147,7 +147,7 @@ const ChoreEdit = () => {
   } = useChore(choreId)
   const { data: membersData, isLoading: isMemberDataLoading } =
     useCircleMembers()
-  const { showSuccess, showError } = useNotification()
+  const { showError, showSuccess } = useNotification()
 
   const [userLabels, setUserLabels] = useState([])
 

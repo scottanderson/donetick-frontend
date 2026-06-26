@@ -21,15 +21,15 @@ import Priorities from '../../../utils/Priorities'
 import { useFilters } from '../../Filters/FilterQueries'
 
 const AdvancedFilterBuilder = ({
+  allChores = [],
+  editingFilter = null,
   isOpen,
+  labels = [],
+  members = [],
   onClose,
   onSave,
-  members = [],
-  labels = [],
   projects = [],
-  allChores = [],
   userProfile = null,
-  editingFilter = null,
 }) => {
   const { ResponsiveModal } = useResponsiveModal()
   const listContainerRef = useRef(null)

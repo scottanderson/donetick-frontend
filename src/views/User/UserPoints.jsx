@@ -53,14 +53,14 @@ const UserPoints = () => {
 
   const {
     data: circleMembersData,
-    isLoading: isCircleMembersLoading,
     handleRefetch: handleCircleMembersRefetch,
+    isLoading: isCircleMembersLoading,
   } = useCircleMembers()
 
   const {
     data: choresHistoryData,
-    isLoading: isChoresHistoryLoading,
     handleLimitChange: handleChoresHistoryLimitChange,
+    isLoading: isChoresHistoryLoading,
   } = useChoresHistory(7, true)
 
   const { data: userProfile } = useUserProfile()
@@ -946,7 +946,7 @@ const UserPoints = () => {
             isOpen: isRedeemModalOpen,
             available: availablePoints,
             user: user,
-            onSave: ({ userId, points }) => {
+            onSave: ({ points, userId }) => {
               RedeemPoints(userId, points, userProfile.circleID)
                 .then(() => {
                   setIsRedeemModalOpen(false)

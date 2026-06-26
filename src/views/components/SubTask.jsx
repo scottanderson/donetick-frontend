@@ -39,16 +39,16 @@ import { useUserProfile } from '../../queries/UserQueries'
 import { CompleteSubTask } from '../../utils/Fetcher'
 
 function SortableItem({
-  task,
-  index,
-  handleToggle,
-  handleDelete,
-  handleAddSubtask,
   allTasks,
-  setTasks,
-  level = 0,
   editMode,
+  handleAddSubtask,
+  handleDelete,
+  handleToggle,
+  index,
+  level = 0,
   performers = [],
+  setTasks,
+  task,
 }) {
   const { fmt } = useLocalization()
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -307,12 +307,12 @@ function SortableItem({
 }
 
 const SubTasks = ({
-  editMode = true,
   choreId = 0,
-  tasks = [],
-  setTasks,
+  editMode = true,
   performers,
+  setTasks,
   shouldFocus = false,
+  tasks = [],
 }) => {
   const [newTask, setNewTask] = useState('')
   const { data: userProfile } = useUserProfile()

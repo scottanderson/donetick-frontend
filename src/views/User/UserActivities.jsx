@@ -58,13 +58,13 @@ const groupByDate = history => {
 }
 
 const ChoreHistoryItem = ({
-  time,
   name,
-  points,
-  status,
-  performer,
   notes,
   onViewNote,
+  performer,
+  points,
+  status,
+  time,
 }) => {
   const getStatusIcon = status => {
     switch (status) {
@@ -422,8 +422,8 @@ const UserActivites = () => {
   const { data: choresData, isLoading: isChoresLoading } = useChores(true)
   const {
     data: choresHistory,
-    isChoresHistoryLoading,
     handleLimitChange: refetchHistory,
+    isChoresHistoryLoading,
   } = useChoresHistory(tabValue ? tabValue : 30, true)
   const { data: circleMembersData } = useCircleMembers()
   const [selectedUser, setSelectedUser] = React.useState('all')

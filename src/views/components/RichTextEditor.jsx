@@ -20,13 +20,13 @@ import { isPlusAccount, resolvePhotoURL } from '../../utils/Helpers'
 const RichTextEditor = forwardRef(
   (
     {
-      value = '',
-      onChange,
-      isEditable = true,
-      placeholder = 'Enter description...',
-      variant = 'outlined',
       entityId,
       entityType,
+      isEditable = true,
+      onChange,
+      placeholder = 'Enter description...',
+      value = '',
+      variant = 'outlined',
     },
     ref,
   ) => {

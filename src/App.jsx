@@ -35,8 +35,8 @@ const AppContent = () => {
   useStatusBar()
 
   const {
-    offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
+    offlineReady: [offlineReady, setOfflineReady],
     updateServiceWorker,
   } = useRegisterSW({
     onRegistered(r) {

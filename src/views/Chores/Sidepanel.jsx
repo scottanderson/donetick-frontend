@@ -12,9 +12,9 @@ import TasksByAssigneeCard from './TasksByAssigneeCard'
 import UserSwitcher from './UserSwitcher'
 
 const Sidepanel = ({
-  chores,
   allChores,
   applyTempFilter,
+  chores,
   clearTempFilter,
   tempFilter,
 }) => {
@@ -23,8 +23,8 @@ const Sidepanel = ({
   const [sidepanelConfig, setSidepanelConfig] = useState([])
   const {
     data: choresHistory,
-    isChoresHistoryLoading,
     handleLimitChange: refetchHistory,
+    isChoresHistoryLoading,
   } = useChoresHistory(7, true)
 
   useEffect(() => {

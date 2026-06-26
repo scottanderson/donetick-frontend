@@ -35,16 +35,16 @@ import Priorities from '../../utils/Priorities'
 import ChoreActionMenu from '../components/ChoreActionMenu'
 const ChoreCard = ({
   chore,
-  performers,
-  sx,
-  viewOnly,
-  showActions = true,
-  onChipClick,
-  onAction,
-  // Multi-select props
   isMultiSelectMode = false,
   isSelected = false,
+  onAction,
+  onChipClick,
   onSelectionToggle,
+  performers,
+  // Multi-select props
+  showActions = true,
+  sx,
+  viewOnly,
 }) => {
   const { data: userProfile } = useUserProfile()
   const { timeFormat } = useLocalization()

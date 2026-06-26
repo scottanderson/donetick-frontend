@@ -50,7 +50,7 @@ const ChoreHistory = () => {
   const { fmt } = useLocalization()
   const [showMoreInfoId, setShowMoreInfoId] = useState(null)
   const [noteViewerConfig, setNoteViewerConfig] = useState({ isOpen: false })
-  const { showSuccess, showError } = useNotification()
+  const { showError, showSuccess } = useNotification()
   // React Query hooks
   const { data: choreHistoryData, isLoading } = useChoreHistory(choreId)
   const { data: circleMembersData } = useCircleMembers()

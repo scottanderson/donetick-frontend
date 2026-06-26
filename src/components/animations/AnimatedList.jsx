@@ -10,13 +10,13 @@ import {
 } from '../../hooks/useAnimations'
 
 const AnimatedList = ({
+  animationType = 'stagger',
   children,
-  staggerDelay = 50,
-  animationType = 'stagger', // 'stagger', 'fade', 'slide'
-  direction = 'up', // 'up', 'down', 'left', 'right'
-  renderItem,
+  direction = 'up', // 'stagger', 'fade', 'slide'
+  items, // 'up', 'down', 'left', 'right'
   keyExtractor,
-  items,
+  renderItem,
+  staggerDelay = 50,
   ...boxProps
 }) => {
   // Handle both children and items patterns

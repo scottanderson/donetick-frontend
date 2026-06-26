@@ -96,11 +96,11 @@ const formatTime = seconds => {
  */
 const HistoryCard = ({
   allHistory,
-  performers,
   historyEntry,
   index,
   onToggleActions,
   onViewNote,
+  performers,
 }) => {
   const { fmt } = useLocalization()
   const performer = performers.find(p => p.userId === historyEntry.completedBy)

@@ -28,17 +28,17 @@ import ChoreActionMenu from '../components/ChoreActionMenu'
 
 const CompactChoreCard = ({
   chore,
-  performers,
-  sx,
-  viewOnly,
-  showActions = true,
-  onChipClick,
-  onAction,
-  // Multi-select props
   isMultiSelectMode = false,
   isSelected = false,
+  onAction,
+  onChipClick,
   onSelectionToggle,
   onlyClickable = false,
+  // Multi-select props
+  performers,
+  showActions = true,
+  sx,
+  viewOnly,
 }) => {
   const navigate = useNavigate()
 

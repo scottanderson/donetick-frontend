@@ -4,11 +4,11 @@ import { Box, Chip, Tooltip, Typography } from '@mui/joy'
 import { useSSEContext } from '../hooks/useSSEContext'
 
 const SSEConnectionStatus = ({
-  variant = 'minimal',
   showError = false,
   sx = {},
+  variant = 'minimal',
 }) => {
-  const { isConnected, isConnecting, error, getConnectionStatus } =
+  const { error, getConnectionStatus, isConnected, isConnecting } =
     useSSEContext()
 
   const getStatusColor = () => {

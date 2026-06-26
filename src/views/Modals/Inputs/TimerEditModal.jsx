@@ -23,7 +23,7 @@ import {
 import { useNotification } from '../../../service/NotificationProvider'
 import ConfirmationModal from './ConfirmationModal'
 
-const TimerEditModal = ({ isOpen, onClose, choreId, onTimerUpdate }) => {
+const TimerEditModal = ({ choreId, isOpen, onClose, onTimerUpdate }) => {
   const { ResponsiveModal } = useResponsiveModal()
   const { fmt } = useLocalization()
 

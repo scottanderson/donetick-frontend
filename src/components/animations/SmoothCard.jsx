@@ -66,9 +66,9 @@ const AnimatedCard = styled(Card)(({ theme }) => ({
 }))
 
 const SmoothCard = ({
+  animationDisabled = false,
   children,
   onClick,
-  animationDisabled = false,
   ...props
 }) => {
   if (animationDisabled) {

@@ -620,7 +620,7 @@ const LoginView = () => {
                     discoveryDocs='claims_supported'
                     access_type='online'
                     isOnlyGetToken={true}
-                    onResolve={({ provider, data }) => {
+                    onResolve={({ data, provider }) => {
                       loggedWithProvider(provider, data)
                     }}
                     onReject={() => {

@@ -86,7 +86,7 @@ const ChoreView = () => {
   const { choreId } = useParams()
   const [note, setNote] = useState(null)
   const queryClient = useQueryClient()
-  const { showSuccess, showError, showUndo } = useNotification()
+  const { showError, showSuccess, showUndo } = useNotification()
 
   const [searchParams] = useSearchParams()
 

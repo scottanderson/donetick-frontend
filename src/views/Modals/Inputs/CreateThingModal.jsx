@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react'
 
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 
-function CreateThingModal({ isOpen, onClose, onSave, currentThing }) {
+function CreateThingModal({ currentThing, isOpen, onClose, onSave }) {
   const { ResponsiveModal } = useResponsiveModal()
 
   const [name, setName] = useState(currentThing?.name || '')

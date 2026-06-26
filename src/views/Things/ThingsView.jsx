@@ -43,7 +43,7 @@ import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
 import CreateThingModal from '../Modals/Inputs/CreateThingModal'
 import EditThingStateModal from '../Modals/Inputs/EditThingState'
 
-const ThingCardContent = ({ thing, onCardClick, onToggleActions }) => {
+const ThingCardContent = ({ onCardClick, onToggleActions, thing }) => {
   const getThingIcon = type => {
     if (type === 'text') {
       return <Flip />

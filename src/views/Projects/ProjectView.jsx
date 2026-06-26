@@ -35,11 +35,11 @@ import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
 import ProjectModal from '../Modals/Inputs/ProjectModal'
 import { useProjects } from './ProjectQueries'
 const ProjectCardContent = ({
-  project,
   currentUserId,
-  taskCounts = {},
   onCardClick,
   onToggleActions,
+  project,
+  taskCounts = {},
 }) => {
   // Check if current user owns this project
   const isOwnedByCurrentUser = project.created_by === currentUserId
@@ -219,7 +219,7 @@ const ProjectCardContent = ({
 }
 
 const ProjectView = () => {
-  const { data: projects, isProjectsLoading, isError } = useProjects()
+  const { data: projects, isError, isProjectsLoading } = useProjects()
   const { data: userProfile } = useUserProfile()
   const { data: chores = { res: [] } } = useChores(false) // false to exclude archived
   const { data: projectsData = [], isLoading: projectsLoading } = useProjects()

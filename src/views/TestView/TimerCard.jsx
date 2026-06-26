@@ -5,20 +5,20 @@ import { useEffect, useMemo } from 'react'
 import useTimer from '../../hooks/useTimer'
 
 const TimerCard = ({
-  variant = 'standalone', // 'standalone' | 'infoCard' | 'floating'
+  onTimeUpdate = () => {}, // 'standalone' | 'infoCard' | 'floating'
   sx = {},
-  onTimeUpdate = () => {},
   title = 'Timer',
+  variant = 'standalone',
 }) => {
   // Use the custom timer hook
   const {
-    time,
-    isRunning,
     isPaused,
-    startTimer,
+    isRunning,
     pauseTimer,
     resumeTimer,
+    startTimer,
     stopTimer,
+    time,
   } = useTimer(onTimeUpdate)
 
   // Memoize formatted time for better performance
