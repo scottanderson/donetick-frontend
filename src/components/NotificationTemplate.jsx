@@ -513,6 +513,7 @@ const NotificationTemplate = ({
                   '--Badge-fontSize': '0.7rem',
                   '--Badge-paddingX': '5px',
                   top: 10,
+                  left: 10,
                   '& .MuiBadge-badge': {
                     background: colors.bgColor,
                     color: 'white',

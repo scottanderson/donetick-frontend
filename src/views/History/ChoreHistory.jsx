@@ -9,11 +9,21 @@ import {
 } from '@meauxt/react-swipeable-list'
 import {
   Analytics,
+  CalendarMonth,
+  Check,
   Checklist,
   EventBusy,
+  EventNote,
+  FilterList,
   Group,
   History,
+  HourglassEmpty,
+  Person,
+  Redo,
+  RunningWithErrors,
+  Schedule,
   Star,
+  ThumbDown,
   Timelapse,
   TrendingUp,
 } from '@mui/icons-material'
@@ -24,8 +34,10 @@ import moment from 'moment'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
+import FilterBar from '../../components/common/FilterBar'
 import { useLocalization } from '../../contexts/LocalizationContext'
 import useConfirmationModal from '../../hooks/useConfirmationModal'
+import { useFilter } from '../../hooks/useFilter'
 import { usePendingCommands } from '../../hooks/usePendingCommands'
 import {
   useChoreHistory,
@@ -37,6 +49,7 @@ import { useNotification } from '../../service/NotificationProvider'
 import { ChoreHistoryStatus } from '../../utils/Chores'
 import LoadingComponent from '../components/Loading'
 import EditHistoryModal from '../Modals/EditHistoryModal'
+import HistoryDetailModal from '../Modals/HistoryDetailModal'
 import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
 import NoteViewerModal from '../Modals/Inputs/NoteViewerModal'
 import HistoryCard from './HistoryCard'
@@ -51,7 +64,8 @@ const ChoreHistory = () => {
   const { fmt } = useLocalization()
   const [showMoreInfoId, setShowMoreInfoId] = useState(null)
   const [noteViewerConfig, setNoteViewerConfig] = useState({ isOpen: false })
-  const { showSuccess } = useNotification()
+  const [detailModalConfig, setDetailModalConfig] = useState({ isOpen: false })
+  const { showError, showSuccess } = useNotification()
   // React Query hooks
   const { data: choreHistoryData, isLoading } = useChoreHistory(choreId)
   const { data: circleMembersData } = useCircleMembers()
@@ -78,6 +92,96 @@ const ChoreHistory = () => {
       return acc
     }, {})
   }, [pendingCmds])
+
+  const filterDefs = useMemo(
+    () => [
+      {
+        id: 'status',
+        label: 'Status',
+        type: 'multi-select',
+        icon: <FilterList />,
+        options: [
+          {
+            value: ChoreHistoryStatus.COMPLETED,
+            label: 'Completed',
+            color: 'success',
+            icon: <Check sx={{ fontSize: 14 }} />,
+          },
+          {
+            value: ChoreHistoryStatus.SKIPPED,
+            label: 'Skipped',
+            color: 'warning',
+            icon: <Redo sx={{ fontSize: 14 }} />,
+          },
+          {
+            value: ChoreHistoryStatus.PENDING_APPROVAL,
+            label: 'Pending',
+            color: 'neutral',
+            icon: <HourglassEmpty sx={{ fontSize: 14 }} />,
+          },
+          {
+            value: ChoreHistoryStatus.REJECTED,
+            label: 'Rejected',
+            color: 'danger',
+            icon: <ThumbDown sx={{ fontSize: 14 }} />,
+          },
+          {
+            value: 5,
+            label: 'Missed',
+            color: 'danger',
+            icon: <RunningWithErrors sx={{ fontSize: 14 }} />,
+          },
+          {
+            value: 6,
+            label: 'Rescheduled',
+            color: 'warning',
+            icon: <Schedule sx={{ fontSize: 14 }} />,
+          },
+        ],
+        filterFn: (item, values) => values.includes(item.status),
+      },
+      {
+        id: 'hasNotes',
+        label: 'Has Notes',
+        type: 'boolean',
+        icon: <EventNote />,
+        filterFn: item => !!item.notes,
+      },
+      {
+        id: 'completedBy',
+        label: 'Completed By',
+        type: 'multi-select',
+        icon: <Person />,
+        options: performers.map(p => ({
+          value: p.userId,
+          label: p.displayName,
+          avatar: p.image,
+        })),
+        filterFn: (item, values) => values.includes(item.completedBy),
+      },
+      {
+        id: 'dateRange',
+        label: 'Completed At',
+        type: 'date-range',
+        icon: <CalendarMonth />,
+        filterFn: (item, value) => {
+          const performed = new Date(item.performedAt || item.updatedAt)
+          if (value.from && performed < new Date(value.from)) return false
+          if (value.to && performed > new Date(value.to)) return false
+          return true
+        },
+      },
+    ],
+    [performers],
+  )
+
+  const {
+    activeFilterCount,
+    activeFilters,
+    clearAll,
+    filteredData: filteredHistory,
+    setFilter,
+  } = useFilter(choreHistory, filterDefs)
 
   const handleDelete = historyEntry => {
     showConfirmation(
@@ -226,9 +330,10 @@ const ChoreHistory = () => {
   }
 
   return (
-    <Container maxWidth='md'>
+    <Container maxWidth='md' sx={{ px: 0 }}>
       {/* Enhanced Header Section */}
-      <Box sx={{ mb: 4 }}>
+      <Box sx={{ gap: 2, p: 2 }}>
+        {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2, p: 2 }}> */}
         {/* Statistics Cards Grid - Compact Design */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
           <History sx={{ fontSize: '1.5rem' }} />
@@ -306,7 +411,8 @@ const ChoreHistory = () => {
       </Box>
 
       {/* History Section Header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2 }}>
         <Analytics sx={{ fontSize: '1.5rem' }} />
         <Typography
           level='title-md'
@@ -315,100 +421,147 @@ const ChoreHistory = () => {
           Task Activity
         </Typography>
       </Box>
-      <Sheet
-        variant='plain'
-        sx={{ borderRadius: 'sm', boxShadow: 'md', overflow: 'hidden' }}
-      >
-        {/* Chore History List (Updated Style) */}
 
-        <SwipeableList type={ListType.IOS} fullSwipe={false}>
-          {choreHistory.map((historyEntry, index) => (
-            <SwipeableListItem
-              key={historyEntry.id || index}
-              swipeActionOpen={
-                showMoreInfoId === (historyEntry.id || index)
-                  ? 'trailing'
-                  : null
-              }
-              trailingActions={
-                <TrailingActions>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      boxShadow: 'inset 2px 0 4px rgba(0,0,0,0.06)',
-                      zIndex: 0,
-                    }}
-                  >
-                    <SwipeAction onClick={() => handleEdit(historyEntry)}>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          bgcolor: 'neutral.softBg',
-                          color: 'neutral.700',
-                          px: 3,
-                          height: '100%',
-                          width: '100%',
-                        }}
-                      >
-                        <EditIcon sx={{ fontSize: 20 }} />
-                        <Typography level='body-xs' sx={{ mt: 0.5 }}>
-                          Edit
-                        </Typography>
-                      </Box>
-                    </SwipeAction>
-                    <SwipeAction onClick={() => handleDelete(historyEntry)}>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          bgcolor: 'danger.softBg',
-                          color: 'danger.700',
-                          px: 3,
-                          height: '100%',
-                        }}
-                      >
-                        <DeleteIcon sx={{ fontSize: 20 }} />
-                        <Typography level='body-xs' sx={{ mt: 0.5 }}>
-                          Delete
-                        </Typography>
-                      </Box>
-                    </SwipeAction>
-                  </Box>
-                </TrailingActions>
-              }
-            >
-              <HistoryCard
-                historyEntry={historyEntry}
-                performers={performers}
-                allHistory={choreHistory}
-                index={index}
-                pendingCommands={pendingByHistoryId[historyEntry.id] || []}
-                onViewNote={notes => {
-                  setNoteViewerConfig({
-                    isOpen: true,
-                    title: `Updated at ${fmt.dateTime(historyEntry.updatedAt)}`,
-                    content: notes,
-                    onClose: () => setNoteViewerConfig({ isOpen: false }),
-                  })
-                }}
-                onToggleActions={() => {
-                  const id = historyEntry.id || index
-                  if (showMoreInfoId === id) {
-                    setShowMoreInfoId(null)
-                  } else {
-                    setShowMoreInfoId(id)
-                  }
-                }}
-              />
-            </SwipeableListItem>
-          ))}
-        </SwipeableList>
-      </Sheet>
+      <Box sx={{ px: 2 }}>
+        <FilterBar
+          filterDefs={filterDefs}
+          activeFilters={activeFilters}
+          onSetFilter={setFilter}
+          onClearAll={clearAll}
+          resultCount={filteredHistory.length}
+          totalCount={choreHistory.length}
+        />
+      </Box>
+      {filteredHistory.length === 0 && activeFilterCount > 0 && (
+        <Box
+          sx={{
+            textAlign: 'center',
+            py: 6,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 1.5,
+          }}
+        >
+          <FilterList sx={{ fontSize: '3rem', color: 'text.tertiary' }} />
+          <Typography level='title-md' sx={{ color: 'text.secondary' }}>
+            No results match your filters
+          </Typography>
+          <Typography level='body-sm' sx={{ color: 'text.tertiary' }}>
+            Try adjusting or clearing the active filters.
+          </Typography>
+          <Button variant='soft' size='sm' onClick={clearAll} sx={{ mt: 0.5 }}>
+            Clear filters
+          </Button>
+        </Box>
+      )}
+
+      {filteredHistory.length > 0 && (
+        <Sheet variant='plain' sx={{ borderRadius: 'sm', overflow: 'hidden' }}>
+          {/* Chore History List (Updated Style) */}
+
+          <SwipeableList type={ListType.IOS} fullSwipe={false}>
+            {filteredHistory.map((historyEntry, index) => (
+              <SwipeableListItem
+                key={historyEntry.id || index}
+                swipeActionOpen={
+                  showMoreInfoId === (historyEntry.id || index)
+                    ? 'trailing'
+                    : null
+                }
+                trailingActions={
+                  <TrailingActions>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        boxShadow: 'inset 2px 0 4px rgba(0,0,0,0.06)',
+                        zIndex: 0,
+                      }}
+                    >
+                      <SwipeAction onClick={() => handleEdit(historyEntry)}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            bgcolor: 'neutral.softBg',
+                            color: 'neutral.700',
+                            px: 3,
+                            height: '100%',
+                            width: '100%',
+                          }}
+                        >
+                          <EditIcon sx={{ fontSize: 20 }} />
+                          <Typography level='body-xs' sx={{ mt: 0.5 }}>
+                            Edit
+                          </Typography>
+                        </Box>
+                      </SwipeAction>
+                      <SwipeAction onClick={() => handleDelete(historyEntry)}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            bgcolor: 'danger.softBg',
+                            color: 'danger.700',
+                            px: 3,
+                            height: '100%',
+                          }}
+                        >
+                          <DeleteIcon sx={{ fontSize: 20 }} />
+                          <Typography level='body-xs' sx={{ mt: 0.5 }}>
+                            Delete
+                          </Typography>
+                        </Box>
+                      </SwipeAction>
+                    </Box>
+                  </TrailingActions>
+                }
+              >
+                <HistoryCard
+                  historyEntry={historyEntry}
+                  performers={performers}
+                  allHistory={choreHistory}
+                  index={index}
+                  onViewDetails={() => {
+                    setDetailModalConfig({
+                      isOpen: true,
+                      entry: historyEntry,
+                      performers,
+                      onClose: () => setDetailModalConfig({ isOpen: false }),
+                      onEdit: record => {
+                        setDetailModalConfig({ isOpen: false })
+                        setEditHistory(record)
+                        setIsEditModalOpen(true)
+                      },
+                    })
+                  }}
+                  pendingCommands={pendingByHistoryId[historyEntry.id] || []}
+                  onViewNote={notes => {
+                    setNoteViewerConfig({
+                      isOpen: true,
+                      title: `Updated at ${fmt.dateTime(historyEntry.updatedAt)}`,
+                      content: notes,
+                      onClose: () => setNoteViewerConfig({ isOpen: false }),
+                    })
+                  }}
+                  onToggleActions={() => {
+                    const id = historyEntry.id || index
+                    if (showMoreInfoId === id) {
+                      setShowMoreInfoId(null)
+                    } else {
+                      setShowMoreInfoId(id)
+                    }
+                  }}
+                />
+              </SwipeableListItem>
+            ))}
+          </SwipeableList>
+        </Sheet>
+      )}
       <EditHistoryModal
         config={{
           isOpen: isEditModalOpen,
@@ -483,6 +636,7 @@ const ChoreHistory = () => {
       />
       <ConfirmationModal config={confirmModalConfig} />
       <NoteViewerModal config={noteViewerConfig} />
+      <HistoryDetailModal config={detailModalConfig} />
     </Container>
   )
 }
