@@ -311,7 +311,6 @@ const LoginView = () => {
     const state = generateRandomState()
 
     if (Capacitor.isNativePlatform()) {
-      // For mobile devices, use a custom URL scheme for the redirect
       const redirectUri = 'donetick://auth/oauth2'
 
       const params = new URLSearchParams({
@@ -701,14 +700,23 @@ const LoginView = () => {
                     variant='soft'
                     size='lg'
                     sx={{ mt: 3, mb: 2 }}
-                    onClick={() => {
-                      SocialLogin.login({
-                        provider: 'google',
-                        options: { scopes: ['profile', 'email', 'openid'] },
-                      }).then(user => {
+                    onClick={async () => {
+                      try {
+                        const user = await SocialLogin.login({
+                          provider: 'google',
+                          options: { scopes: ['profile', 'email', 'openid'] },
+                        })
                         console.log('Google user', user)
                         loggedWithProvider('google', user.result)
-                      })
+                      } catch (error) {
+                        console.error('Google login error:', error)
+                        showError({
+                          title: 'Google Login Failed',
+                          message: `Couldn't log in with Google, please try again${
+                            error?.message ? `: ${error.message}` : ''
+                          }`,
+                        })
+                      }
                     }}
                   >
                     <div className='flex gap-2'>

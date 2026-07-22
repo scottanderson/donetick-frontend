@@ -12,9 +12,11 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Z_INDEX } from '../../constants/zIndex'
 import { useFileUpload } from '../../hooks/useFileUpload'
+import { DeleteDraftAttachment } from '../../utils/Fetcher'
 
 const AttachmentPickerField = ({
   attachments = [],
+  draftId,
   emptyDisplay = 'icon-text',
   entityId,
   entityType = 'chore_attachment',
@@ -24,7 +26,7 @@ const AttachmentPickerField = ({
   const [isOpen, setIsOpen] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const buttonRef = useRef(null)
-  const { uploadFile } = useFileUpload({ entityType, entityId })
+  const { uploadFile } = useFileUpload({ entityType, entityId, draftId })
 
   useEffect(() => {
     if (!isOpen) return
@@ -45,9 +47,12 @@ const AttachmentPickerField = ({
       if (!file) return
       setIsUploading(true)
       try {
-        const url = await uploadFile(file)
-        if (url) {
-          onChange([...attachments, { url, name: file.name }])
+        const uploaded = await uploadFile(file)
+        if (uploaded) {
+          onChange([
+            ...attachments,
+            { url: uploaded.url, path: uploaded.path, name: uploaded.fileName },
+          ])
         }
       } finally {
         setIsUploading(false)
@@ -55,7 +60,17 @@ const AttachmentPickerField = ({
     }
   }
 
-  const handleRemove = index => {
+  const handleRemove = async index => {
+    const attachment = attachments[index]
+    // Draft uploads exist server-side too — delete there so they are not
+    // promoted onto the chore when it is created.
+    if (attachment?.path) {
+      try {
+        await DeleteDraftAttachment(attachment.path)
+      } catch {
+        // file may already be gone; still drop it from the list
+      }
+    }
     const updated = attachments.filter((_, i) => i !== index)
     onChange(updated)
     if (updated.length === 0) setIsOpen(false)

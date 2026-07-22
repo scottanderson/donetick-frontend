@@ -7,6 +7,7 @@ import { apiClient } from '../utils/ApiClient'
 import { isPlusAccount, resolvePhotoURL } from '../utils/Helpers'
 
 export const useFileUpload = ({
+  draftId,
   entityId,
   entityType = 'chore_attachment',
 } = {}) => {
@@ -42,7 +43,8 @@ export const useFileUpload = ({
         const formData = new FormData()
         formData.append('file', compressedJpegFile)
         formData.append('entityType', entityType)
-        if (entityId) formData.append('entityId', entityId)
+        if (entityId) formData.append('entityId', String(entityId))
+        if (draftId) formData.append('draftId', draftId)
 
         const response = await apiClient.upload('/assets/chore', formData)
 
@@ -79,7 +81,14 @@ export const useFileUpload = ({
         }
 
         const data = await response.json()
-        return resolvePhotoURL(data.url || data.sign)
+        // url is fetchable now; path is the stable storage key used to
+        // re-sign, delete, and cache the file later.
+        return {
+          url: resolvePhotoURL(data.sign || data.url),
+          path: data.path,
+          fileName: data.file_name || file.name,
+          sizeBytes: data.size_bytes,
+        }
       } catch {
         showError({
           title: 'Upload Failed',
@@ -88,7 +97,7 @@ export const useFileUpload = ({
         return null
       }
     },
-    [entityType, entityId, showError, userProfile],
+    [entityType, entityId, draftId, showError, userProfile],
   )
 
   return { uploadFile, isPlus: isPlusAccount(userProfile) }

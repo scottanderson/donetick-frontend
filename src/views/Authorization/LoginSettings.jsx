@@ -19,6 +19,7 @@ import { API_URL } from '../../Config'
 import Logo from '../../Logo'
 import { useResource } from '../../queries/ResourceQueries'
 import { apiClient } from '../../utils/ApiClient'
+import { offlineDB } from '../../utils/OfflineDB'
 
 const CONNECTION_TIMEOUT_MS = 8000
 
@@ -40,13 +41,14 @@ const LoginSettings = () => {
   }
 
   const testConnection = async url => {
+    const testURL = url.replace(/\/+$/, '') + '/api/v1/resource'
     const controller = new AbortController()
     const timeoutId = setTimeout(
       () => controller.abort(),
       CONNECTION_TIMEOUT_MS,
     )
+
     try {
-      const testURL = url.replace(/\/+$/, '') + '/api/v1/resource'
       const response = await fetch(testURL, {
         method: 'GET',
         signal: controller.signal,
@@ -56,18 +58,79 @@ const LoginSettings = () => {
       if (response.status < 500) {
         return { ok: true }
       }
+      if (response.status === 503) {
+        return {
+          ok: false,
+          message:
+            'Server is starting up or temporarily unavailable (503). Try again in a moment.',
+        }
+      }
       return {
         ok: false,
         message: `Server responded with error ${response.status}. Please check your Donetick server.`,
       }
     } catch (err) {
       clearTimeout(timeoutId)
+
       if (err.name === 'AbortError') {
         return {
           ok: false,
-          message: `Connection timed out after ${CONNECTION_TIMEOUT_MS / 1000}s. Check the URL and ensure the server is running.`,
+          message: `Connection timed out after ${CONNECTION_TIMEOUT_MS / 1000}s. The host may be unreachable or behind a firewall — check the IP/hostname and network.`,
         }
       }
+
+      // Try no-cors to distinguish CORS misconfiguration from server being down
+      const noCorsController = new AbortController()
+      const noCorsTimeout = setTimeout(() => noCorsController.abort(), 3000)
+      try {
+        const probeStart = Date.now()
+        const probe = await fetch(testURL, {
+          method: 'GET',
+          mode: 'no-cors',
+          signal: noCorsController.signal,
+        })
+        clearTimeout(noCorsTimeout)
+        if (probe.type === 'opaque') {
+          // Server responded but CORS headers blocked the real request
+          return {
+            ok: false,
+            message:
+              'Server is reachable but blocked the request (CORS). Ensure your Donetick server allows requests from this origin, or check the server CORS config.',
+          }
+        }
+        // Opaque is the only expected type for no-cors success; anything else is odd
+        void probeStart
+      } catch (probeErr) {
+        clearTimeout(noCorsTimeout)
+        if (probeErr.name !== 'AbortError') {
+          // Both normal and no-cors fetch threw immediately → port refused
+          const msg = probeErr.message?.toLowerCase() ?? ''
+          if (
+            msg.includes('getaddrinfo') ||
+            msg.includes('name not resolved') ||
+            msg.includes('err_name')
+          ) {
+            return {
+              ok: false,
+              message:
+                'Hostname could not be resolved. Check the URL for typos or verify DNS.',
+            }
+          }
+          return {
+            ok: false,
+            message:
+              'Connection refused. The port may be wrong or nothing is listening — verify the URL and port (default Donetick port is 2021).',
+          }
+        }
+        // no-cors also timed out → server/host truly unreachable
+        return {
+          ok: false,
+          message:
+            'Unable to reach the server. Check the URL, port, and network connection.',
+        }
+      }
+
+      // Fallback (should rarely hit)
       return {
         ok: false,
         message:
@@ -105,6 +168,11 @@ const LoginSettings = () => {
     }
 
     await Preferences.set({ key: 'customServerUrl', value: trimmedURL })
+    try {
+      await offlineDB.clearAll()
+    } catch (e) {
+      console.error('Error clearing offline data on server change', e)
+    }
     await apiClient.init(true)
     refetchResource()
     setStatus('success')

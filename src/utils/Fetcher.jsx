@@ -728,6 +728,50 @@ const DeleteUser = (password, confirmation, transferOptions = []) => {
   })
 }
 
+const UploadChoreAttachment = (
+  file,
+  entityType,
+  { draftId, entityId } = {},
+) => {
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('entityType', entityType)
+  if (entityId != null) formData.append('entityId', String(entityId))
+  if (draftId != null) formData.append('draftId', draftId)
+  return apiClient.upload('/assets/chore', formData)
+}
+
+const DeleteDraftAttachment = filePath => {
+  return Fetch(`/assets/chore`, {
+    method: 'DELETE',
+    headers: HEADERS(),
+    body: JSON.stringify({ file_path: filePath }),
+  })
+}
+
+// Returns a fresh signed URL for a stored asset path the current user may access.
+const SignAssetURL = path => {
+  return Fetch(`/files/sign?path=${encodeURIComponent(path)}`, {
+    method: 'GET',
+    headers: HEADERS(),
+  })
+}
+
+const GetChoreAttachments = choreId => {
+  return Fetch(`/chores/${choreId}/attachments`, {
+    method: 'GET',
+    headers: HEADERS(),
+  })
+}
+
+const DeleteChoreAttachment = (choreId, filePath) => {
+  return Fetch(`/chores/${choreId}/attachments`, {
+    method: 'DELETE',
+    headers: HEADERS(),
+    body: JSON.stringify({ file_path: filePath }),
+  })
+}
+
 const CreateBackup = (encryptionKey, includeAssets = true, backupName = '') => {
   return Fetch(`/backup/create`, {
     method: 'POST',
@@ -952,8 +996,10 @@ export {
   CreateThing,
   DeleteChildUser,
   DeleteChore,
+  DeleteChoreAttachment,
   DeleteChoreHistory,
   DeleteCircleMember,
+  DeleteDraftAttachment,
   DeleteFilter,
   DeleteLabel,
   DeleteLongLiveToken,
@@ -966,6 +1012,7 @@ export {
   GetAllUsers,
   GetArchivedChores,
   GetChildUsers,
+  GetChoreAttachments,
   GetChoreByID,
   GetChoreDetailById,
   GetChoreHistory,
@@ -1011,6 +1058,7 @@ export {
   SaveChore,
   SaveThing,
   SetupMFA,
+  SignAssetURL,
   signUp,
   SkipChore,
   StartChore,
@@ -1033,5 +1081,6 @@ export {
   UpdateThingState,
   UpdateTimeSession,
   UpdateUserDetails,
+  UploadChoreAttachment,
   VerifyMFA,
 }

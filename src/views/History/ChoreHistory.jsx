@@ -183,6 +183,16 @@ const ChoreHistory = () => {
     setFilter,
   } = useFilter(choreHistory, filterDefs)
 
+  const sortedHistory = useMemo(
+    () =>
+      [...filteredHistory].sort(
+        (a, b) =>
+          new Date(b.performedAt || b.updatedAt) -
+          new Date(a.performedAt || a.updatedAt),
+      ),
+    [filteredHistory],
+  )
+
   const handleDelete = historyEntry => {
     showConfirmation(
       `Are you sure you want to delete this history record?`,
@@ -432,7 +442,7 @@ const ChoreHistory = () => {
           totalCount={choreHistory.length}
         />
       </Box>
-      {filteredHistory.length === 0 && activeFilterCount > 0 && (
+      {sortedHistory.length === 0 && activeFilterCount > 0 && (
         <Box
           sx={{
             textAlign: 'center',
@@ -456,12 +466,12 @@ const ChoreHistory = () => {
         </Box>
       )}
 
-      {filteredHistory.length > 0 && (
+      {sortedHistory.length > 0 && (
         <Sheet variant='plain' sx={{ borderRadius: 'sm', overflow: 'hidden' }}>
           {/* Chore History List (Updated Style) */}
 
           <SwipeableList type={ListType.IOS} fullSwipe={false}>
-            {filteredHistory.map((historyEntry, index) => (
+            {sortedHistory.map((historyEntry, index) => (
               <SwipeableListItem
                 key={historyEntry.id || index}
                 swipeActionOpen={

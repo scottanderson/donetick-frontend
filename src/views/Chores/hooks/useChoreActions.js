@@ -13,15 +13,21 @@ import {
   MarkChoreComplete,
   NudgeChore,
   RejectChore,
+  SaveChore,
   SkipChore,
   UndoChoreAction,
   UpdateChoreAssignee,
   UpdateDueDate,
 } from '../../../utils/Fetcher'
 import { offlineDB } from '../../../utils/OfflineDB'
+import { isOfflineFeatureEnabled } from '../../../utils/OfflineFeatureToggle'
 
+// Effectively "can this action be queued offline?" — requires the offline
+// feature, otherwise there is no command queue to replay it later.
 const isNetworkError = err =>
-  err instanceof TypeError && err.message === 'Failed to fetch'
+  isOfflineFeatureEnabled() &&
+  err instanceof TypeError &&
+  err.message === 'Failed to fetch'
 
 export const useChoreActions = ({
   chores,
@@ -664,6 +670,28 @@ export const useChoreActions = ({
             openModal(action, chore, extraData)
           }
           break
+
+        case 'moveToProject': {
+          const project = extraData?.project
+          const projectId = project?.id === null ? null : project?.id
+          const updatedChore = { ...chore, projectId }
+          try {
+            const response = await SaveChore(updatedChore)
+            if (response.ok) {
+              updateChoreInState(updatedChore, 'moved-to-project')
+              showSuccess({
+                title: 'Task Moved',
+                message: `Task moved to ${project?.name || 'Default Project'}.`,
+              })
+            }
+          } catch (error) {
+            showError({
+              title: 'Failed to move task',
+              message: error?.message || 'Unable to move task to project',
+            })
+          }
+          break
+        }
 
         case 'completeWithNote':
         case 'completeWithPastDate':

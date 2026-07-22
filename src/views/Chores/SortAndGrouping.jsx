@@ -84,6 +84,8 @@ const SortAndGrouping = ({
         { name: 'Due Date', value: 'due_date' },
         { name: 'Priority', value: 'priority' },
         { name: 'Labels', value: 'labels' },
+        { name: 'Created Date', value: 'created_date' },
+        { name: 'Updated Date', value: 'updated_date' },
       ]
 
       const filterItems = [
@@ -333,6 +335,8 @@ const SortAndGrouping = ({
           { name: 'Due Date', value: 'due_date' },
           { name: 'Priority', value: 'priority' },
           { name: 'Labels', value: 'labels' },
+          { name: 'Created Date', value: 'created_date' },
+          { name: 'Updated Date', value: 'updated_date' },
         ].map((item, index) => (
           <MenuItem
             key={`${k}-${item?.value}`}

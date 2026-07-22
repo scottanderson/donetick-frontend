@@ -9,6 +9,7 @@ import {
   CreateChore,
   DeleteChore,
   DeleteChoreHistory,
+  GetChoreAttachments,
   GetChoreByID,
   GetChoreDetailById,
   GetChoreHistory,
@@ -21,6 +22,7 @@ import {
   UnArchiveChore,
   UpdateChoreHistory,
 } from '../utils/Fetcher'
+import { cacheChoreImages } from '../utils/ImageCache'
 import { offlineDB } from '../utils/OfflineDB'
 import { isOfflineFeatureEnabled } from '../utils/OfflineFeatureToggle'
 import { syncEngine } from '../utils/SyncEngine'
@@ -58,9 +60,13 @@ const mergePendingCreates = async chores => {
   return [...(chores || []), ...createdFromQueue]
 }
 
+// Effectively "can this action be queued offline?" — the offline feature must
+// be enabled, otherwise there is no command queue to replay it later and the
+// failure should surface to the user instead.
 const isNetworkError = error =>
-  (error instanceof TypeError && error.message === 'Failed to fetch') ||
-  error?.name === 'AbortError'
+  isOfflineFeatureEnabled() &&
+  ((error instanceof TypeError && error.message === 'Failed to fetch') ||
+    error?.name === 'AbortError')
 
 const buildOfflineChore = task => ({
   ...task,
@@ -75,15 +81,20 @@ export const useChores = (includeArchive = false) => {
     refetchOnWindowFocus: true,
     queryFn: async () => {
       if (isOfflineFeatureEnabled()) {
-        // Sync from server first (no-op if already syncing or offline)
-        if (networkManager.isOnline) {
-          await syncEngine.sync()
-        }
-        const cursor = await offlineDB.getSyncCursor()
-        if (cursor > 0) {
-          const cached = await offlineDB.getChores(includeArchive)
-          const merged = await mergePendingCreates(cached || [])
-          return { res: merged }
+        try {
+          // Sync from server first (no-op if already syncing or offline)
+          if (networkManager.isOnline) {
+            await syncEngine.sync()
+          }
+          const cursor = await offlineDB.getSyncCursor()
+          if (cursor > 0) {
+            const cached = await offlineDB.getChores(includeArchive)
+            const merged = await mergePendingCreates(cached || [])
+            return { res: merged }
+          }
+        } catch (err) {
+          // A broken cache must not brick the app — fall through to the API
+          console.error('Offline cache read failed, falling back to API', err)
         }
       }
 
@@ -91,7 +102,11 @@ export const useChores = (includeArchive = false) => {
       try {
         const data = await GetChoresNew(includeArchive)
         if (data?.res) {
-          syncEngine.cacheChores(data.res)
+          // Only the archived-inclusive fetch is the complete list, which
+          // allows cacheChores to reconcile server-side deletions
+          syncEngine.cacheChores(data.res, {
+            complete: includeArchive === true,
+          })
         }
         const merged = await mergePendingCreates(data?.res || [])
         return { ...data, res: merged }
@@ -114,7 +129,7 @@ export const useDeleteChores = () => {
 
   return useMutation({
     mutationFn: async choreIds => {
-      if (!networkManager.isOnline) {
+      if (isOfflineFeatureEnabled() && !networkManager.isOnline) {
         await offlineDB.deleteChores(choreIds)
         await Promise.all(
           choreIds.map(async id => {
@@ -180,7 +195,7 @@ export const useCreateChore = () => {
 
   return useMutation({
     mutationFn: async newTask => {
-      if (!networkManager.isOnline) {
+      if (isOfflineFeatureEnabled() && !networkManager.isOnline) {
         return queueOfflineCreate(newTask)
       }
 
@@ -337,7 +352,11 @@ export const useChore = choreId => {
       try {
         const response = await GetChoreByID(choreId)
         if (response && response.ok) {
-          return await response.json()
+          const data = await response.json()
+          // Fire-and-forget: store this chore's images (incl. attachments,
+          // which only appear in detail responses) for offline use
+          if (data?.res) cacheChoreImages(data.res)
+          return data
         }
         throw new Error('Failed to fetch chore')
       } catch {
@@ -441,7 +460,7 @@ export const useUpdateChoreHistory = () => {
         return { queued: true }
       }
 
-      if (!networkManager.isOnline) {
+      if (isOfflineFeatureEnabled() && !networkManager.isOnline) {
         await commandQueue.enqueue(
           CommandType.UPDATE_CHORE_HISTORY,
           `${choreId}:${historyId}`,
@@ -504,7 +523,7 @@ export const useDeleteChoreHistory = () => {
         return { queued: true }
       }
 
-      if (!networkManager.isOnline) {
+      if (isOfflineFeatureEnabled() && !networkManager.isOnline) {
         await commandQueue.enqueue(
           CommandType.DELETE_CHORE_HISTORY,
           `${choreId}:${historyId}`,
@@ -545,7 +564,7 @@ export const useMarkChoreComplete = () => {
 
   return useMutation({
     mutationFn: async ({ body, choreId, completedDate, performer }) => {
-      if (!networkManager.isOnline) {
+      if (isOfflineFeatureEnabled() && !networkManager.isOnline) {
         await commandQueue.enqueue(CommandType.COMPLETE_CHORE, choreId, {
           id: choreId,
           body,
@@ -625,7 +644,7 @@ export const useSkipChore = () => {
 
   return useMutation({
     mutationFn: async choreId => {
-      if (!networkManager.isOnline) {
+      if (isOfflineFeatureEnabled() && !networkManager.isOnline) {
         await commandQueue.enqueue(CommandType.SKIP_CHORE, choreId, {
           id: choreId,
         })
@@ -693,5 +712,21 @@ export const useRejectChore = () => {
       queryClient.invalidateQueries(['choreHistory', choreId])
       queryClient.invalidateQueries(['choreDetails', choreId])
     },
+  })
+}
+
+export const useChoreAttachments = (choreId, hasAttachments = true) => {
+  return useQuery({
+    queryKey: ['choreAttachments', choreId],
+    queryFn: async () => {
+      const response = await GetChoreAttachments(choreId)
+      if (response && response.ok) {
+        return await response.json()
+      }
+      throw new Error('Failed to fetch attachments')
+    },
+    enabled: !!choreId && hasAttachments,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 15 * 60 * 1000,
   })
 }

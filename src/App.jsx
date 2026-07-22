@@ -2,7 +2,7 @@ import './styles/safe-area.css'
 
 import { Button, Typography, useColorScheme } from '@mui/joy'
 import { useCallback, useEffect } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
 import NavBar from '@/views/components/NavBar'
@@ -98,6 +98,7 @@ const AppContent = () => {
 function App() {
   const resource = useResource()
   const { mode, systemMode } = useColorScheme()
+  const navigate = useNavigate()
 
   // startOpenReplay()
 
@@ -123,8 +124,8 @@ function App() {
   }, [setThemeClass])
 
   useEffect(() => {
-    registerCapacitorListeners()
-  }, [])
+    registerCapacitorListeners(navigate)
+  }, [navigate])
 
   return (
     <div>

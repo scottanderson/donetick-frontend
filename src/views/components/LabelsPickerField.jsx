@@ -1,5 +1,8 @@
-import { Label } from '@mui/icons-material'
+import { Add, Label } from '@mui/icons-material'
+import { Button } from '@mui/joy'
+import { useState } from 'react'
 
+import LabelModal from '../Modals/Inputs/LabelModal'
 import BaseOptionPicker from './BaseOptionPicker'
 
 const LabelsPickerField = ({
@@ -9,6 +12,8 @@ const LabelsPickerField = ({
   onClear,
   values = [],
 }) => {
+  const [createOpen, setCreateOpen] = useState(false)
+
   const options = labels.map(label => ({
     id: label.id,
     name: label.name,
@@ -16,33 +21,55 @@ const LabelsPickerField = ({
   }))
 
   return (
-    <BaseOptionPicker
-      items={options}
-      multiple
-      values={values}
-      onValuesChange={onChange}
-      onClear={onClear}
-      emptyDisplay={emptyDisplay}
-      emptyLabel='Labels'
-      getItemValue={item => item.id}
-      getItemLabel={item => item.name}
-      getItemColor={item => item.color}
-      renderTriggerIcon={() => <Label sx={{ fontSize: '20px' }} />}
-      renderItemStart={({ item }) => (
-        <Label
-          sx={{
-            fontSize: '18px',
-            color: item.color || 'text.secondary',
-          }}
-        />
-      )}
-      getTriggerText={({ isEmpty, selectedItems }) => {
-        if (isEmpty) return 'Labels'
-        if (selectedItems.length === 1) return selectedItems[0].name
-        return `${selectedItems.length} labels`
-      }}
-      menuMinWidth={220}
-    />
+    <>
+      <BaseOptionPicker
+        items={options}
+        multiple
+        values={values}
+        onValuesChange={onChange}
+        onClear={onClear}
+        emptyDisplay={emptyDisplay}
+        emptyLabel='Labels'
+        getItemValue={item => item.id}
+        getItemLabel={item => item.name}
+        getItemColor={item => item.color}
+        renderTriggerIcon={() => <Label sx={{ fontSize: '20px' }} />}
+        renderItemStart={({ item }) => (
+          <Label
+            sx={{
+              fontSize: '18px',
+              color: item.color || 'text.secondary',
+            }}
+          />
+        )}
+        getTriggerText={({ isEmpty, selectedItems }) => {
+          if (isEmpty) return 'Labels'
+          if (selectedItems.length === 1) return selectedItems[0].name
+          return `${selectedItems.length} labels`
+        }}
+        menuMinWidth={220}
+        menuFooter={
+          <Button
+            size='sm'
+            variant='plain'
+            color='neutral'
+            startDecorator={<Add sx={{ fontSize: '16px' }} />}
+            onClick={e => {
+              e.stopPropagation()
+              setCreateOpen(true)
+            }}
+            sx={{ width: '100%', justifyContent: 'flex-start' }}
+          >
+            Create label
+          </Button>
+        }
+      />
+      <LabelModal
+        isOpen={createOpen}
+        onClose={() => setCreateOpen(false)}
+        label={null}
+      />
+    </>
   )
 }
 

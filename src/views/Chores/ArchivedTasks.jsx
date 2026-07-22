@@ -38,7 +38,7 @@ import { useNotification } from '../../service/NotificationProvider'
 import { commandQueue, CommandType } from '../../utils/CommandQueue'
 import { DeleteChore, GetArchivedChores } from '../../utils/Fetcher'
 import { offlineDB } from '../../utils/OfflineDB'
-import Priorities from '../../utils/Priorities'
+import { isOfflineFeatureEnabled } from '../../utils/OfflineFeatureToggle'
 import LoadingComponent from '../components/Loading'
 import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
 import ChoreCard from './ChoreCard'
@@ -470,7 +470,9 @@ const ArchivedTasks = () => {
             const failedTasks = []
 
             const isNetworkError = err =>
-              err instanceof TypeError && err.message === 'Failed to fetch'
+              isOfflineFeatureEnabled() &&
+              err instanceof TypeError &&
+              err.message === 'Failed to fetch'
             const queuedTasks = []
 
             for (const chore of selectedData) {

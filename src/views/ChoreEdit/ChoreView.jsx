@@ -1,5 +1,6 @@
 import {
   Archive,
+  AttachFile,
   CalendarMonth,
   Check,
   Checklist,
@@ -44,6 +45,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 import { useImpersonateUser } from '../../contexts/ImpersonateUserContext.jsx'
 import { useLocalization } from '../../contexts/LocalizationContext'
+import { useDescriptionHtml } from '../../hooks/useDescriptionHtml'
 import { usePendingCommands } from '../../hooks/usePendingCommands'
 import {
   useChoreDetails,
@@ -82,6 +84,7 @@ import LoadingComponent from '../components/Loading.jsx'
 import PendingBadge from '../components/PendingBadge'
 import RichTextEditor from '../components/RichTextEditor.jsx'
 import SubTasks from '../components/SubTask.jsx'
+import AttachmentBrowserModal from '../Modals/Inputs/AttachmentBrowserModal'
 import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
 import NoteViewerModal from '../Modals/Inputs/NoteViewerModal'
 import TimePassedCard from './TimePassedCard.jsx'
@@ -124,14 +127,22 @@ const ChoreView = () => {
   const [chorePriority, setChorePriority] = useState(null)
   const [noteViewerConfig, setNoteViewerConfig] = useState({ isOpen: false })
   const [timerActionConfig, setTimerActionConfig] = useState({ isOpen: false })
+  const [attachmentBrowserOpen, setAttachmentBrowserOpen] = useState(false)
   const { data: circleMembersData, isLoading: isCircleMembersLoading } =
     useCircleMembers()
   const { data: userProfile } = useUserProfile()
   const { impersonatedUser } = useImpersonateUser()
+  const descriptionHtml = useDescriptionHtml(chore?.description || '', {
+    choreId: chore?.id,
+  })
+  const notesHtml = useDescriptionHtml(chore?.notes || '', {
+    choreId: chore?.id,
+  })
 
   const { data: choreData, isLoading: isChoreLoading } =
     useChoreDetails(choreId)
   const { data: choreHistoryData } = useChoreHistory(choreId)
+
   const { data: pendingCmds } = usePendingCommands(choreId)
 
   const choreHistory = choreHistoryData?.res || []
@@ -651,16 +662,14 @@ const ChoreView = () => {
             justifyContent: 'center',
             alignItems: 'center',
             mb: 1,
+            flexWrap: 'wrap',
+            gap: 0.5,
           }}
         >
           {chore?.labelsV2?.map((label, index) => (
             <Chip
               key={index}
               sx={{
-                position: 'relative',
-                ml: index === 0 ? 0 : 0.5,
-                top: 2,
-                zIndex: 1,
                 backgroundColor: label?.color,
                 color: getTextColorFromBackgroundColor(label?.color),
               }}
@@ -668,6 +677,20 @@ const ChoreView = () => {
               {label?.name}
             </Chip>
           ))}
+
+          {chore?.attachments?.length > 0 && (
+            <Chip
+              startDecorator={<AttachFile />}
+              size='md'
+              variant='soft'
+              color='neutral'
+              onClick={() => setAttachmentBrowserOpen(true)}
+              sx={{ cursor: 'pointer' }}
+            >
+              {chore.attachments.length}{' '}
+              {chore.attachments.length === 1 ? 'attachment' : 'attachments'}
+            </Chip>
+          )}
         </Box>
       </Box>
 
@@ -918,7 +941,7 @@ const ChoreView = () => {
                         whiteSpace: 'pre-wrap',
                         wordBreak: 'break-word',
                       }}
-                      dangerouslySetInnerHTML={{ __html: raw }}
+                      dangerouslySetInnerHTML={{ __html: descriptionHtml }}
                     />
                   ) : (
                     <Typography
@@ -986,7 +1009,7 @@ const ChoreView = () => {
                         whiteSpace: 'pre-wrap',
                         wordBreak: 'break-word',
                       }}
-                      dangerouslySetInnerHTML={{ __html: raw }}
+                      dangerouslySetInnerHTML={{ __html: notesHtml }}
                     />
                   ) : (
                     <Typography
@@ -1082,6 +1105,7 @@ const ChoreView = () => {
             <RichTextEditor
               value={note || ''}
               onChange={setNote}
+              entityId={chore?.id}
               entityType={'chore_completion_note'}
               placeholder={t('choreView.notePlaceholder')}
             />
@@ -1324,6 +1348,11 @@ const ChoreView = () => {
         <ConfirmationModal config={confirmModelConfig} />
         <ConfirmationModal config={timerActionConfig} />
         <NoteViewerModal config={noteViewerConfig} />
+        <AttachmentBrowserModal
+          choreId={choreId}
+          isOpen={attachmentBrowserOpen}
+          onClose={() => setAttachmentBrowserOpen(false)}
+        />
       </Card>
     </Container>
   )

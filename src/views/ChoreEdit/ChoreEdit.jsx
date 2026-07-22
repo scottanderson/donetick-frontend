@@ -1,4 +1,12 @@
-import { Add, ArrowDropDown, HorizontalRule, Save } from '@mui/icons-material'
+import {
+  Add,
+  ArrowDropDown,
+  AttachFile,
+  Delete,
+  HorizontalRule,
+  Save,
+  UploadFile,
+} from '@mui/icons-material'
 import {
   Avatar,
   Box,
@@ -44,16 +52,25 @@ import {
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries.jsx'
 import { useNotification } from '../../service/NotificationProvider'
 import { getTextColorFromBackgroundColor } from '../../utils/Colors.jsx'
-import { GetAllCircleMembers, GetThings } from '../../utils/Fetcher'
-import { isPlusAccount } from '../../utils/Helpers'
+import {
+  DeleteChoreAttachment,
+  DeleteDraftAttachment,
+  GetAllCircleMembers,
+  GetThings,
+  UploadChoreAttachment,
+} from '../../utils/Fetcher'
+import { isPlusAccount, resolvePhotoURL } from '../../utils/Helpers'
+import { getImageSrc, removeCachedImage } from '../../utils/ImageCache'
 import Priorities from '../../utils/Priorities.jsx'
 import { getIconComponent } from '../../utils/ProjectIcons'
 import { getSafeBottomPadding } from '../../utils/SafeAreaUtils.js'
+import { generateUUID } from '../../utils/UUID'
 import { useProjectFilter } from '../Chores/hooks/useProjectFilter.js'
 import LoadingComponent from '../components/Loading.jsx'
 import RichTextEditor from '../components/RichTextEditor.jsx'
 import SubTasks from '../components/SubTask.jsx'
 import { useLabels } from '../Labels/LabelQueries'
+import AttachmentViewerModal from '../Modals/Inputs/AttachmentViewerModal'
 import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
 import LabelModal from '../Modals/Inputs/LabelModal'
 import { useProjects } from '../Projects/ProjectQueries'
@@ -118,7 +135,13 @@ const ChoreEdit = () => {
   const [createdBy, setCreatedBy] = useState(0)
   const [errors, setErrors] = useState({})
   const [attemptToSave, setAttemptToSave] = useState(false)
+  const [draftId] = useState(() => generateUUID())
+  const [attachments, setAttachments] = useState([])
+  const [isUploadingAttachment, setIsUploadingAttachment] = useState(false)
   const [addLabelModalOpen, setAddLabelModalOpen] = useState(false)
+  const [attachmentViewerConfig, setAttachmentViewerConfig] = useState({
+    isOpen: false,
+  })
   const [showSavePrivacyDefault, setShowSavePrivacyDefault] = useState(false)
   const [privacySaved, setPrivacySaved] = useState(false)
   const [showSaveNotificationDefault, setShowSaveNotificationDefault] =
@@ -363,6 +386,7 @@ const ChoreEdit = () => {
       deadlineOffset: deadlineOffset < 0 ? null : deadlineOffset,
       priority: priority,
       projectId: projectId === 'default' ? null : projectId,
+      draftId: newChoreId > 0 ? undefined : draftId,
     }
     let SaveFunction = createChoreMutation.mutateAsync
     if (newChoreId > 0) {
@@ -577,6 +601,7 @@ const ChoreEdit = () => {
 
       setCreatedBy(data.res.createdBy)
       setUpdatedBy(data.res.updatedBy)
+      setAttachments(data.res.attachments || [])
     }
   }, [choreData, isChoreLoading, searchParams])
 
@@ -703,6 +728,7 @@ const ChoreEdit = () => {
               onChange={setDescription}
               entityId={choreId}
               entityType={'chore_description'}
+              draftId={draftId}
             />
             <FormHelperText error>{errors.description}</FormHelperText>
           </FormControl>
@@ -940,6 +966,196 @@ const ChoreEdit = () => {
               setTasks={setSubTasks}
               choreId={choreId}
             />
+          </Card>
+        </Box>
+
+        <Box mt={3}>
+          <Typography level='h4'>Attachments</Typography>
+          <Typography level='body-md'>Files attached to this task</Typography>
+          <Card variant='outlined' sx={{ mt: 2, p: 1.5 }}>
+            {attachments.length > 0 && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1,
+                  mb: 1.5,
+                }}
+              >
+                {attachments.map((att, idx) => (
+                  <Box
+                    key={att.file_path || idx}
+                    onClick={async () => {
+                      const url = await getImageSrc(
+                        att.file_path,
+                        att.sign ? resolvePhotoURL(att.sign) : null,
+                        { choreId, kind: 'attachment' },
+                      ).catch(() => resolvePhotoURL(att.sign || att.file_path))
+                      const ext = (att.file_name || '')
+                        .split('.')
+                        .pop()
+                        .toLowerCase()
+                      const isImage = [
+                        'jpg',
+                        'jpeg',
+                        'png',
+                        'gif',
+                        'webp',
+                        'bmp',
+                        'svg',
+                      ].includes(ext)
+                      if (isImage) {
+                        setAttachmentViewerConfig({
+                          isOpen: true,
+                          url,
+                          fileName: att.file_name,
+                          onClose: () =>
+                            setAttachmentViewerConfig({ isOpen: false }),
+                        })
+                      } else {
+                        const a = document.createElement('a')
+                        a.href = url
+                        a.download = att.file_name || 'attachment'
+                        document.body.appendChild(a)
+                        a.click()
+                        document.body.removeChild(a)
+                      }
+                    }}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      p: 1,
+                      borderRadius: 'sm',
+                      border: '1px solid',
+                      borderColor: 'neutral.outlinedBorder',
+                      cursor: 'pointer',
+                      '&:hover': { bgcolor: 'neutral.softHoverBg' },
+                    }}
+                  >
+                    <AttachFile sx={{ fontSize: 18, color: 'neutral.500' }} />
+                    <Typography
+                      level='body-sm'
+                      sx={{ flex: 1, wordBreak: 'break-all' }}
+                    >
+                      {att.file_name}
+                    </Typography>
+                    {att.size_bytes && (
+                      <Typography level='body-xs' color='neutral'>
+                        {(att.size_bytes / 1024).toFixed(1)} KB
+                      </Typography>
+                    )}
+                    {choreId && (
+                      <IconButton
+                        size='sm'
+                        variant='plain'
+                        color='danger'
+                        onClick={event => {
+                          event.stopPropagation()
+                          DeleteChoreAttachment(choreId, att.file_path)
+                            .then(() => {
+                              removeCachedImage(att.file_path)
+                              setAttachments(prev =>
+                                prev.filter(a => a.file_path !== att.file_path),
+                              )
+                            })
+                            .catch(() => {
+                              showError({
+                                title: 'Delete Failed',
+                                message: 'Failed to delete attachment.',
+                              })
+                            })
+                        }}
+                      >
+                        <Delete sx={{ fontSize: 18 }} />
+                      </IconButton>
+                    )}
+                    {!choreId && (
+                      <IconButton
+                        size='sm'
+                        variant='plain'
+                        color='danger'
+                        onClick={event => {
+                          event.stopPropagation()
+                          // Draft uploads live server-side too — delete there
+                          // so they are not promoted onto the chore on save.
+                          DeleteDraftAttachment(att.file_path)
+                            .then(() => {
+                              setAttachments(prev =>
+                                prev.filter((_, i) => i !== idx),
+                              )
+                            })
+                            .catch(() => {
+                              showError({
+                                title: 'Delete Failed',
+                                message: 'Failed to delete attachment.',
+                              })
+                            })
+                        }}
+                      >
+                        <Delete sx={{ fontSize: 18 }} />
+                      </IconButton>
+                    )}
+                  </Box>
+                ))}
+              </Box>
+            )}
+            <Button
+              component='label'
+              variant='outlined'
+              color='neutral'
+              size='sm'
+              startDecorator={isUploadingAttachment ? null : <UploadFile />}
+              loading={isUploadingAttachment}
+              sx={{ alignSelf: 'flex-start' }}
+            >
+              Upload File
+              <input
+                type='file'
+                hidden
+                onChange={async e => {
+                  const file = e.target.files[0]
+                  if (!file) return
+                  setIsUploadingAttachment(true)
+                  try {
+                    const response = choreId
+                      ? await UploadChoreAttachment(file, 'chore_attachment', {
+                          entityId: choreId,
+                        })
+                      : await UploadChoreAttachment(
+                          file,
+                          'chore_attachment_draft',
+                          { draftId },
+                        )
+                    if (!response.ok) {
+                      showError({
+                        title: 'Upload Failed',
+                        message: 'Failed to upload attachment.',
+                      })
+                      return
+                    }
+                    const data = await response.json()
+                    setAttachments(prev => [
+                      ...prev,
+                      {
+                        file_path: data.path,
+                        file_name: data.file_name,
+                        size_bytes: data.size_bytes,
+                        sign: data.sign,
+                      },
+                    ])
+                  } catch {
+                    showError({
+                      title: 'Upload Failed',
+                      message: 'Failed to upload attachment.',
+                    })
+                  } finally {
+                    setIsUploadingAttachment(false)
+                    e.target.value = ''
+                  }
+                }}
+              />
+            </Button>
           </Card>
         </Box>
       </Box>
@@ -1733,6 +1949,7 @@ const ChoreEdit = () => {
           )}
         </Button>
       </Sheet>
+      <AttachmentViewerModal config={attachmentViewerConfig} />
       <ConfirmationModal config={confirmModelConfig} />
       {addLabelModalOpen && (
         <LabelModal
