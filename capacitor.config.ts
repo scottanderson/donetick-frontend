@@ -15,11 +15,6 @@ const config: CapacitorConfig = {
     PushNotifications: {
       presentationOptions: ['badge', 'sound', 'alert'],
     },
-    LocalNotifications: {
-      smallIcon: 'ic_stat_icon_config_sample',
-      iconColor: '#488AFF',
-      sound: 'beep.wav',
-    },
     CapacitorSQLite: {
       // The offline cache opens databases with encrypted: false / no-encryption.
       // @capacitor-community/sqlite defaults native encryption to true when this
