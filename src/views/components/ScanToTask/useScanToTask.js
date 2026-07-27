@@ -1,5 +1,4 @@
 import { useCallback, useRef, useState } from 'react'
-
 import { useDocumentScanner } from '../../../hooks/useDocumentScanner'
 import { localAIService } from '../../../service/LocalAIService'
 
@@ -53,18 +52,13 @@ async function runNativeOCR(imageSource) {
   const { Ocr } = await import('@jcesarmobile/capacitor-ocr')
   let image = imageSource
   if (imageSource.includes('/_capacitor_file_/')) {
-    image =
-      'file://' +
-      imageSource.replace(/^https?:\/\/localhost\/_capacitor_file_/, '')
+    image = 'file://' + imageSource.replace(/^https?:\/\/localhost\/_capacitor_file_/, '')
   } else if (imageSource.startsWith('data:')) {
     // iOS document scanner returns base64; strip the data URI prefix for the native plugin
     image = imageSource.split(',')[1] || imageSource
   }
   const result = await Ocr.process({ image })
-  return result.results
-    .map(r => r.text)
-    .join('\n')
-    .trim()
+  return result.results.map(r => r.text).join('\n').trim()
 }
 
 async function runBrowserOCR(imageSource, onProgress) {
@@ -198,7 +192,7 @@ export function useScanToTask() {
   )
 
   const handleNativeScan = useCallback(async () => {
-    const { cancelled, error, image } = await scanDocument()
+    const { image, cancelled, error } = await scanDocument()
     if (cancelled) return
     if (error || !image) {
       setErrorMsg(error ? `Scanner error: ${error}` : 'Scan failed.')

@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-
 import { networkManager } from '../hooks/NetworkManager'
 import { CompleteSubTask, SaveChore } from '../utils/Fetcher'
 

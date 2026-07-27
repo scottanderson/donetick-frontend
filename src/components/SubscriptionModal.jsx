@@ -11,11 +11,10 @@ import {
   Typography,
 } from '@mui/joy'
 import { useState } from 'react'
-
 import { useNotification } from '../service/NotificationProvider'
 import { GetSubscriptionSession } from '../utils/Fetcher'
 
-const SubscriptionModal = ({ onClose, open }) => {
+const SubscriptionModal = ({ open, onClose }) => {
   const [selectedPlan, setSelectedPlan] = useState('yearly')
   const [isLoading, setIsLoading] = useState(false)
   const { showError } = useNotification()

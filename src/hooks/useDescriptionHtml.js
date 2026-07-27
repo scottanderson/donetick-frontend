@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-
 import { patchDescriptionHtml } from '../utils/ImageCache'
 
 // Returns description HTML safe to render: embedded images with an expired

@@ -21,7 +21,6 @@ import {
   IconButton,
   Typography,
 } from '@mui/joy'
-
 import { useImpersonateUser } from '../../contexts/ImpersonateUserContext.jsx'
 import { useLocalization } from '../../contexts/LocalizationContext'
 import { usePendingCommands } from '../../hooks/usePendingCommands'
@@ -38,16 +37,16 @@ import ChoreActionMenu from '../components/ChoreActionMenu'
 import PendingBadge from '../components/PendingBadge'
 const ChoreCard = ({
   chore,
-  isMultiSelectMode = false,
-  isSelected = false,
-  onAction,
-  onChipClick,
-  onSelectionToggle,
   performers,
-  // Multi-select props
-  showActions = true,
   sx,
   viewOnly,
+  showActions = true,
+  onChipClick,
+  onAction,
+  // Multi-select props
+  isMultiSelectMode = false,
+  isSelected = false,
+  onSelectionToggle,
 }) => {
   const { data: userProfile } = useUserProfile()
   const { timeFormat } = useLocalization()

@@ -42,10 +42,7 @@ export const decodeNdefUrl = record => {
 
 // Starts a native NFC write session. Calls onWaiting once scanning is active,
 // then onSuccess or onError when the write completes. Returns a cancel function.
-export const startNativeNFCWrite = async (
-  url,
-  { onError, onSuccess, onWaiting },
-) => {
+export const startNativeNFCWrite = async (url, { onWaiting, onSuccess, onError }) => {
   let listener = null
   let done = false
 
@@ -89,7 +86,7 @@ export const startNativeNFCWrite = async (
 
 // Starts a native NFC scan session for reading. Calls onTag(url) when a URL
 // NDEF record is found, or onError on failure. Returns a cancel function.
-export const startNativeScan = async ({ onError, onTag }) => {
+export const startNativeScan = async ({ onTag, onError }) => {
   let listener = null
   let done = false
 

@@ -12,7 +12,6 @@ import {
 } from '@mui/joy'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
 import KeyboardShortcutHint from '../../components/common/KeyboardShortcutHint'
 import LABEL_COLORS, {
   getTextColorFromBackgroundColor,
@@ -22,8 +21,8 @@ import ProjectModal from '../Modals/Inputs/ProjectModal'
 import { useProjects } from '../Projects/ProjectQueries'
 
 const ProjectSelector = ({
-  onProjectSelect,
   selectedProject = 'Default Project',
+  onProjectSelect,
   showKeyboardShortcuts = false,
 }) => {
   const { data: projects = [], isLoading } = useProjects()
@@ -369,9 +368,7 @@ const ProjectSelector = ({
               backgroundColor:
                 effectiveSelectedProject === project.name
                   ? 'var(--joy-palette-primary-softBg)'
-                  : selectedIndex === index + 1 &&
-                      anchorEl &&
-                      isKeyboardNavigating
+                  : selectedIndex === index + 1 && anchorEl && isKeyboardNavigating
                     ? 'var(--joy-palette-neutral-softHoverBg)'
                     : 'transparent',
               '&:hover': {
@@ -462,9 +459,7 @@ const ProjectSelector = ({
           sx={{
             borderRadius: 'var(--joy-radius-sm)',
             backgroundColor:
-              selectedIndex === defaultProjects.length + 1 &&
-              anchorEl &&
-              isKeyboardNavigating
+              selectedIndex === defaultProjects.length + 1 && anchorEl && isKeyboardNavigating
                 ? 'var(--joy-palette-success-softHoverBg)'
                 : 'transparent',
             '&:hover': {
@@ -499,9 +494,7 @@ const ProjectSelector = ({
           sx={{
             borderRadius: 'var(--joy-radius-sm)',
             backgroundColor:
-              selectedIndex === defaultProjects.length + 2 &&
-              anchorEl &&
-              isKeyboardNavigating
+              selectedIndex === defaultProjects.length + 2 && anchorEl && isKeyboardNavigating
                 ? 'var(--joy-palette-neutral-softHoverBg)'
                 : 'transparent',
             '&:hover': {

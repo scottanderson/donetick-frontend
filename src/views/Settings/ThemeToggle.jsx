@@ -1,3 +1,4 @@
+import useStickyState from '@/hooks/useStickyState'
 import {
   DarkModeOutlined,
   LaptopOutlined,
@@ -11,8 +12,6 @@ import {
   useColorScheme,
 } from '@mui/joy'
 import { useTranslation } from 'react-i18next'
-
-import useStickyState from '@/hooks/useStickyState'
 
 const ELEMENTID = 'select-theme-mode'
 

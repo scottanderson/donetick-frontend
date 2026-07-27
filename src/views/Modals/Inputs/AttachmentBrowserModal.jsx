@@ -9,7 +9,6 @@ import {
   Typography,
 } from '@mui/joy'
 import { useEffect, useState } from 'react'
-
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 import { GetChoreAttachments } from '../../../utils/Fetcher'
 import { resolvePhotoURL } from '../../../utils/Helpers'

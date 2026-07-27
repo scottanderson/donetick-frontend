@@ -45,7 +45,6 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 import { useImpersonateUser } from '../../contexts/ImpersonateUserContext.jsx'
 import { useLocalization } from '../../contexts/LocalizationContext'
-import { useDescriptionHtml } from '../../hooks/useDescriptionHtml'
 import { usePendingCommands } from '../../hooks/usePendingCommands'
 import {
   useChoreDetails,
@@ -80,15 +79,16 @@ import {
 import { offlineDB } from '../../utils/OfflineDB'
 import Priorities from '../../utils/Priorities'
 import { getSafeBottomPadding } from '../../utils/SafeAreaUtils.js'
+import AttachmentBrowserModal from '../Modals/Inputs/AttachmentBrowserModal'
+import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
+import NoteViewerModal from '../Modals/Inputs/NoteViewerModal'
 import LoadingComponent from '../components/Loading.jsx'
 import PendingBadge from '../components/PendingBadge'
 import RichTextEditor from '../components/RichTextEditor.jsx'
 import SubTasks from '../components/SubTask.jsx'
-import AttachmentBrowserModal from '../Modals/Inputs/AttachmentBrowserModal'
-import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
-import NoteViewerModal from '../Modals/Inputs/NoteViewerModal'
 import TimePassedCard from './TimePassedCard.jsx'
 import TimerSplitButton from './TimerSplitButton.jsx'
+import { useDescriptionHtml } from '../../hooks/useDescriptionHtml'
 
 const isNetworkError = err =>
   err instanceof TypeError && err.message === 'Failed to fetch'
@@ -116,7 +116,7 @@ const ChoreView = () => {
   const { choreId } = useParams()
   const [note, setNote] = useState(null)
   const queryClient = useQueryClient()
-  const { showError, showSuccess, showUndo } = useNotification()
+  const { showSuccess, showError, showUndo } = useNotification()
 
   const [searchParams] = useSearchParams()
 

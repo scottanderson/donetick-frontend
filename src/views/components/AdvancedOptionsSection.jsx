@@ -26,7 +26,7 @@ const STRATEGY_OPTIONS = [
   { value: 'round_robin', label: 'Round robin' },
 ]
 
-const FieldRow = ({ children, description, label, onLabelClick }) => (
+const FieldRow = ({ label, description, children, onLabelClick }) => (
   <Box
     sx={{
       display: 'flex',
@@ -62,20 +62,16 @@ const FieldRow = ({ children, description, label, onLabelClick }) => (
 
 // Trigger button — place this inside the chip/action row
 export const AdvancedOptionsTrigger = ({
+  open,
+  onToggle,
   activeCount = 0,
   emptyDisplay = 'icon-text',
-  onToggle,
-  open,
 }) => {
   const showLabel = emptyDisplay === 'icon-text' || open || activeCount > 0
 
   return (
     <Box
-      sx={{
-        position: 'relative',
-        display: 'inline-flex',
-        alignItems: 'center',
-      }}
+      sx={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}
     >
       <Button
         size='sm'
@@ -137,22 +133,22 @@ export const AdvancedOptionsTrigger = ({
 
 // Panel — place this as a sibling below the description/subtask sections
 const AdvancedOptionsSection = ({
-  assignStrategy,
-  completionWindow,
-  deadlineOffset,
-  hasAssignees,
-  hasDueDate,
-  hasMultipleAssignees,
-  isPrivate,
-  onAssignStrategyChange,
-  onCompletionWindowChange,
-  onDeadlineOffsetChange,
-  onIsPrivateChange,
-  onPointsChange,
-  onRequireApprovalChange,
   open,
   points,
+  onPointsChange,
   requireApproval,
+  onRequireApprovalChange,
+  completionWindow,
+  onCompletionWindowChange,
+  deadlineOffset,
+  onDeadlineOffsetChange,
+  assignStrategy,
+  onAssignStrategyChange,
+  isPrivate,
+  onIsPrivateChange,
+  hasDueDate,
+  hasMultipleAssignees,
+  hasAssignees,
 }) => {
   const displayPoints = points <= 0 ? 0 : points
 

@@ -1,20 +1,11 @@
-import '@meauxt/react-swipeable-list/dist/styles.css'
-
 import {
+  Type as ListType,
   SwipeableList,
   SwipeableListItem,
   SwipeAction,
   TrailingActions,
-  Type as ListType,
 } from '@meauxt/react-swipeable-list'
-import {
-  Add,
-  FilterAlt,
-  MoreVert,
-  Star,
-  StarBorder,
-  Task,
-} from '@mui/icons-material'
+import '@meauxt/react-swipeable-list/dist/styles.css'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import {
@@ -30,10 +21,19 @@ import {
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import {
+  Add,
+  FilterAlt,
+  MoreVert,
+  Star,
+  StarBorder,
+  Task,
+} from '@mui/icons-material'
 import { useChores } from '../../queries/ChoreQueries'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
 import { getFilterCount, getFilterOverdueCount } from '../../utils/FilterEngine'
 import { getSafeBottomStyles } from '../../utils/SafeAreaUtils'
+
 import { useLabels } from '../Labels/LabelQueries'
 import AdvancedFilterBuilder from '../Modals/Inputs/AdvancedFilterBuilder'
 import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
@@ -48,9 +48,9 @@ import {
 
 const FilterCardContent = ({
   filter,
-  onToggleActions,
-  overdueCount = 0,
   taskCount = 0,
+  overdueCount = 0,
+  onToggleActions,
 }) => {
   // Get condition labels for display
   const getConditionSummary = () => {

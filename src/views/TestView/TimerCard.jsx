@@ -1,24 +1,23 @@
 import { Pause, PlayArrow, Stop, WatchLater } from '@mui/icons-material'
 import { Box, Card, CardContent, IconButton, Typography } from '@mui/joy'
 import { useEffect, useMemo } from 'react'
-
 import useTimer from '../../hooks/useTimer'
 
 const TimerCard = ({
-  onTimeUpdate = () => {}, // 'standalone' | 'infoCard' | 'floating'
+  variant = 'standalone', // 'standalone' | 'infoCard' | 'floating'
   sx = {},
+  onTimeUpdate = () => {},
   title = 'Timer',
-  variant = 'standalone',
 }) => {
   // Use the custom timer hook
   const {
-    isPaused,
+    time,
     isRunning,
+    isPaused,
+    startTimer,
     pauseTimer,
     resumeTimer,
-    startTimer,
     stopTimer,
-    time,
   } = useTimer(onTimeUpdate)
 
   // Memoize formatted time for better performance

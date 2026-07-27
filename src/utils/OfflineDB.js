@@ -1,6 +1,5 @@
-import { Capacitor } from '@capacitor/core'
 import { CapacitorSQLite } from '@capacitor-community/sqlite'
-
+import { Capacitor } from '@capacitor/core'
 import { isOfflineFeatureEnabled } from './OfflineFeatureToggle'
 
 const DB_NAME = 'donetick_offline'
@@ -631,7 +630,7 @@ class IndexedDBBackend {
   async saveChores(chores) {
     if (!chores.length) return
 
-    const { store, tx } = await this._tx('cached_chores', 'readwrite')
+    const { tx, store } = await this._tx('cached_chores', 'readwrite')
 
     for (const chore of chores) {
       store.put({
@@ -671,7 +670,7 @@ class IndexedDBBackend {
 
   async deleteChores(ids) {
     if (!ids.length) return
-    const { store, tx } = await this._tx('cached_chores', 'readwrite')
+    const { tx, store } = await this._tx('cached_chores', 'readwrite')
     for (const id of ids) {
       store.delete(id)
     }
@@ -694,7 +693,7 @@ class IndexedDBBackend {
     const choreIds = [...new Set(entries.map(e => Number(e.choreId)))]
     await this._deletePendingHistoryByChoreIds(choreIds)
     // Upsert real entries
-    const { store, tx } = await this._tx('cached_history', 'readwrite')
+    const { tx, store } = await this._tx('cached_history', 'readwrite')
     for (const entry of entries) {
       store.put({
         id: entry.id,
@@ -737,7 +736,7 @@ class IndexedDBBackend {
       .map(row => row.id)
     if (!toDelete.length) return
     // Tx 2: delete them
-    const { store: writeStore, tx } = await this._tx(
+    const { tx, store: writeStore } = await this._tx(
       'cached_history',
       'readwrite',
     )
@@ -773,7 +772,7 @@ class IndexedDBBackend {
 
   async deleteHistory(ids) {
     if (!ids.length) return
-    const { store, tx } = await this._tx('cached_history', 'readwrite')
+    const { tx, store } = await this._tx('cached_history', 'readwrite')
     for (const id of ids) {
       store.delete(id)
     }

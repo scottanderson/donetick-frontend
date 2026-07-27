@@ -1,4 +1,5 @@
-import { DarkMode, GitHub, LightMode } from '@mui/icons-material'
+/* eslint-disable tailwindcss/no-custom-classname */
+// import { StyledButton } from '@/components/styled-button'
 import { Button, IconButton, useColorScheme } from '@mui/joy'
 import Typography from '@mui/joy/Typography'
 import Box from '@mui/material/Box'
@@ -7,9 +8,9 @@ import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import Logo from '@/assets/logo.svg'
-import screenShotMyChore from '@/assets/screenshot-my-chore.png'
 import screenShotMyChoreDark from '@/assets/screenshot-my-chore-dark.png'
-
+import screenShotMyChore from '@/assets/screenshot-my-chore.png'
+import { DarkMode, GitHub, LightMode } from '@mui/icons-material'
 import useWindowWidth from '../../hooks/useWindowWidth'
 
 const HomeHero = () => {

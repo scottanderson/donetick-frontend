@@ -1,6 +1,5 @@
 import { Box, Button, Typography } from '@mui/joy'
 import { useCallback, useEffect, useState } from 'react'
-
 import KeyboardShortcutHint from '../../../components/common/KeyboardShortcutHint'
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 
@@ -73,6 +72,7 @@ function AcknowledgmentModal({ config }) {
       <Box
         sx={{ p: 2, minWidth: { xs: '100%', sm: '400px' }, maxWidth: '500px' }}
       >
+
         <Typography
           level='body-md'
           mb={3}

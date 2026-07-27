@@ -1,7 +1,6 @@
 import { Close, NotificationsNone } from '@mui/icons-material'
 import { Box, Button, IconButton, Typography } from '@mui/joy'
 import { useEffect, useRef, useState } from 'react'
-
 import NotificationTemplate from '../../components/NotificationTemplate'
 import { useResponsiveModal } from '../../hooks/useResponsiveModal'
 
@@ -12,7 +11,8 @@ const getDisplayLabel = templates => {
     const n = templates[0]
     const numericValue = Number(n.value)
     if (numericValue === 0) return 'On due date'
-    const unitName = n.unit === 'm' ? 'min' : n.unit === 'h' ? 'hr' : 'day'
+    const unitName =
+      n.unit === 'm' ? 'min' : n.unit === 'h' ? 'hr' : 'day'
     const absValue = Math.abs(numericValue)
     const plural = absValue !== 1 ? 's' : ''
     return `${absValue} ${unitName}${plural} ${numericValue < 0 ? 'before' : 'after'}`
@@ -21,11 +21,11 @@ const getDisplayLabel = templates => {
 }
 
 const NotificationPickerField = ({
-  emptyDisplay = 'icon-text',
+  value,
   onChange,
   onClear,
+  emptyDisplay = 'icon-text',
   size = 'sm',
-  value,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const latestTemplatesRef = useRef(value?.templates || [])

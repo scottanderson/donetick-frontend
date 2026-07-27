@@ -1,6 +1,5 @@
-import { Box, Container, Typography } from '@mui/joy'
-
 import ipad_screenshot from '@/assets/ipad_dashbard_calendar.png'
+import { Box, Container, Typography } from '@mui/joy'
 
 const TabletInstallationSection = () => {
   return (

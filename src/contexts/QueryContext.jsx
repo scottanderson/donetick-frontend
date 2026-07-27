@@ -1,6 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
-
 import { initWidgetSync } from '../service/WidgetService'
 
 const QueryContext = ({ children }) => {

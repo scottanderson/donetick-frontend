@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useState, useCallback } from 'react'
 
 export const useMultiSelect = () => {
   const [isMultiSelectMode, setIsMultiSelectMode] = useState(false)
@@ -42,9 +42,7 @@ export const useMultiSelect = () => {
           expandedChores.every(chore => selectedChores.has(chore.id))
 
         if (allExpandedSelected) {
-          choresToSelect = choreSections.flatMap(
-            section => section.content || [],
-          )
+          choresToSelect = choreSections.flatMap(section => section.content || [])
         } else {
           choresToSelect = expandedChores
         }

@@ -1,13 +1,3 @@
-import '@meauxt/react-swipeable-list/dist/styles.css'
-
-import {
-  SwipeableList,
-  SwipeableListItem,
-  SwipeAction,
-  TrailingActions,
-  Type as ListType,
-} from '@meauxt/react-swipeable-list'
-import { Add, MoreVert } from '@mui/icons-material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import {
@@ -20,18 +10,27 @@ import {
   Stack,
   Typography,
 } from '@mui/joy'
-import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
+import LabelModal from '../Modals/Inputs/LabelModal'
 
+import {
+  Type as ListType,
+  SwipeableList,
+  SwipeableListItem,
+  SwipeAction,
+  TrailingActions,
+} from '@meauxt/react-swipeable-list'
+import '@meauxt/react-swipeable-list/dist/styles.css'
+import { Add, MoreVert } from '@mui/icons-material'
+import { useQueryClient } from '@tanstack/react-query'
 import { useUserProfile } from '../../queries/UserQueries'
 import { getTextColorFromBackgroundColor } from '../../utils/Colors'
 import { DeleteLabel } from '../../utils/Fetcher'
 import { getSafeBottomStyles } from '../../utils/SafeAreaUtils'
 import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
-import LabelModal from '../Modals/Inputs/LabelModal'
 import { useLabels } from './LabelQueries'
 
-const LabelCardContent = ({ currentUserId, label, onToggleActions }) => {
+const LabelCardContent = ({ label, currentUserId, onToggleActions }) => {
   // Check if current user owns this label
   const isOwnedByCurrentUser = label.created_by === currentUserId
 
@@ -149,7 +148,7 @@ const LabelCardContent = ({ currentUserId, label, onToggleActions }) => {
 }
 
 const LabelView = () => {
-  const { data: labels, isError, isLabelsLoading } = useLabels()
+  const { data: labels, isLabelsLoading, isError } = useLabels()
   const { data: userProfile } = useUserProfile()
 
   const [userLabels, setUserLabels] = useState([])

@@ -15,11 +15,11 @@ import { useResponsiveModal } from '../../hooks/useResponsiveModal'
 import { VerifyMFA } from '../../utils/Fetcher'
 
 const MFAVerificationModal = ({
-  onClose,
-  onError,
-  onSuccess,
   open,
+  onClose,
   sessionToken,
+  onSuccess,
+  onError,
 }) => {
   const [verificationCode, setVerificationCode] = useState('')
   const [isBackupCode, setIsBackupCode] = useState(false)

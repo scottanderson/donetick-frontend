@@ -1,11 +1,11 @@
 import { Box, Skeleton } from '@mui/joy'
 
 const SkeletonLoader = ({
+  type = 'card',
   count = 1,
   height = 100,
-  type = 'card',
-  variant = 'rectangular',
   width = '100%',
+  variant = 'rectangular',
   ...props
 }) => {
   const renderSkeleton = () => {

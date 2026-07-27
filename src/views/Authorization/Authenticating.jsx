@@ -1,11 +1,11 @@
-import { Capacitor } from '@capacitor/core'
 import { Box, Button, CircularProgress, Container, Typography } from '@mui/joy'
-import Cookies from 'js-cookie'
 import { useEffect, useState } from 'react'
+import Logo from '../../Logo'
+
+import { Capacitor } from '@capacitor/core'
+import Cookies from 'js-cookie'
 import { useRef } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-
-import Logo from '../../Logo'
 import { useUserProfile } from '../../queries/UserQueries'
 import { apiClient } from '../../utils/ApiClient'
 import { GetUserProfile } from '../../utils/Fetcher'

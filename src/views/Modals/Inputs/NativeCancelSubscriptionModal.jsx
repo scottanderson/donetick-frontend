@@ -1,5 +1,4 @@
 import { Box, Button, Typography } from '@mui/joy'
-
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 
 const NativeCancelSubscriptionModal = ({ isOpen, onClose }) => {

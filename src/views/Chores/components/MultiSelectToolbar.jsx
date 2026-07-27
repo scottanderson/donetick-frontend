@@ -9,20 +9,19 @@ import {
   SkipNext,
 } from '@mui/icons-material'
 import { Box, Button, Divider, Typography } from '@mui/joy'
-
 import KeyboardShortcutHint from '../../../components/common/KeyboardShortcutHint'
 
 const MultiSelectToolbar = ({
   isVisible,
-  onArchive,
+  selectedCount,
+  onSelectAll,
   onClear,
   onComplete,
-  onDelete,
-  onSelectAll,
   onSkip,
-  selectAllDisabled,
-  selectedCount,
+  onArchive,
+  onDelete,
   showKeyboardShortcuts,
+  selectAllDisabled,
 }) => {
   return (
     <Box

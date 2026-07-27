@@ -12,18 +12,17 @@ import {
 } from '@mui/joy'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
-
 import { useLocalization } from '../../../contexts/LocalizationContext'
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
+import { useNotification } from '../../../service/NotificationProvider'
 import {
   useChoreTimer,
   useDeleteTimeSession,
   useUpdateTimeSession,
 } from '../../../queries/TimeQueries'
-import { useNotification } from '../../../service/NotificationProvider'
 import ConfirmationModal from './ConfirmationModal'
 
-const TimerEditModal = ({ choreId, isOpen, onClose, onTimerUpdate }) => {
+const TimerEditModal = ({ isOpen, onClose, choreId, onTimerUpdate }) => {
   const { ResponsiveModal } = useResponsiveModal()
   const { fmt } = useLocalization()
 
@@ -59,6 +58,7 @@ const TimerEditModal = ({ choreId, isOpen, onClose, onTimerUpdate }) => {
       if (interval) clearInterval(interval)
     }
   }, [isOpen, timerData])
+
 
   const formatTime = seconds => {
     const hours = Math.floor(seconds / 3600)
@@ -154,6 +154,7 @@ const TimerEditModal = ({ choreId, isOpen, onClose, onTimerUpdate }) => {
 
   const cancelEditingSession = sessionId => {
     setEditingSessions(prev => {
+      // eslint-disable-next-line no-unused-vars
       const { [sessionId]: removed, ...rest } = prev
       return rest
     })

@@ -1,27 +1,33 @@
 import { Save } from '@mui/icons-material'
-import { Box, Button, Chip, Divider, Input, Typography } from '@mui/joy'
+import {
+  Box,
+  Button,
+  Chip,
+  Divider,
+  Input,
+  Typography,
+} from '@mui/joy'
 import { useEffect, useMemo, useState } from 'react'
-
 import BottomSheetModal from '../../../components/common/BottomSheetModal'
-import { FILTER_COLORS } from '../../../utils/Colors'
-import { applyFilter } from '../../../utils/FilterEngine'
 import FilterBuilderContent, {
   conditionsToSelections,
   defaultSelections,
   selectionsToConditions,
 } from '../../Chores/components/FilterBuilderContent'
+import { FILTER_COLORS } from '../../../utils/Colors'
+import { applyFilter } from '../../../utils/FilterEngine'
 import { useFilters } from '../../Filters/FilterQueries'
 
 const AdvancedFilterBuilder = ({
-  allChores = [],
-  editingFilter = null,
   isOpen,
-  labels = [],
-  members = [],
   onClose,
   onSave,
+  members = [],
+  labels = [],
   projects = [],
+  allChores = [],
   userProfile = null,
+  editingFilter = null,
 }) => {
   const [filterName, setFilterName] = useState('')
   const [filterColor, setFilterColor] = useState(FILTER_COLORS[0].value)
@@ -51,10 +57,7 @@ const AdvancedFilterBuilder = ({
     setError('')
   }, [editingFilter, isOpen])
 
-  const conditions = useMemo(
-    () => selectionsToConditions(selections),
-    [selections],
-  )
+  const conditions = useMemo(() => selectionsToConditions(selections), [selections])
 
   const previewChores = useMemo(() => {
     if (conditions.length === 0) return []
@@ -106,8 +109,7 @@ const AdvancedFilterBuilder = ({
           {editingFilter ? 'Edit Filter' : 'New Filter'}
           {activeConditionCount > 0 && (
             <Chip size='sm' variant='solid' color='primary'>
-              {activeConditionCount} condition
-              {activeConditionCount !== 1 ? 's' : ''}
+              {activeConditionCount} condition{activeConditionCount !== 1 ? 's' : ''}
             </Chip>
           )}
         </Box>

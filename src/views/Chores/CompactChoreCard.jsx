@@ -10,7 +10,6 @@ import {
 } from '@mui/icons-material'
 import { Box, Checkbox, Chip, IconButton, Typography } from '@mui/joy'
 import { useNavigate } from 'react-router-dom'
-
 import { useImpersonateUser } from '../../contexts/ImpersonateUserContext.jsx'
 import { useLocalization } from '../../contexts/LocalizationContext'
 import { usePendingCommands } from '../../hooks/usePendingCommands'
@@ -30,17 +29,17 @@ import PendingBadge from '../components/PendingBadge'
 
 const CompactChoreCard = ({
   chore,
-  isMultiSelectMode = false,
-  isSelected = false,
-  onAction,
-  onChipClick,
-  onSelectionToggle,
-  onlyClickable = false,
-  // Multi-select props
   performers,
-  showActions = true,
   sx,
   viewOnly,
+  showActions = true,
+  onChipClick,
+  onAction,
+  // Multi-select props
+  isMultiSelectMode = false,
+  isSelected = false,
+  onSelectionToggle,
+  onlyClickable = false,
 }) => {
   const navigate = useNavigate()
 

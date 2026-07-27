@@ -14,7 +14,6 @@ import imageCompression from 'browser-image-compression'
 import { useRef, useState } from 'react'
 import Cropper from 'react-easy-crop'
 import { useTranslation } from 'react-i18next'
-
 import { useUserProfile } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'
 import { apiClient } from '../../utils/ApiClient'
@@ -27,7 +26,7 @@ const ProfileSettings = () => {
   const { t } = useTranslation('settings')
   const queryClient = useQueryClient()
   const { data: userProfile, refetch: refetchUserProfile } = useUserProfile()
-  const { showError, showSuccess } = useNotification()
+  const { showSuccess, showError } = useNotification()
   const [displayName, setDisplayName] = useState(userProfile?.displayName || '')
   const [timezone, setTimezone] = useState(
     userProfile?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -142,7 +141,9 @@ const ProfileSettings = () => {
   return (
     <SettingsLayout title={t('profile.title')}>
       <div className='grid gap-4 py-4' id='profile'>
-        <Typography level='body-md'>{t('profile.description')}</Typography>
+        <Typography level='body-md'>
+          {t('profile.description')}
+        </Typography>
         <Card
           sx={{
             display: 'flex',
@@ -152,10 +153,7 @@ const ProfileSettings = () => {
             maxWidth: 400,
           }}
         >
-          <Avatar
-            src={resolvePhotoURL(userProfile?.image)}
-            sx={{ width: 64, height: 64 }}
-          />
+          <Avatar src={resolvePhotoURL(userProfile?.image)} sx={{ width: 64, height: 64 }} />
           <Box sx={{ flex: 1 }}>
             <Button
               variant='soft'

@@ -8,7 +8,6 @@ import {
 import { Box, Card, Chip, Typography } from '@mui/joy'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
 import { useLocalization } from '../../contexts/LocalizationContext'
 
 const TimePassedCard = ({ chore, handleAction, onShowDetails }) => {

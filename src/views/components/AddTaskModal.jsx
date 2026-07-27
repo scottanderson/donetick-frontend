@@ -4,23 +4,13 @@ import { useMediaQuery } from '@mui/material'
 import * as chrono from 'chrono-node'
 import moment from 'moment'
 import { useCallback, useEffect, useRef, useState } from 'react'
-
-import KeyboardShortcutHint from '../../components/common/KeyboardShortcutHint'
-import { useDocumentScanner } from '../../hooks/useDocumentScanner'
 import { useResponsiveModal } from '../../hooks/useResponsiveModal'
 import { useCreateChore } from '../../queries/ChoreQueries'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
-import { localAIService } from '../../service/LocalAIService'
-import { TASK_COLOR } from '../../utils/Colors'
 import { isPlusAccount } from '../../utils/Helpers'
 import { generateUUID } from '../../utils/UUID'
 import { useLabels } from '../Labels/LabelQueries'
 import { useProjects } from '../Projects/ProjectQueries'
-import AdvancedOptionsSection, {
-  AdvancedOptionsTrigger,
-} from './AdvancedOptionsSection'
-import AssigneePickerField from './AssigneePickerField'
-import AttachmentPickerField from './AttachmentPickerField'
 import {
   parseAssignees,
   parseDueDate,
@@ -29,6 +19,17 @@ import {
   parsePriority,
   parseRepeatV2,
 } from './CustomParsers'
+import SmartTaskTitleInput from './SmartTaskTitleInput'
+
+import KeyboardShortcutHint from '../../components/common/KeyboardShortcutHint'
+import { useDocumentScanner } from '../../hooks/useDocumentScanner'
+import { localAIService } from '../../service/LocalAIService'
+import { TASK_COLOR } from '../../utils/Colors'
+import AdvancedOptionsSection, {
+  AdvancedOptionsTrigger,
+} from './AdvancedOptionsSection'
+import AssigneePickerField from './AssigneePickerField'
+import AttachmentPickerField from './AttachmentPickerField'
 import DueDatePickerField from './DueDatePickerField'
 import LabelsPickerField from './LabelsPickerField'
 import LearnMoreButton from './LearnMore'
@@ -37,7 +38,6 @@ import PriorityPickerField from './PriorityPickerField'
 import RepeatPickerField from './RepeatPickerField'
 import RichTextEditor from './RichTextEditor'
 import ScanPanel from './ScanToTask/ScanPanel'
-import SmartTaskTitleInput from './SmartTaskTitleInput'
 import SubTasks from './SubTask'
 const getDefaultNotification = () => {
   const storedDefault = localStorage.getItem('defaultNotificationTemplate')
@@ -57,7 +57,7 @@ const getDefaultNotification = () => {
   return defaultNotification
 }
 
-const TaskInput = ({ isModalOpen, onChoreUpdate, onClose }) => {
+const TaskInput = ({ onChoreUpdate, isModalOpen, onClose }) => {
   const { ResponsiveModal } = useResponsiveModal()
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
   const pickerEmptyDisplay = isMobile ? 'icon' : 'icon-text'
@@ -157,11 +157,11 @@ const TaskInput = ({ isModalOpen, onChoreUpdate, onClose }) => {
   useEffect(() => {
     const handleKeyDown = event => {
       const {
-        createChore,
-        dueDate,
-        handleCloseModal,
-        hasDescription,
         isModalOpen,
+        hasDescription,
+        dueDate,
+        createChore,
+        handleCloseModal,
       } = latestRef.current
       const isHoldingCmd = event.ctrlKey || event.metaKey
       if (isHoldingCmd) {
@@ -569,9 +569,9 @@ const TaskInput = ({ isModalOpen, onChoreUpdate, onClose }) => {
   }
 
   const handleTaskExtracted = ({
+    taskName,
     description: extractedDesc,
     dueDate: extractedDue,
-    taskName,
   }) => {
     if (taskName) {
       processText(taskName)

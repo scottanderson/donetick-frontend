@@ -1,8 +1,7 @@
+import useStickyState from '@/hooks/useStickyState'
 import moment from 'moment'
 import { createContext, useContext, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import useStickyState from '@/hooks/useStickyState'
 
 const LocalizationContext = createContext()
 

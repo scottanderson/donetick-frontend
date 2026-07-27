@@ -1,14 +1,13 @@
 import { Circle, SignalWifi4Bar, SignalWifiOff } from '@mui/icons-material'
 import { Box, Chip, Tooltip, Typography } from '@mui/joy'
-
 import { useSSEContext } from '../hooks/useSSEContext'
 
 const SSEConnectionStatus = ({
+  variant = 'minimal',
   showError = false,
   sx = {},
-  variant = 'minimal',
 }) => {
-  const { error, getConnectionStatus, isConnected, isConnecting } =
+  const { isConnected, isConnecting, error, getConnectionStatus } =
     useSSEContext()
 
   const getStatusColor = () => {

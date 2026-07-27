@@ -1,11 +1,10 @@
 import { FilterAlt } from '@mui/icons-material'
 import { Box, Stack, Typography } from '@mui/joy'
-
 import { getIconComponent } from '../../../utils/ProjectIcons.jsx'
 
 const MyChoreHeader = ({
-  activeFilter,
   activeFilterId,
+  activeFilter,
   selectedProject,
   tempFilter,
   tempFilterMeta,

@@ -3,7 +3,6 @@ import { Capacitor } from '@capacitor/core'
 import { Close, Download } from '@mui/icons-material'
 import { Box, Button, CircularProgress, Typography } from '@mui/joy'
 import { useState } from 'react'
-
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 
 const openUrl = async url => {
@@ -33,7 +32,7 @@ function AttachmentViewerModal({ config }) {
   const [imgLoaded, setImgLoaded] = useState(false)
   const [imgError, setImgError] = useState(false)
 
-  const { fileName, isOpen, onClose, url } = config || {}
+  const { isOpen, url, fileName, onClose } = config || {}
 
   const handleClose = () => {
     setImgLoaded(false)
@@ -79,7 +78,10 @@ function AttachmentViewerModal({ config }) {
         }}
       >
         {!imgLoaded && !imgError && (
-          <CircularProgress sx={{ position: 'absolute' }} size='md' />
+          <CircularProgress
+            sx={{ position: 'absolute' }}
+            size='md'
+          />
         )}
         {imgError ? (
           <Typography level='body-sm' sx={{ color: 'text.secondary' }}>

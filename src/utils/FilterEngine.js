@@ -13,7 +13,7 @@
  * @returns {boolean} - Whether the chore matches the condition
  */
 export const evaluateCondition = (chore, condition, context = {}) => {
-  const { operator, type, value } = condition
+  const { type, operator, value } = condition
 
   switch (type) {
     case 'assignee':
@@ -343,7 +343,7 @@ export const getFilterOverdueCount = (chores, filter, context = {}) => {
  * @returns {Object} - { isValid: boolean, issues: Array }
  */
 export const validateFilter = (filter, context = {}) => {
-  const { labels = [], members = [], projects = [] } = context
+  const { members = [], labels = [], projects = [] } = context
   const issues = []
 
   if (!filter.conditions || filter.conditions.length === 0) {

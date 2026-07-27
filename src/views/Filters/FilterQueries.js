@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-
 import {
   CreateFilter,
   DeleteFilter,
@@ -143,7 +142,7 @@ export const useUpdateFilter = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ filterData, filterId }) => {
+    mutationFn: async ({ filterId, filterData }) => {
       try {
         const response = await UpdateFilter(filterId, filterData)
         if (response.ok) {

@@ -26,7 +26,6 @@ import Cookies from 'js-cookie'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LoginSocialGoogle } from 'reactjs-social-login'
-
 import { GOOGLE_CLIENT_ID, REDIRECT_URL } from '../../Config'
 import { useAuth } from '../../hooks/useAuth.jsx'
 import Logo from '../../Logo'
@@ -619,7 +618,7 @@ const LoginView = () => {
                     discoveryDocs='claims_supported'
                     access_type='online'
                     isOnlyGetToken={true}
-                    onResolve={({ data, provider }) => {
+                    onResolve={({ provider, data }) => {
                       loggedWithProvider(provider, data)
                     }}
                     onReject={() => {
@@ -702,6 +701,7 @@ const LoginView = () => {
                     sx={{ mt: 3, mb: 2 }}
                     onClick={async () => {
                       try {
+                      
                         const user = await SocialLogin.login({
                           provider: 'google',
                           options: { scopes: ['profile', 'email', 'openid'] },

@@ -1,22 +1,21 @@
 import {
-  Avatar,
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Grid,
-  Typography,
+    Avatar,
+    Box,
+    Button,
+    FormControl,
+    FormLabel,
+    Grid,
+    Typography,
 } from '@mui/joy'
-
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 import { getTextColorFromBackgroundColor } from '../../../utils/Colors'
 import PROJECT_ICONS from '../../../utils/ProjectIcons'
 
 const IconPickerModal = ({
-  currentIcon,
   isOpen,
   onClose,
   onSelect,
+  currentIcon,
   projectColor,
 }) => {
   const { ResponsiveModal } = useResponsiveModal()
@@ -35,6 +34,7 @@ const IconPickerModal = ({
       unmountDelay={250}
       title='Choose Project Icon'
     >
+
       <FormControl>
         <FormLabel>Available Icons</FormLabel>
         <Grid
@@ -58,9 +58,7 @@ const IconPickerModal = ({
                     border: '2px solid',
                     borderColor: isCurrentIcon ? 'primary.500' : 'transparent',
                     '&:hover': {
-                      borderColor: isCurrentIcon
-                        ? 'primary.600'
-                        : 'neutral.300',
+                      borderColor: isCurrentIcon ? 'primary.600' : 'neutral.300',
                     },
                     transition: 'border-color 0.2s',
                   }}

@@ -27,7 +27,6 @@ import { useQueryClient } from '@tanstack/react-query'
 import Fuse from 'fuse.js'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
 import FilterBar from '../../components/common/FilterBar'
 import KeyboardShortcutHint from '../../components/common/KeyboardShortcutHint'
 import { useImpersonateUser } from '../../contexts/ImpersonateUserContext.jsx'
@@ -37,6 +36,7 @@ import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'
 import { commandQueue, CommandType } from '../../utils/CommandQueue'
 import { DeleteChore, GetArchivedChores } from '../../utils/Fetcher'
+import Priorities from '../../utils/Priorities'
 import { offlineDB } from '../../utils/OfflineDB'
 import { isOfflineFeatureEnabled } from '../../utils/OfflineFeatureToggle'
 import LoadingComponent from '../components/Loading'
@@ -91,7 +91,7 @@ const applyPendingArchivedState = async chores => {
 const ArchivedTasks = () => {
   const { data: userProfile, isLoading: isUserProfileLoading } =
     useUserProfile()
-  const { showError, showSuccess } = useNotification()
+  const { showSuccess, showError } = useNotification()
   const { impersonatedUser } = useImpersonateUser()
   const queryClient = useQueryClient()
   const unArchiveChore = useUnArchiveChore()
@@ -198,11 +198,11 @@ const ArchivedTasks = () => {
   )
 
   const {
-    activeFilters,
-    clearAll,
     filteredData: finalChores,
-    hasActiveFilters,
+    activeFilters,
     setFilter,
+    clearAll,
+    hasActiveFilters,
   } = useFilter(filteredChores, filterDefs)
 
   useEffect(() => {

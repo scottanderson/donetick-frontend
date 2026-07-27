@@ -1,5 +1,4 @@
 import moment from 'moment'
-
 import { apiClient } from './ApiClient'
 
 const isPlusAccount = userProfile => {

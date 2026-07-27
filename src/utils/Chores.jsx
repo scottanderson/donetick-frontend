@@ -1,5 +1,4 @@
 import moment from 'moment'
-
 import { TASK_COLOR } from './Colors.jsx'
 
 const priorityOrder = [1, 2, 3, 4, 0]
@@ -212,7 +211,7 @@ export const ChoresGrouper = (groupBy, chores, filter) => {
     }
 
     case 'due_date': {
-      var { anytime: dueAnytime, dateGroups: dueDateGroups } =
+      var { dateGroups: dueDateGroups, anytime: dueAnytime } =
         buildActualDateGroups(chores)
       groups = [...dueDateGroups]
       if (dueAnytime.length > 0) {

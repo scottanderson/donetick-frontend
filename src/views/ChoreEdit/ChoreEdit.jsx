@@ -37,7 +37,6 @@ import {
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-
 import DurationInput from '../../components/common/DurationInput'
 import KeyboardShortcutHint from '../../components/common/KeyboardShortcutHint'
 import NotificationTemplate from '../../components/NotificationTemplate.jsx'
@@ -61,10 +60,10 @@ import {
 } from '../../utils/Fetcher'
 import { isPlusAccount, resolvePhotoURL } from '../../utils/Helpers'
 import { getImageSrc, removeCachedImage } from '../../utils/ImageCache'
+import { generateUUID } from '../../utils/UUID'
 import Priorities from '../../utils/Priorities.jsx'
 import { getIconComponent } from '../../utils/ProjectIcons'
 import { getSafeBottomPadding } from '../../utils/SafeAreaUtils.js'
-import { generateUUID } from '../../utils/UUID'
 import { useProjectFilter } from '../Chores/hooks/useProjectFilter.js'
 import LoadingComponent from '../components/Loading.jsx'
 import RichTextEditor from '../components/RichTextEditor.jsx'
@@ -152,7 +151,7 @@ const ChoreEdit = () => {
   const { data: userLabelsRaw, isLoading: isUserLabelsLoading } = useLabels()
   const { data: projects = [], isLoading: isProjectsLoading } = useProjects()
 
-  const { projectsWithDefault, selectedProject, setSelectedProjectWithCache } =
+  const { selectedProject, projectsWithDefault, setSelectedProjectWithCache } =
     useProjectFilter(projects)
 
   const [projectId, setProjectId] = useState(
@@ -171,7 +170,7 @@ const ChoreEdit = () => {
   } = useChore(choreId)
   const { data: membersData, isLoading: isMemberDataLoading } =
     useCircleMembers()
-  const { showError, showSuccess } = useNotification()
+  const { showSuccess, showError } = useNotification()
 
   const [userLabels, setUserLabels] = useState([])
 

@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-
 import {
   ClearChoreTimer,
   DeleteTimeSession,
@@ -57,7 +56,7 @@ export const useUpdateTimeSession = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ choreId, sessionData, sessionId }) =>
+    mutationFn: ({ choreId, sessionId, sessionData }) =>
       UpdateTimeSession(choreId, sessionId, sessionData),
     onSuccess: (_, { choreId }) => {
       queryClient.invalidateQueries(['choreTimer', choreId])

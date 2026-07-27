@@ -1,9 +1,8 @@
 import { Box, Button, Input } from '@mui/joy'
 import { useState } from 'react'
-
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 
-function DateModal({ current, isOpen, onClose, onSave, title }) {
+function DateModal({ isOpen, onClose, onSave, current, title }) {
   const { ResponsiveModal } = useResponsiveModal()
 
   const [date, setDate] = useState(

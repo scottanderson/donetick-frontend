@@ -7,7 +7,7 @@ import {
 import { Link } from 'react-router-dom'
 
 const NavBarLink = ({ link }) => {
-  const { icon, label, to } = link
+  const { to, icon, label } = link
   return (
     <ListItem>
       <ListItemButton

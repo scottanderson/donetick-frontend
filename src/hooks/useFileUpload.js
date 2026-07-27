@@ -1,15 +1,14 @@
 import imageCompression from 'browser-image-compression'
 import { useCallback } from 'react'
-
 import { useUserProfile } from '../queries/UserQueries'
 import { useNotification } from '../service/NotificationProvider'
 import { apiClient } from '../utils/ApiClient'
 import { isPlusAccount, resolvePhotoURL } from '../utils/Helpers'
 
 export const useFileUpload = ({
-  draftId,
-  entityId,
   entityType = 'chore_attachment',
+  entityId,
+  draftId,
 } = {}) => {
   const { showError } = useNotification()
   const { data: userProfile } = useUserProfile()

@@ -63,7 +63,7 @@ const Error = () => {
   const [showDetails, setShowDetails] = useState(false)
   const [copied, setCopied] = useState(false)
 
-  const { Icon, color } = getErrorKind(error)
+  const { color, Icon } = getErrorKind(error)
   const message = safeMessage(error)
   const url = window.location.href
 

@@ -7,6 +7,7 @@ import {
   PriorityHigh,
   Style,
 } from '@mui/icons-material'
+import Logo from '../../Logo'
 import {
   Accordion,
   AccordionDetails,
@@ -19,36 +20,38 @@ import {
   IconButton,
   Typography,
 } from '@mui/joy'
-import { useMediaQuery } from '@mui/material'
-import { useQueryClient } from '@tanstack/react-query'
 import Fuse from 'fuse.js'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-
-import KeyboardShortcutHint from '../../components/common/KeyboardShortcutHint'
-import { useImpersonateUser } from '../../contexts/ImpersonateUserContext.jsx'
-import { useFilter } from '../../hooks/useFilter'
-import Logo from '../../Logo'
 import { useChores } from '../../queries/ChoreQueries'
-import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
 import { useNotification } from '../../service/NotificationProvider'
+import Priorities from '../../utils/Priorities'
+import LoadingComponent from '../components/Loading'
+import { useLabels } from '../Labels/LabelQueries'
+import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
+import IconButtonWithMenu from './IconButtonWithMenu'
+
+import { useMediaQuery } from '@mui/material'
+import { useQueryClient } from '@tanstack/react-query'
+import KeyboardShortcutHint from '../../components/common/KeyboardShortcutHint'
+import { useFilter } from '../../hooks/useFilter'
+import { useImpersonateUser } from '../../contexts/ImpersonateUserContext.jsx'
+import { useCircleMembers, useUserProfile } from '../../queries/UserQueries'
 import {
   ChoreFilters,
   ChoresGrouper,
   ChoreSorter,
   filterByProject,
 } from '../../utils/Chores'
-import Priorities from '../../utils/Priorities'
 import { getSafeBottom } from '../../utils/SafeAreaUtils.js'
 import TaskInput from '../components/AddTaskModal'
 import CalendarDual from '../components/CalendarDual'
 import CalendarMonthly from '../components/CalendarMonthly.jsx'
 import AdvancedFilterBuilder from '../Modals/Inputs/AdvancedFilterBuilder'
-import ConfirmationModal from '../Modals/Inputs/ConfirmationModal'
 import { useProjects } from '../Projects/ProjectQueries.js'
 import ChoreListView from './ChoreListView.jsx'
-import ChoreModals from './components/ChoreModals'
 import ChoreToolbar from './components/ChoreToolbarPrototype'
+import ChoreModals from './components/ChoreModals'
 import MultiSelectToolbar from './components/MultiSelectToolbar'
 import MyChoreHeader from './components/MyChoreHeader'
 import { useChoreActions } from './hooks/useChoreActions'
@@ -58,7 +61,6 @@ import { useCustomFilters } from './hooks/useCustomFilters'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useMultiSelect } from './hooks/useMultiSelect'
 import { useProjectFilter } from './hooks/useProjectFilter'
-import IconButtonWithMenu from './IconButtonWithMenu'
 import {
   canScheduleNotification,
   scheduleChoreNotification,
@@ -71,7 +73,7 @@ const MyChores = () => {
   const { data: userProfile, isLoading: isUserProfileLoading } =
     useUserProfile()
   const isLargeScreen = useMediaQuery(theme => theme.breakpoints.up('md'))
-  const { showError, showSuccess, showUndo, showWarning } = useNotification()
+  const { showSuccess, showError, showWarning, showUndo } = useNotification()
   const queryClient = useQueryClient()
   const { impersonatedUser } = useImpersonateUser()
   const Navigate = useNavigate()
@@ -80,15 +82,15 @@ const MyChores = () => {
   const { data: projects = [], isLoading: projectsLoading } = useProjects()
   const {
     data: choresData,
-    error: choresErrorDetails,
-    isError: choresError,
     isLoading: choresLoading,
+    isError: choresError,
+    error: choresErrorDetails,
     refetch: refetchChores,
   } = useChores(false)
   const {
     data: membersData,
-    isError: membersError,
     isLoading: membersLoading,
+    isError: membersError,
   } = useCircleMembers()
 
   const [chores, setChores] = useState([])
@@ -116,15 +118,15 @@ const MyChores = () => {
   const menuRef = useRef(null)
   const [confirmModelConfig, setConfirmModelConfig] = useState({})
 
-  const { projectsWithDefault, selectedProject, setSelectedProjectWithCache } =
+  const { selectedProject, projectsWithDefault, setSelectedProjectWithCache } =
     useProjectFilter(projects)
 
   const {
-    nonProjectFilteredChores,
-    projectFilteredChores,
-    searchFilteredChores,
     searchTerm,
     selectedChoreFilter,
+    projectFilteredChores,
+    searchFilteredChores,
+    nonProjectFilteredChores,
     setSearchTerm,
     setSelectedChoreFilterWithCache,
   } = useChoreFilters({
@@ -135,36 +137,36 @@ const MyChores = () => {
   })
 
   const {
+    isMultiSelectMode,
+    selectedChores,
+    toggleMultiSelectMode,
+    toggleChoreSelection,
+    selectAllVisibleChores,
     clearSelection,
     getSelectedChoresData,
-    isMultiSelectMode,
-    selectAllVisibleChores,
-    selectedChores,
-    toggleChoreSelection,
-    toggleMultiSelectMode,
   } = useMultiSelect()
 
-  const { activeModal, closeModal, modalChore, modalData, openModal } =
+  const { activeModal, modalChore, modalData, openModal, closeModal } =
     useChoreModals()
 
   const {
+    savedFilters,
     activeFilter,
     activeFilterId,
-    applyCustomFilter,
-    applyTempFilter,
-    clearActiveFilter,
-    clearTempFilter,
-    createFilterFromCurrentState,
-    deleteFilter,
-    filteredChores: customFilteredChores,
-    hasFilterApplied,
-    hasProjectConditions,
-    pinFilter,
-    saveFilter,
-    savedFilters,
     tempFilter,
     tempFilterMeta,
+    filteredChores: customFilteredChores,
+    applyCustomFilter,
+    clearActiveFilter,
+    applyTempFilter,
+    clearTempFilter,
+    saveFilter,
     updateFilter,
+    deleteFilter,
+    pinFilter,
+    createFilterFromCurrentState,
+    hasProjectConditions,
+    hasFilterApplied,
   } = useCustomFilters(
     nonProjectFilteredChores,
     membersData?.res,
@@ -207,7 +209,8 @@ const MyChores = () => {
               )
             case 'Due Later':
               return (
-                d !== null && d > new Date(now.getTime() + 24 * 60 * 60 * 1000)
+                d !== null &&
+                d > new Date(now.getTime() + 24 * 60 * 60 * 1000)
               )
             case 'No Due Date':
               return item.nextDueDate === null
@@ -265,10 +268,10 @@ const MyChores = () => {
   )
 
   const {
-    clearAll: clearQuickFilters,
     filteredData: quickFilteredChores,
-    hasActiveFilters: hasQuickFilters,
     setFilter: setQuickFilter,
+    clearAll: clearQuickFilters,
+    hasActiveFilters: hasQuickFilters,
   } = useFilter(projectFilteredChores, quickFilterDefs)
 
   const processedChores = useMemo(() => {
@@ -551,16 +554,16 @@ const MyChores = () => {
   }, [tempFilterMeta?.id, searchParams])
 
   const {
+    handleChoreAction,
+    handleChangeDueDate,
+    handleCompleteWithPastDate,
     handleAssigneeChange,
-    handleBulkArchive,
+    handleCompleteWithNote,
+    handleNudge,
     handleBulkComplete,
+    handleBulkArchive,
     handleBulkDelete,
     handleBulkSkip,
-    handleChangeDueDate,
-    handleChoreAction,
-    handleCompleteWithNote,
-    handleCompleteWithPastDate,
-    handleNudge,
   } = useChoreActions({
     chores,
     filteredChores,
@@ -620,8 +623,7 @@ const MyChores = () => {
     selectedChores,
     addTaskModalOpen,
     searchTerm,
-    searchFilter:
-      hasQuickFilters || searchTerm?.length > 0 ? 'filtered' : 'All',
+    searchFilter: hasQuickFilters || searchTerm?.length > 0 ? 'filtered' : 'All',
     filteredChores: getFilteredChores,
     choreSections,
     openChoreSections,
@@ -778,12 +780,10 @@ const MyChores = () => {
   }
 
   const toggleViewMode = value => {
-    const newMode =
-      value ??
-      (() => {
-        const modes = ['default', 'compact', 'calendar']
-        return modes[(modes.indexOf(viewMode) + 1) % modes.length]
-      })()
+    const newMode = value ?? (() => {
+      const modes = ['default', 'compact', 'calendar']
+      return modes[(modes.indexOf(viewMode) + 1) % modes.length]
+    })()
     setViewMode(newMode)
     localStorage.setItem('choreCardViewMode', newMode)
     if (newMode !== 'calendar') {

@@ -1,5 +1,4 @@
 import { Capacitor } from '@capacitor/core'
-
 import DateModal from '../../Modals/Inputs/DateModal'
 import NudgeModal from '../../Modals/Inputs/NudgeModal'
 import SelectModal from '../../Modals/Inputs/SelectModal'
@@ -13,14 +12,14 @@ const getNFCUrl = choreId =>
 
 const ChoreModals = ({
   activeModal,
-  membersData,
   modalChore,
-  onAssigneeChange,
+  membersData,
   onChangeDueDate,
-  onClose,
-  onCompleteWithNote,
   onCompleteWithPastDate,
+  onAssigneeChange,
+  onCompleteWithNote,
   onNudge,
+  onClose,
 }) => {
   return (
     <>

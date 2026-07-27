@@ -1,13 +1,12 @@
 import { FolderOpen } from '@mui/icons-material'
-
 import BaseOptionPicker from './BaseOptionPicker'
 
 const ProjectPickerField = ({
-  emptyDisplay = 'icon-text',
+  value = 'default',
   onChange,
   onClear,
   projects = [],
-  value = 'default',
+  emptyDisplay = 'icon-text',
 }) => {
   const options = [
     { id: 'default', name: 'Default Project', color: '#9CA3AF' },
@@ -38,7 +37,7 @@ const ProjectPickerField = ({
           }}
         />
       )}
-      getTriggerText={({ isEmpty, selectedItems }) =>
+      getTriggerText={({ selectedItems, isEmpty }) =>
         isEmpty ? 'Project' : selectedItems[0].name
       }
       menuMinWidth={240}

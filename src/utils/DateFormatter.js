@@ -1,6 +1,10 @@
 import moment from 'moment'
 
-export const createDateFormatter = (dateFormat, timeFormat, firstDayOfWeek) => {
+export const createDateFormatter = (
+  dateFormat,
+  timeFormat,
+  firstDayOfWeek,
+) => {
   moment.updateLocale('en', {
     week: {
       dow: firstDayOfWeek,

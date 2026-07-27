@@ -1,8 +1,7 @@
+import { COLORS } from '@/constants/theme'
 import { CssBaseline } from '@mui/joy'
 import { CssVarsProvider, extendTheme } from '@mui/joy/styles'
 import PropType from 'prop-types'
-
-import { COLORS } from '@/constants/theme'
 
 const primaryColor = 'cyan'
 

@@ -1,12 +1,11 @@
-import '@meauxt/react-swipeable-list/dist/styles.css'
-
 import {
+  Type as ListType,
   SwipeableList,
   SwipeableListItem,
   SwipeAction,
   TrailingActions,
-  Type as ListType,
 } from '@meauxt/react-swipeable-list'
+import '@meauxt/react-swipeable-list/dist/styles.css'
 import {
   Check,
   Delete,
@@ -19,24 +18,23 @@ import {
 } from '@mui/icons-material'
 import { Box, Typography } from '@mui/joy'
 import { useNavigate } from 'react-router-dom'
-
 import ChoreCard from './ChoreCard'
 import CompactChoreCard from './CompactChoreCard'
 
 const ChoreListView = ({
   chores,
-  handleChoreAction,
-  handleLabelFiltering,
-  isMultiSelectMode,
-  isOfficialInstance,
-  membersData,
-  selectedChores,
-  showActions = true,
-  toggleChoreSelection,
-  toggleMultiSelectMode,
-  userLabels,
-  userProfile,
   viewMode,
+  membersData,
+  userLabels,
+  handleLabelFiltering,
+  handleChoreAction,
+  isMultiSelectMode,
+  selectedChores,
+  toggleChoreSelection,
+  userProfile,
+  isOfficialInstance,
+  toggleMultiSelectMode,
+  showActions = true,
 }) => {
   const navigate = useNavigate()
   const renderChoreCard = (chore, key) => {

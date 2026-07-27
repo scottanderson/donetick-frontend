@@ -1,7 +1,6 @@
 import { Close, HelpOutline, Keyboard } from '@mui/icons-material'
 import { Box, Button, Card, Divider, IconButton, Typography } from '@mui/joy'
 import { useState } from 'react'
-
 import { useResponsiveModal } from '../../hooks/useResponsiveModal'
 
 const MultiSelectHelp = ({ isVisible = true }) => {
@@ -123,7 +122,7 @@ const MultiSelectHelp = ({ isVisible = true }) => {
   )
 }
 
-const ShortcutItem = ({ description, keys }) => (
+const ShortcutItem = ({ keys, description }) => (
   <Box
     sx={{
       display: 'flex',

@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query'
-
 import { GetResource } from '../utils/Fetcher'
 
 // Helper to check if we have a valid token
@@ -14,7 +13,7 @@ const isTokenValid = () => {
 }
 
 export const useResource = () => {
-  const { data, error, isLoading, refetch } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['resource'],
     queryFn: async () => {
       const response = await GetResource()

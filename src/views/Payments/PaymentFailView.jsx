@@ -1,7 +1,6 @@
 import { Box, Container, Sheet, Typography } from '@mui/joy'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-
 import Logo from '../../Logo'
 
 const PaymentCancelledView = () => {

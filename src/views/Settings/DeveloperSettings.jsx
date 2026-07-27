@@ -3,7 +3,6 @@ import { Refresh, Token } from '@mui/icons-material'
 import { Box, Button, Card, Chip, Divider, Typography } from '@mui/joy'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useState } from 'react'
-
 import { networkManager } from '../../hooks/NetworkManager'
 import useConfirmationModal from '../../hooks/useConfirmationModal'
 import { useSSEContext } from '../../hooks/useSSEContext'
@@ -20,12 +19,12 @@ const DeveloperSettings = () => {
   const queryClient = useQueryClient()
   const { confirmModalConfig, showConfirmation } = useConfirmationModal()
   const {
-    error: sseError,
-    getConnectionStatus,
-    getDebugInfo,
     isConnected,
     isConnecting,
     lastEvent,
+    error: sseError,
+    getConnectionStatus,
+    getDebugInfo,
   } = useSSEContext()
 
   const [accessTokenExpiry, setAccessTokenExpiry] = useState(null)

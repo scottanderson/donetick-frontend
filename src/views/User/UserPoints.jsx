@@ -1,4 +1,13 @@
 import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from 'recharts'
+
+import {
   AccountBalanceWallet,
   Analytics,
   AssignmentTurnedIn,
@@ -31,20 +40,12 @@ import {
   Typography,
 } from '@mui/joy'
 import { useEffect, useState } from 'react'
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import LoadingComponent from '../components/Loading.jsx'
 
 import { useChoresHistory } from '../../queries/ChoreQueries.jsx'
 import { useCircleMembers, useUserProfile } from '../../queries/UserQueries.jsx'
 import { RedeemPoints } from '../../utils/Fetcher.jsx'
 import { resolvePhotoURL } from '../../utils/Helpers.jsx'
-import LoadingComponent from '../components/Loading.jsx'
 import RedeemPointsModal from '../Modals/RedeemPointsModal'
 const UserPoints = () => {
   const [tabValue, setTabValue] = useState(7)
@@ -53,14 +54,14 @@ const UserPoints = () => {
 
   const {
     data: circleMembersData,
-    handleRefetch: handleCircleMembersRefetch,
     isLoading: isCircleMembersLoading,
+    handleRefetch: handleCircleMembersRefetch,
   } = useCircleMembers()
 
   const {
     data: choresHistoryData,
-    handleLimitChange: handleChoresHistoryLimitChange,
     isLoading: isChoresHistoryLoading,
+    handleLimitChange: handleChoresHistoryLimitChange,
   } = useChoresHistory(7, true)
 
   const { data: userProfile } = useUserProfile()
@@ -946,7 +947,7 @@ const UserPoints = () => {
             isOpen: isRedeemModalOpen,
             available: availablePoints,
             user: user,
-            onSave: ({ points, userId }) => {
+            onSave: ({ userId, points }) => {
               RedeemPoints(userId, points, userProfile.circleID)
                 .then(() => {
                   setIsRedeemModalOpen(false)

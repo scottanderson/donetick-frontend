@@ -1,20 +1,19 @@
 import { Button, Chip, Menu, MenuItem, Typography } from '@mui/joy'
 import IconButton from '@mui/joy/IconButton'
 import { useEffect, useRef, useState } from 'react'
-
 import { getTextColorFromBackgroundColor } from '../../utils/Colors.jsx'
 
 const IconButtonWithMenu = ({
-  icon,
-  isActive,
-  k,
   label,
-  onItemSelect,
+  k,
+  icon,
   options,
+  onItemSelect,
   selectedItem,
   setSelectedItem,
-  title,
+  isActive,
   useChips,
+  title,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const menuRef = useRef(null)

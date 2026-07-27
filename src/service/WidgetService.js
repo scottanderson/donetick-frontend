@@ -1,5 +1,4 @@
 import { Capacitor, registerPlugin } from '@capacitor/core'
-
 import { apiClient } from '../utils/ApiClient'
 
 // Native bridge implemented in ios/App/App/WidgetBridgePlugin.swift and

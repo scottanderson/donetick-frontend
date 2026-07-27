@@ -84,7 +84,9 @@ const generateSchedulePreview = (metadata, formatTimeFn) => {
     .map(day => day.charAt(0).toUpperCase() + day.slice(1, 3))
     .join(', ')
 
-  const timeStr = metadata.time ? formatTimeFn(metadata.time) : '6:00 PM'
+  const timeStr = metadata.time
+    ? formatTimeFn(metadata.time)
+    : '6:00 PM'
 
   if (metadata.weekPattern === 'every_week' || !metadata.weekPattern) {
     return `Every ${dayNames} at ${timeStr}`
@@ -107,11 +109,11 @@ const generateSchedulePreview = (metadata, formatTimeFn) => {
 }
 
 export const RepeatOnSections = ({
-  frequency,
-  frequencyMetadata,
   frequencyType,
-  onFrequencyMetadataUpdate,
+  frequency,
   onFrequencyUpdate,
+  frequencyMetadata,
+  onFrequencyMetadataUpdate,
 }) => {
   const { fmt } = useLocalization()
   // if time on frequencyMetadata is not set, try to set it to the nextDueDate if available,
@@ -525,17 +527,17 @@ export const RepeatOnSections = ({
 }
 
 const RepeatSection = ({
-  OnTriggerValidate,
-  allUserThings,
-  frequency,
-  frequencyError,
-  frequencyMetadata,
   frequencyType,
-  isAttemptToSave,
-  onFrequencyMetadataUpdate,
-  onFrequencyTypeUpdate,
+  frequency,
   onFrequencyUpdate,
+  onFrequencyTypeUpdate,
+  frequencyMetadata,
+  onFrequencyMetadataUpdate,
+  frequencyError,
+  allUserThings,
   onTriggerUpdate,
+  OnTriggerValidate,
+  isAttemptToSave,
   selectedThing,
 }) => {
   const { data: userProfile } = useUserProfile()

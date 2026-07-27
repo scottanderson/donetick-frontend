@@ -4,11 +4,11 @@ import React, { useEffect } from 'react'
 
 const AutocompleteDropdown = ({
   currentValue,
-  onMouseEnterSuggestion,
+  suggestions,
+  selectedIndex,
   onSelectSuggestion,
-  parentRefer,
-  selectedIndex, // Added for hover selection
-  suggestions, // Ref to the dropdown element
+  onMouseEnterSuggestion, // Added for hover selection
+  parentRefer, // Ref to the dropdown element
 }) => {
   // Scroll selected item into view
   const dropdownMenuRef = React.useRef(null)
@@ -67,7 +67,7 @@ const AutocompleteDropdown = ({
           </MenuItem>
         ))}
       <Divider orientation='horizontal' />
-      {/*
+      {/* 
       <MenuItem
         selected={selectedIndex === suggestions?.options?.length}
         onClick={() => {

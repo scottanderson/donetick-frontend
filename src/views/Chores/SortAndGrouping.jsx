@@ -12,22 +12,21 @@ import {
 } from '@mui/joy'
 import IconButton from '@mui/joy/IconButton'
 import { useEffect, useRef, useState } from 'react'
-
 import KeyboardShortcutHint from '../../components/common/KeyboardShortcutHint'
 
 const SortAndGrouping = ({
-  icon,
-  isActive,
-  k,
   label,
-  onCreateNewFilter,
+  k,
+  icon,
   onItemSelect,
-  selectedFilter,
   selectedItem,
-  setFilter,
   setSelectedItem,
-  title,
+  selectedFilter,
+  setFilter,
+  isActive,
   useChips,
+  title,
+  onCreateNewFilter,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [selectedIndex, setSelectedIndex] = useState(0)
