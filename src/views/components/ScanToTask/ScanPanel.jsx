@@ -13,6 +13,7 @@ import {
   Typography,
 } from '@mui/joy'
 import { useEffect } from 'react'
+
 import { useScanToTask } from './useScanToTask'
 
 /**
@@ -21,26 +22,32 @@ import { useScanToTask } from './useScanToTask'
  * Flow: capture → (auto) processing → done [calls onTaskExtracted + onClose]
  *                                   → error  [retake or cancel]
  */
-const ScanPanel = ({ open, onTaskExtracted, onClose, initialImageUrl, autoCapture }) => {
+const ScanPanel = ({
+  autoCapture,
+  initialImageUrl,
+  onClose,
+  onTaskExtracted,
+  open,
+}) => {
   const {
-    isNativeScanner,
-    phase,
-    capturedImage,
-    ocrProgress,
-    taskResult,
-    errorMsg,
+    activate,
     cameraAvailable,
-    videoRef,
     canvasRef,
-    fileInputRef,
-    startCamera,
-    stopCamera,
     capture,
+    capturedImage,
+    errorMsg,
+    fileInputRef,
     handleFileSelect,
     handleNativeScan,
-    retake,
-    activate,
+    isNativeScanner,
+    ocrProgress,
+    phase,
     reset,
+    retake,
+    startCamera,
+    stopCamera,
+    taskResult,
+    videoRef,
   } = useScanToTask()
 
   // Start/stop based on open state
@@ -111,7 +118,10 @@ const ScanPanel = ({ open, onTaskExtracted, onClose, initialImageUrl, autoCaptur
                 <DocumentScanner
                   sx={{ fontSize: 56, color: 'white', opacity: 0.5, mb: 1 }}
                 />
-                <Typography level='body-sm' sx={{ color: 'white', opacity: 0.6 }}>
+                <Typography
+                  level='body-sm'
+                  sx={{ color: 'white', opacity: 0.6 }}
+                >
                   Tap &quot;Scan Document&quot; to open the scanner
                 </Typography>
               </Box>
@@ -137,7 +147,10 @@ const ScanPanel = ({ open, onTaskExtracted, onClose, initialImageUrl, autoCaptur
                 <CameraAlt
                   sx={{ fontSize: 48, color: 'white', opacity: 0.4, mb: 1 }}
                 />
-                <Typography level='body-sm' sx={{ color: 'white', opacity: 0.6 }}>
+                <Typography
+                  level='body-sm'
+                  sx={{ color: 'white', opacity: 0.6 }}
+                >
                   Camera not available — use Upload instead
                 </Typography>
               </Box>
@@ -171,7 +184,12 @@ const ScanPanel = ({ open, onTaskExtracted, onClose, initialImageUrl, autoCaptur
             />
 
             <Box sx={{ ml: 'auto', display: 'flex', gap: 1 }}>
-              <Button size='sm' variant='plain' color='neutral' onClick={onClose}>
+              <Button
+                size='sm'
+                variant='plain'
+                color='neutral'
+                onClick={onClose}
+              >
                 Cancel
               </Button>
               {isNativeScanner ? (
@@ -283,7 +301,9 @@ const ScanPanel = ({ open, onTaskExtracted, onClose, initialImageUrl, autoCaptur
               }}
             />
           )}
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 2 }}>
+          <Box
+            sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 2 }}
+          >
             <WarningAmber color='warning' sx={{ mt: 0.25, flexShrink: 0 }} />
             <Typography level='body-sm'>{errorMsg}</Typography>
           </Box>

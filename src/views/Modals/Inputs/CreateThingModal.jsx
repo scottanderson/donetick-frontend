@@ -1,18 +1,19 @@
 import {
-    Box,
-    Button,
-    FormControl,
-    FormHelperText,
-    Input,
-    Option,
-    Select,
-    Textarea,
-    Typography,
+  Box,
+  Button,
+  FormControl,
+  FormHelperText,
+  Input,
+  Option,
+  Select,
+  Textarea,
+  Typography,
 } from '@mui/joy'
 import { useEffect, useState } from 'react'
+
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
 
-function CreateThingModal({ isOpen, onClose, onSave, currentThing }) {
+function CreateThingModal({ currentThing, isOpen, onClose, onSave }) {
   const { ResponsiveModal } = useResponsiveModal()
 
   const [name, setName] = useState(currentThing?.name || '')

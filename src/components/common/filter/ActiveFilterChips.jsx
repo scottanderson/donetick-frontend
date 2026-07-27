@@ -2,19 +2,19 @@ import { Close } from '@mui/icons-material'
 import { Box, Button, Chip, Typography } from '@mui/joy'
 
 const ActiveFilterChips = ({
-  chips = [],
-  onOpen,
-  onClearAll,
-  resultCount,
-  totalCount,
-  maxVisible = 2,
   chipSize = 'md',
+  chipSx,
+  chips = [],
   clearButtonSize = 'sm',
   clearButtonSx,
   containerSx,
-  chipSx,
+  maxVisible = 2,
+  onClearAll,
+  onOpen,
   overflowChipSx,
+  resultCount,
   resultSx,
+  totalCount,
 }) => {
   if (!chips.length) {
     return null
@@ -37,7 +37,7 @@ const ActiveFilterChips = ({
         ...containerSx,
       }}
     >
-      {visible.map(({ key, label, onClear, color = 'primary' }) => (
+      {visible.map(({ color = 'primary', key, label, onClear }) => (
         <Chip
           key={key}
           size={chipSize}

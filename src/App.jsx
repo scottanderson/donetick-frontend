@@ -1,21 +1,21 @@
-import NavBar from '@/views/components/NavBar'
+import './styles/safe-area.css'
+
 import { Button, Typography, useColorScheme } from '@mui/joy'
 import { useCallback, useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { useRegisterSW } from 'virtual:pwa-register/react'
+
+import NavBar from '@/views/components/NavBar'
+
 import { registerCapacitorListeners } from './CapacitorListener'
 import PageTransition from './components/animations/PageTransition'
 import { ImpersonateUserProvider } from './contexts/ImpersonateUserContext'
-import { AuthProvider } from './hooks/useAuth.jsx'
-
-import useStatusBar from './hooks/useStatusBar'
-import { useResource } from './queries/ResourceQueries'
-import './styles/safe-area.css'
-
 import SSEProvider from './contexts/SSEContext'
-import { useNotification } from './service/NotificationProvider'
-
+import { AuthProvider } from './hooks/useAuth.jsx'
+import useStatusBar from './hooks/useStatusBar'
 import { useSyncOnReconnect } from './hooks/useSyncOnReconnect'
+import { useResource } from './queries/ResourceQueries'
+import { useNotification } from './service/NotificationProvider'
 import NetworkBanner from './views/components/NetworkBanner'
 
 const add = className => {
@@ -37,8 +37,8 @@ const AppContent = () => {
   useStatusBar()
 
   const {
-    offlineReady: [offlineReady, setOfflineReady], // eslint-disable-line no-unused-vars
-    needRefresh: [needRefresh, setNeedRefresh],
+    needRefresh: [needRefresh, setNeedRefresh], // eslint-disable-line no-unused-vars
+    offlineReady: [offlineReady, setOfflineReady],
     updateServiceWorker,
   } = useRegisterSW({
     onRegistered(r) {

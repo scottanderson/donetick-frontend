@@ -2,28 +2,29 @@ import { Close } from '@mui/icons-material'
 import { Box, Button, IconButton, Sheet, Typography } from '@mui/joy'
 import { ClickAwayListener, Popper } from '@mui/material'
 import { useEffect, useMemo, useRef, useState } from 'react'
+
 import { Z_INDEX } from '../../constants/zIndex'
 
 const BaseOptionPicker = ({
-  items = [],
-  value = null,
-  values = [],
-  multiple = false,
-  onChange,
-  onValuesChange,
   emptyDisplay = 'icon',
   emptyLabel = 'Select',
-  placement = 'top-start',
-  menuMinWidth = 180,
-  menuMaxHeight = 280,
-  getItemValue = item => item.id,
+  getItemColor,
   getItemLabel = item => item.label,
+  getItemValue = item => item.id,
+  getTriggerText,
+  items = [],
+  menuFooter,
+  menuMaxHeight = 280,
+  menuMinWidth = 180,
+  multiple = false,
+  onChange,
+  onClear,
+  onValuesChange,
+  placement = 'top-start',
   renderItemStart,
   renderTriggerIcon,
-  getItemColor,
-  getTriggerText,
-  onClear,
-  menuFooter,
+  value = null,
+  values = [],
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const buttonRef = useRef(null)

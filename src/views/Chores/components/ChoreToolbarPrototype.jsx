@@ -45,26 +45,27 @@ import {
   Typography,
 } from '@mui/joy'
 import { useEffect, useRef, useState } from 'react'
+
 import BottomSheetModal from '../../../components/common/BottomSheetModal'
 import ActiveFilterChips from '../../../components/common/filter/ActiveFilterChips'
-import { Z_INDEX } from '../../../constants/zIndex'
 import KeyboardShortcutHint from '../../../components/common/KeyboardShortcutHint'
+import { Z_INDEX } from '../../../constants/zIndex'
 import { FILTER_COLORS } from '../../../utils/Colors'
 import Priorities from '../../../utils/Priorities'
+import ProjectSelector from '../../components/ProjectSelector'
 import FilterBuilderContent, {
   CHORE_STATUSES,
-  DUE_DATE_OPTIONS,
-  POINTS_OPERATORS,
   conditionsToSelections,
   defaultSelections,
+  DUE_DATE_OPTIONS,
+  POINTS_OPERATORS,
   selectionsToConditions,
 } from './FilterBuilderContent'
 import SearchBar from './SearchBar'
-import ProjectSelector from '../../components/ProjectSelector'
 
 // ─── sub-components for the Display sheet ────────────────────────────────────
 
-const SectionHeader = ({ icon, label, badge }) => (
+const SectionHeader = ({ badge, icon, label }) => (
   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
     {icon && (
       <Box
@@ -94,7 +95,7 @@ const SectionHeader = ({ icon, label, badge }) => (
   </Box>
 )
 
-const OptionChips = ({ options, selected, multi, onToggle }) => (
+const OptionChips = ({ multi, onToggle, options, selected }) => (
   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
     {options.map(opt => {
       const isSelected = multi
@@ -104,13 +105,15 @@ const OptionChips = ({ options, selected, multi, onToggle }) => (
         <Chip
           key={opt.value}
           variant={isSelected ? 'solid' : 'soft'}
-          color={isSelected ? opt.color ?? 'primary' : 'neutral'}
+          color={isSelected ? (opt.color ?? 'primary') : 'neutral'}
           startDecorator={
-            opt.icon != null
-              ? isSelected
-                ? <Check sx={{ fontSize: 14 }} />
-                : opt.icon
-              : undefined
+            opt.icon != null ? (
+              isSelected ? (
+                <Check sx={{ fontSize: 14 }} />
+              ) : (
+                opt.icon
+              )
+            ) : undefined
           }
           onClick={() => onToggle(opt.value)}
           sx={{
@@ -178,48 +181,48 @@ const OptionChips = ({ options, selected, multi, onToggle }) => (
  */
 const ChoreToolbar = ({
   // advanced filter
-  members = [],
-  labels = [],
-  projects = [],
-  tempFilter,
-  tempFilterMeta,
+  activeFilterId,
   applyTempFilter,
   clearTempFilter,
-  saveFilter,
-  updateFilter,
-  onFilterSaved,
-  // result counts
-  resultCount,
-  totalCount,
-  // clear all
-  onClearAllFilters,
-  // project (for Display sheet)
-  selectedProject,
-  onProjectSelect,
-  // assignee (for Display sheet)
-  selectedAssigneeFilter = 'anyone',
-  onAssigneeFilterChange,
-  // saved / custom
-  savedFilters = [],
-  activeFilterId,
-  onSavedFilterClick,
-  onSavedFilterEdit,
-  onSavedFilterDelete,
-  onSavedFilterPin,
-  // grouping
-  selectedGroupBy = 'default',
-  onGroupBySelect,
-  // view + multiselect
-  viewMode = 'default',
-  onToggleViewMode,
   isMultiSelectMode,
-  onToggleMultiSelect,
-  // search
-  searchTerm,
+  labels = [],
+  members = [],
+  onAssigneeFilterChange,
+  onClearAllFilters,
+  onFilterSaved,
+  onGroupBySelect,
+  // result counts
+  onProjectSelect,
+  onSavedFilterClick,
+  // clear all
+  onSavedFilterDelete,
+  // project (for Display sheet)
+  onSavedFilterEdit,
+  onSavedFilterPin,
+  // assignee (for Display sheet)
   onSearchChange,
   onSearchClose,
+  // saved / custom
+  onToggleMultiSelect,
+  onToggleViewMode,
+  projects = [],
+  resultCount,
+  saveFilter,
+  savedFilters = [],
+  // grouping
   searchInputRef,
+  searchTerm,
+  // view + multiselect
+  selectedAssigneeFilter = 'anyone',
+  selectedGroupBy = 'default',
+  selectedProject,
   showKeyboardShortcuts,
+  // search
+  tempFilter,
+  tempFilterMeta,
+  totalCount,
+  updateFilter,
+  viewMode = 'default',
 }) => {
   const [filterSheetOpen, setFilterSheetOpen] = useState(false)
   const [displaySheetOpen, setDisplaySheetOpen] = useState(false)
@@ -286,7 +289,9 @@ const ChoreToolbar = ({
         return member?.displayName || member?.username || String(value)
       }
       if (condition.type === 'status') {
-        return CHORE_STATUSES.find(s => s.value === value)?.label || String(value)
+        return (
+          CHORE_STATUSES.find(s => s.value === value)?.label || String(value)
+        )
       }
       if (condition.type === 'priority') {
         return Priorities.find(p => p.value === value)?.name || String(value)
@@ -362,8 +367,7 @@ const ChoreToolbar = ({
       setLocalSelections(conditionsToSelections(tempFilter.conditions))
       if (tempFilterMeta?.sourceFilterId) {
         const sourceFilter =
-          savedFilters.find(f => f.id === tempFilterMeta.sourceFilterId) ||
-          null
+          savedFilters.find(f => f.id === tempFilterMeta.sourceFilterId) || null
         setEditingSavedFilter(
           sourceFilter ||
             (tempFilterMeta.sourceFilterId
@@ -443,7 +447,13 @@ const ChoreToolbar = ({
       FILTER_COLORS.find(c => !usedColors.includes(c.value))?.value ??
       FILTER_COLORS[0].value
 
-    saveFilter?.({ name, description: '', color, conditions, operator: 'AND' })?.then?.(() => {
+    saveFilter?.({
+      name,
+      description: '',
+      color,
+      conditions,
+      operator: 'AND',
+    })?.then?.(() => {
       applyTempFilter?.({ conditions, operator: 'AND' }, { name })
       onFilterSaved?.(name)
     })
@@ -459,16 +469,13 @@ const ChoreToolbar = ({
     const conditions = selectionsToConditions(localSelections)
     if (conditions.length === 0) return
 
-    updateFilter(
-      editingSavedFilter.id,
-      {
-        name: editingSavedFilter.name,
-        description: editingSavedFilter.description || '',
-        color: editingSavedFilter.color,
-        conditions,
-        operator: 'AND',
-      },
-    )?.then?.(() => {
+    updateFilter(editingSavedFilter.id, {
+      name: editingSavedFilter.name,
+      description: editingSavedFilter.description || '',
+      color: editingSavedFilter.color,
+      conditions,
+      operator: 'AND',
+    })?.then?.(() => {
       clearTempFilter?.()
       onSavedFilterClick?.(editingSavedFilter.id)
       onFilterSaved?.(editingSavedFilter.name)
@@ -481,7 +488,8 @@ const ChoreToolbar = ({
   // ── display sheet helpers ────────────────────────────────────────────────────
 
   const filterActive = activeFilterId != null || tempConditionCount > 0
-  const projectActive = selectedProject && selectedProject.id !== 'default' ? 1 : 0
+  const projectActive =
+    selectedProject && selectedProject.id !== 'default' ? 1 : 0
   const assigneeActive = selectedAssigneeFilter !== 'anyone' ? 1 : 0
   const displayActive =
     selectedGroupBy !== 'default' ||
@@ -504,9 +512,21 @@ const ChoreToolbar = ({
   ]
 
   const viewOptions = [
-    { value: 'default', label: 'Cards', icon: <ViewAgenda sx={{ fontSize: 16 }} /> },
-    { value: 'compact', label: 'Compact', icon: <ViewComfy sx={{ fontSize: 16 }} /> },
-    { value: 'calendar', label: 'Calendar', icon: <CalendarMonth sx={{ fontSize: 16 }} /> },
+    {
+      value: 'default',
+      label: 'Cards',
+      icon: <ViewAgenda sx={{ fontSize: 16 }} />,
+    },
+    {
+      value: 'compact',
+      label: 'Compact',
+      icon: <ViewComfy sx={{ fontSize: 16 }} />,
+    },
+    {
+      value: 'calendar',
+      label: 'Calendar',
+      icon: <CalendarMonth sx={{ fontSize: 16 }} />,
+    },
   ]
 
   return (
@@ -549,13 +569,14 @@ const ChoreToolbar = ({
         </Badge>
 
         {/* Project selector */}
-        {!filterActive && projects.filter(p => p.id !== 'default').length > 0 && (
-          <ProjectSelector
-            selectedProject={selectedProject?.name || 'Default Project'}
-            onProjectSelect={onProjectSelect}
-            showKeyboardShortcuts={showKeyboardShortcuts}
-          />
-        )}
+        {!filterActive &&
+          projects.filter(p => p.id !== 'default').length > 0 && (
+            <ProjectSelector
+              selectedProject={selectedProject?.name || 'Default Project'}
+              onProjectSelect={onProjectSelect}
+              showKeyboardShortcuts={showKeyboardShortcuts}
+            />
+          )}
 
         {/* Display button — View + Group combined */}
         <IconButton
@@ -639,7 +660,12 @@ const ChoreToolbar = ({
         footer={
           savingFilter ? (
             <Box
-              sx={{ display: 'flex', gap: 1, width: '100%', alignItems: 'center' }}
+              sx={{
+                display: 'flex',
+                gap: 1,
+                width: '100%',
+                alignItems: 'center',
+              }}
             >
               <Input
                 size='sm'
@@ -700,9 +726,7 @@ const ChoreToolbar = ({
                       }}
                       sx={{ minWidth: 140 }}
                     >
-                      {resultCount != null
-                        ? `Show ${resultCount}`
-                        : 'Done'}
+                      {resultCount != null ? `Show ${resultCount}` : 'Done'}
                     </Button>
                     <IconButton
                       ref={saveMenuRef}
@@ -828,7 +852,10 @@ const ChoreToolbar = ({
           </Box>
         }
         footer={
-          <Button onClick={() => setDisplaySheetOpen(false)} sx={{ minWidth: 140 }}>
+          <Button
+            onClick={() => setDisplaySheetOpen(false)}
+            sx={{ minWidth: 140 }}
+          >
             Done
           </Button>
         }
@@ -843,9 +870,11 @@ const ChoreToolbar = ({
                 variant={viewMode === opt.value ? 'solid' : 'soft'}
                 color={viewMode === opt.value ? 'primary' : 'neutral'}
                 startDecorator={
-                  viewMode === opt.value
-                    ? <Check sx={{ fontSize: 14 }} />
-                    : opt.icon
+                  viewMode === opt.value ? (
+                    <Check sx={{ fontSize: 14 }} />
+                  ) : (
+                    opt.icon
+                  )
                 }
                 onClick={() => onToggleViewMode?.(opt.value)}
                 sx={{
@@ -900,7 +929,8 @@ const ChoreToolbar = ({
             label='Show tasks for'
             badge={
               selectedAssigneeFilter !== 'anyone'
-                ? assigneeOptions.find(o => o.value === selectedAssigneeFilter)?.label
+                ? assigneeOptions.find(o => o.value === selectedAssigneeFilter)
+                    ?.label
                 : null
             }
           />
@@ -910,7 +940,6 @@ const ChoreToolbar = ({
             multi={false}
             onToggle={v => onAssigneeFilterChange?.(v)}
           />
-
         </Box>
       </BottomSheetModal>
     </>

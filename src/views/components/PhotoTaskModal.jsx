@@ -17,6 +17,7 @@ import {
   Typography,
 } from '@mui/joy'
 import { useCallback, useEffect, useRef, useState } from 'react'
+
 import { useDocumentScanner } from '../../hooks/useDocumentScanner'
 import { useResponsiveModal } from '../../hooks/useResponsiveModal'
 import { localAIService } from '../../service/LocalAIService'
@@ -82,7 +83,10 @@ async function runNativeOCR(imageSource) {
   }
 
   const result = await Ocr.process({ image })
-  return result.results.map(r => r.text).join('\n').trim()
+  return result.results
+    .map(r => r.text)
+    .join('\n')
+    .trim()
 }
 
 async function runOCR(imageSource, onProgress) {
@@ -118,7 +122,7 @@ async function extractTaskFromOCR(ocrText) {
   }
 }
 
-const PhotoTaskModal = ({ open, onClose, onTaskExtracted }) => {
+const PhotoTaskModal = ({ onClose, onTaskExtracted, open }) => {
   const { ResponsiveModal } = useResponsiveModal()
   const { isNativeScanner, scanDocument } = useDocumentScanner()
   const videoRef = useRef(null)
@@ -214,7 +218,9 @@ const PhotoTaskModal = ({ open, onClose, onTaskExtracted }) => {
         try {
           text = await runNativeOCR(capturedImage)
         } catch {
-          throw new Error('Native OCR is only available on iOS and Android devices.')
+          throw new Error(
+            'Native OCR is only available on iOS and Android devices.',
+          )
         }
       } else {
         text = await runOCR(capturedImage, pct => setOcrProgress(pct))
@@ -231,7 +237,9 @@ const PhotoTaskModal = ({ open, onClose, onTaskExtracted }) => {
       const task = await extractTaskFromOCR(text)
 
       if (!task || !task.taskName) {
-        setErrorMsg('Could not identify a task from this image. Please try a different photo.')
+        setErrorMsg(
+          'Could not identify a task from this image. Please try a different photo.',
+        )
         setPhase('error')
         return
       }
@@ -255,10 +263,12 @@ const PhotoTaskModal = ({ open, onClose, onTaskExtracted }) => {
   }
 
   const handleNativeScan = async () => {
-    const { image, cancelled, error } = await scanDocument()
+    const { cancelled, error, image } = await scanDocument()
     if (cancelled) return
     if (error || !image) {
-      setErrorMsg(error ? `Scanner error: ${error}` : 'Scan cancelled or failed.')
+      setErrorMsg(
+        error ? `Scanner error: ${error}` : 'Scan cancelled or failed.',
+      )
       setPhase('error')
       return
     }
@@ -377,7 +387,11 @@ const PhotoTaskModal = ({ open, onClose, onTaskExtracted }) => {
                 <Typography level='body-sm'>
                   Reading text from image… {ocrProgress}%
                 </Typography>
-                <LinearProgress determinate value={ocrProgress} sx={{ width: '100%' }} />
+                <LinearProgress
+                  determinate
+                  value={ocrProgress}
+                  sx={{ width: '100%' }}
+                />
               </>
             )}
             {phase === 'ocr' && ocrMethod === 'native' && (

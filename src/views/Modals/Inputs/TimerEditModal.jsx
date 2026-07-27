@@ -12,17 +12,18 @@ import {
 } from '@mui/joy'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
+
 import { useLocalization } from '../../../contexts/LocalizationContext'
 import { useResponsiveModal } from '../../../hooks/useResponsiveModal'
-import { useNotification } from '../../../service/NotificationProvider'
 import {
   useChoreTimer,
   useDeleteTimeSession,
   useUpdateTimeSession,
 } from '../../../queries/TimeQueries'
+import { useNotification } from '../../../service/NotificationProvider'
 import ConfirmationModal from './ConfirmationModal'
 
-const TimerEditModal = ({ isOpen, onClose, choreId, onTimerUpdate }) => {
+const TimerEditModal = ({ choreId, isOpen, onClose, onTimerUpdate }) => {
   const { ResponsiveModal } = useResponsiveModal()
   const { fmt } = useLocalization()
 
@@ -58,7 +59,6 @@ const TimerEditModal = ({ isOpen, onClose, choreId, onTimerUpdate }) => {
       if (interval) clearInterval(interval)
     }
   }, [isOpen, timerData])
-
 
   const formatTime = seconds => {
     const hours = Math.floor(seconds / 3600)

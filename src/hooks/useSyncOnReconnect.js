@@ -2,6 +2,7 @@ import { App as capacitorApp } from '@capacitor/app'
 import { Capacitor } from '@capacitor/core'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef } from 'react'
+
 import { commandQueue } from '../utils/CommandQueue'
 import { offlineDB } from '../utils/OfflineDB'
 import { isOfflineFeatureEnabled } from '../utils/OfflineFeatureToggle'

@@ -731,7 +731,7 @@ const DeleteUser = (password, confirmation, transferOptions = []) => {
 const UploadChoreAttachment = (
   file,
   entityType,
-  { entityId, draftId } = {},
+  { draftId, entityId } = {},
 ) => {
   const formData = new FormData()
   formData.append('file', file)
@@ -977,11 +977,6 @@ const TrackFilterUsage = id => {
 
 export {
   AcceptCircleMemberRequest,
-  DeleteChoreAttachment,
-  DeleteDraftAttachment,
-  GetChoreAttachments,
-  SignAssetURL,
-  UploadChoreAttachment,
   ApproveChore,
   ArchiveChore,
   CancelSubscription,
@@ -1001,8 +996,10 @@ export {
   CreateThing,
   DeleteChildUser,
   DeleteChore,
+  DeleteChoreAttachment,
   DeleteChoreHistory,
   DeleteCircleMember,
+  DeleteDraftAttachment,
   DeleteFilter,
   DeleteLabel,
   DeleteLongLiveToken,
@@ -1015,6 +1012,7 @@ export {
   GetAllUsers,
   GetArchivedChores,
   GetChildUsers,
+  GetChoreAttachments,
   GetChoreByID,
   GetChoreDetailById,
   GetChoreHistory,
@@ -1060,6 +1058,7 @@ export {
   SaveChore,
   SaveThing,
   SetupMFA,
+  SignAssetURL,
   signUp,
   SkipChore,
   StartChore,
@@ -1082,5 +1081,6 @@ export {
   UpdateThingState,
   UpdateTimeSession,
   UpdateUserDetails,
+  UploadChoreAttachment,
   VerifyMFA,
 }

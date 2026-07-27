@@ -24,19 +24,20 @@ import {
 import moment from 'moment'
 import { useEffect, useMemo, useState } from 'react'
 import Calendar from 'react-calendar'
+
 import { useLocalization } from '../../contexts/LocalizationContext'
 import { useResponsiveModal } from '../../hooks/useResponsiveModal'
 
 const DueDatePickerField = ({
   dueDateOnly,
   dueTime,
-  useCustomTime,
+  emptyDisplay = 'icon-text',
+  onClear,
   onDueDateChange,
   onDueTimeChange,
   onUseCustomTimeChange,
-  onClear,
-  emptyDisplay = 'icon-text',
   size = 'sm',
+  useCustomTime,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const { ResponsiveModal } = useResponsiveModal()

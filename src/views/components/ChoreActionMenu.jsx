@@ -35,6 +35,7 @@ import {
 } from '@mui/joy'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+
 import LABEL_COLORS, {
   getTextColorFromBackgroundColor,
 } from '../../utils/Colors'
@@ -45,16 +46,16 @@ import { useProjects } from '../Projects/ProjectQueries'
 const ChoreActionMenu = ({
   chore,
   onAction,
-  onCompleteWithNote,
-  onCompleteWithPastDate,
   onChangeAssignee,
   onChangeDueDate,
-  onWriteNFC,
-  onNudge,
+  onCompleteWithNote,
+  onCompleteWithPastDate,
   onDelete,
-  onOpen,
   onMouseEnter,
   onMouseLeave,
+  onNudge,
+  onOpen,
+  onWriteNFC,
   sx = {},
   variant = 'soft',
 }) => {

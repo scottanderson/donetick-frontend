@@ -1,22 +1,23 @@
 import { Close } from '@mui/icons-material'
 import { Divider, IconButton, Modal, Sheet, Typography } from '@mui/joy'
 import { forwardRef, useEffect, useState } from 'react'
+
 import { Z_INDEX } from '../../constants/zIndex'
 
 const BottomSheetModal = forwardRef(
   (
     {
-      open,
-      onClose,
+      backdropBlur = true,
       children,
-      title,
+      expandedHeight = '95vh',
       footer,
       height = 'auto',
       maxHeight = '90vh',
-      expandedHeight = '95vh',
-      backdropBlur = true,
-      showHandle = true,
+      onClose,
+      open,
       showCloseButton = true,
+      showHandle = true,
+      title,
       ...props
     },
     ref,
